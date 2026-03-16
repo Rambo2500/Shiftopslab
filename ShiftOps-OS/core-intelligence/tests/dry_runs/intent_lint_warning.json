@@ -1,0 +1,22 @@
+{
+  "goal": "Generate a summary CSV from tabular input data",
+  "inputs": ["source_data.csv"],
+  "constraints": ["Do not infer missing columns"],
+  "confidence": "MEDIUM",
+  "security_envelope": {
+    "impact_class": "LOW",
+    "auth": { "required": false },
+    "network": { "allowed": false },
+    "audit": {
+      "append_only": true,
+      "hash_chain": true
+    },
+    "failsafe": { "on_error": "abort" }
+  },
+  "context_references": [
+    {
+      "context_id": "basic_tabular_report_context",
+      "source_path": "examples/context_harvest_basic.json"
+    }
+  ]
+}

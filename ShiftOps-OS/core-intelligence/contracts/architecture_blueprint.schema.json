@@ -1,0 +1,57 @@
+﻿{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Architecture Blueprint",
+  "description": "Deterministic schema for ShiftOps-OS architectural designs.",
+  "type": "object",
+  "required": ["goal", "timestamp", "evaluation", "graph", "mermaid"],
+  "properties": {
+    "goal": { "type": "string" },
+    "timestamp": { "type": "string", "format": "date-time" },
+    "evaluation": {
+      "type": "object",
+      "required": ["fitness_score", "latency_score", "scalability_score", "resilience_score", "cost_score"],
+      "properties": {
+        "fitness_score": { "type": "number" },
+        "latency_score": { "type": "number" },
+        "scalability_score": { "type": "number" },
+        "resilience_score": { "type": "number" },
+        "cost_score": { "type": "number" },
+        "parallelism": { "type": "number" },
+        "coupling": { "type": "number" }
+      }
+    },
+    "graph": {
+      "type": "object",
+      "required": ["nodes", "edges"],
+      "properties": {
+        "nodes": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["id", "traits"],
+            "properties": {
+              "id": { "type": "string" },
+              "type": { "type": "string" },
+              "traits": { "type": "array", "items": { "type": "string" } },
+              "capability_class": { "type": "string" },
+              "description": { "type": "string" }
+            }
+          }
+        },
+        "edges": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["from", "to"],
+            "properties": {
+              "from": { "type": "string" },
+              "to": { "type": "string" }
+            }
+          }
+        }
+      }
+    },
+    "mermaid": { "type": "string" }
+  }
+}
+

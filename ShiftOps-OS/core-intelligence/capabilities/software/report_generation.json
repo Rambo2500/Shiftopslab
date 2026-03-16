@@ -1,0 +1,10 @@
+{
+  "id": "report_generation",
+  "name": "Reporting Service",
+  "description": "Service for generating executive summaries and PDF/HTML reports.",
+  "artifact_type": "presentation_generator",
+  "class": "presentation",
+  "provides": ["reporting_provider"],
+  "requires": [{"trait": "analytics_provider"}],
+  "compatible_with": ["analytics_engine", "storage_generator"]
+}

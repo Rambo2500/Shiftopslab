@@ -1,0 +1,900 @@
+﻿{
+  "id": "wildfire_response",
+  "status": "active",
+  "domain_archetype": "Emergency Management",
+  "architecture": {
+    "nodes": [
+      {
+        "id": "auth_service",
+        "name": "auth_service",
+        "type": "fastapi_service",
+        "description": "Inferred auth_service service to satisfy system intent.",
+        "depends_on": [],
+        "capability_class": "inferred_capability",
+        "compatible_with": [],
+        "traits": [
+          "auth_service"
+        ],
+        "outputs": {}
+      },
+      {
+        "id": "cache_layer",
+        "name": "cache_layer",
+        "type": "cache_service",
+        "description": "Caching layer to reduce load on analytics",
+        "depends_on": [],
+        "capability_class": "",
+        "compatible_with": [],
+        "traits": [
+          "cache_service"
+        ],
+        "outputs": {}
+      },
+      {
+        "id": "api_service",
+        "name": "api_service",
+        "type": "web_api_generator",
+        "description": "A FastAPI-based central communication hub.",
+        "depends_on": [
+          "cache_layer"
+        ],
+        "capability_class": "interface",
+        "compatible_with": [],
+        "traits": [
+          "api_gateway",
+          "central_hub"
+        ],
+        "outputs": {}
+      },
+      {
+        "id": "data_ingestion",
+        "name": "data_ingestion",
+        "type": "compute_generator",
+        "description": "Background worker for parsing and populating operational data.",
+        "depends_on": [
+          "api_service"
+        ],
+        "capability_class": "interface",
+        "compatible_with": [],
+        "traits": [
+          "ingestion_pipeline"
+        ],
+        "outputs": {}
+      },
+      {
+        "id": "postgres_db",
+        "name": "postgres_db",
+        "type": "database_service",
+        "description": "Relational data storage provider.",
+        "depends_on": [],
+        "capability_class": "storage",
+        "compatible_with": [],
+        "traits": [
+          "storage_provider",
+          "relational_db"
+        ],
+        "outputs": {}
+      },
+      {
+        "id": "analytics_engine",
+        "name": "analytics_engine",
+        "type": "compute_generator",
+        "description": "Service for computing KPIs, trends, and business intelligence.",
+        "depends_on": [
+          "api_service",
+          "postgres_db"
+        ],
+        "capability_class": "compute",
+        "compatible_with": [],
+        "traits": [
+          "compute_cluster",
+          "analytics_provider"
+        ],
+        "outputs": {
+          "kpis": [
+            "id",
+            "name",
+            "value",
+            "unit",
+            "trend"
+          ],
+          "alerts": [
+            "id",
+            "severity",
+            "message",
+            "timestamp"
+          ],
+          "performance_metrics": [
+            "cpu_usage",
+            "memory_usage",
+            "request_count"
+          ]
+        }
+      },
+      {
+        "id": "ai_reasoning",
+        "name": "ai_reasoning",
+        "type": "reasoning_generator",
+        "description": "Advanced AI layer for anomaly detection and operational guidance.",
+        "depends_on": [
+          "analytics_engine"
+        ],
+        "capability_class": "reasoning",
+        "compatible_with": [],
+        "traits": [
+          "reasoning_engine"
+        ],
+        "outputs": {}
+      },
+      {
+        "id": "stream_processor",
+        "name": "stream_processor",
+        "type": "compute_generator",
+        "description": "Real-time data stream processing capability.",
+        "depends_on": [],
+        "capability_class": "compute",
+        "compatible_with": [],
+        "traits": [
+          "stream_provider"
+        ],
+        "outputs": {}
+      },
+      {
+        "id": "sensor_ingestion",
+        "name": "sensor_ingestion",
+        "type": "web_api_generator",
+        "description": "Ingests telemetry from robotics sensors.",
+        "depends_on": [],
+        "capability_class": "interface",
+        "compatible_with": [],
+        "traits": [
+          "sensor_provider"
+        ],
+        "outputs": {}
+      },
+      {
+        "id": "mobile_app_ui",
+        "name": "mobile_app_ui",
+        "type": "dashboard",
+        "description": "Inferred mobile_app_ui service to satisfy system intent.",
+        "depends_on": [],
+        "capability_class": "inferred_capability",
+        "compatible_with": [],
+        "traits": [
+          "mobile_app_ui"
+        ],
+        "outputs": {}
+      },
+      {
+        "id": "data_storage",
+        "name": "data_storage",
+        "type": "fastapi_service",
+        "description": "Inferred data_storage service to satisfy system intent.",
+        "depends_on": [],
+        "capability_class": "inferred_capability",
+        "compatible_with": [],
+        "traits": [
+          "data_storage"
+        ],
+        "outputs": {}
+      },
+      {
+        "id": "api_gateway",
+        "name": "api_gateway",
+        "type": "fastapi_service",
+        "description": "Inferred api_gateway service to satisfy system intent.",
+        "depends_on": [],
+        "capability_class": "inferred_capability",
+        "compatible_with": [],
+        "traits": [
+          "api_gateway"
+        ],
+        "outputs": {}
+      },
+      {
+        "id": "dashboard_ui",
+        "name": "dashboard_ui",
+        "type": "ui_generator",
+        "description": "A real-time visual interface for operations monitoring.",
+        "depends_on": [
+          "api_service"
+        ],
+        "capability_class": "presentation",
+        "compatible_with": [],
+        "traits": [
+          "user_interface"
+        ],
+        "outputs": {}
+      },
+      {
+        "id": "message_queue",
+        "name": "message_queue",
+        "type": "fastapi_service",
+        "description": "Inferred message_queue service to satisfy system intent.",
+        "depends_on": [],
+        "capability_class": "inferred_capability",
+        "compatible_with": [],
+        "traits": [
+          "message_queue"
+        ],
+        "outputs": {}
+      },
+      {
+        "id": "gis_routing_engine",
+        "name": "gis_routing_engine",
+        "type": "fastapi_service",
+        "description": "High-performance geospatial routing engine for real-time unit optimization and ETA calculation.",
+        "depends_on": [
+          "data_storage",
+          "api_gateway"
+        ],
+        "capability_class": "geospatial_node",
+        "compatible_with": [],
+        "traits": [
+          "routing",
+          "gis",
+          "geospatial"
+        ],
+        "outputs": {}
+      },
+      {
+        "id": "storage_service",
+        "name": "storage_service",
+        "type": "fastapi_service",
+        "description": "Inferred storage_service service to satisfy system intent.",
+        "depends_on": [],
+        "capability_class": "inferred_capability",
+        "compatible_with": [],
+        "traits": [
+          "storage_service"
+        ],
+        "outputs": {}
+      },
+      {
+        "id": "realtime_alert_node",
+        "name": "realtime_alert_node",
+        "type": "worker_service",
+        "description": "Low-latency alert generation engine that monitors system state and triggers push notifications.",
+        "depends_on": [
+          "message_queue",
+          "api_service"
+        ],
+        "capability_class": "reasoning_generator",
+        "compatible_with": [],
+        "traits": [
+          "alerts",
+          "notifications"
+        ],
+        "outputs": {}
+      },
+      {
+        "id": "ems_dispatch_node",
+        "name": "ems_dispatch_node",
+        "type": "fastapi_service",
+        "description": "Central orchestration layer for EMS dispatch, coordinating between field units and hospital systems.",
+        "depends_on": [
+          "gis_routing_engine",
+          "api_service"
+        ],
+        "capability_class": "control_generator",
+        "compatible_with": [],
+        "traits": [
+          "dispatch",
+          "orchestration",
+          "command_and_control"
+        ],
+        "outputs": {
+          "active_incidents": [
+            "id",
+            "type",
+            "priority",
+            "location",
+            "status"
+          ],
+          "unit_status": [
+            "unit_id",
+            "status",
+            "assigned_incident_id",
+            "location"
+          ],
+          "dispatch_metrics": [
+            "avg_response_time",
+            "active_units_count",
+            "pending_incidents"
+          ]
+        }
+      },
+      {
+        "id": "telemetry_ingest_node",
+        "name": "telemetry_ingest_node",
+        "type": "worker_service",
+        "description": "Stream-based telemetry ingestion node capable of processing 100k+ sensor signals per second.",
+        "depends_on": [
+          "message_queue"
+        ],
+        "capability_class": "compute_generator",
+        "compatible_with": [],
+        "traits": [
+          "telemetry",
+          "ingestion",
+          "stream_processing"
+        ],
+        "outputs": {}
+      }
+    ],
+    "edges": [
+      {
+        "from": "cache_layer",
+        "to": "api_service"
+      },
+      {
+        "from": "api_service",
+        "to": "data_ingestion"
+      },
+      {
+        "from": "api_service",
+        "to": "analytics_engine"
+      },
+      {
+        "from": "postgres_db",
+        "to": "analytics_engine"
+      },
+      {
+        "from": "analytics_engine",
+        "to": "ai_reasoning"
+      },
+      {
+        "from": "api_service",
+        "to": "dashboard_ui"
+      },
+      {
+        "from": "data_storage",
+        "to": "gis_routing_engine"
+      },
+      {
+        "from": "api_gateway",
+        "to": "gis_routing_engine"
+      },
+      {
+        "from": "message_queue",
+        "to": "realtime_alert_node"
+      },
+      {
+        "from": "api_service",
+        "to": "realtime_alert_node"
+      },
+      {
+        "from": "gis_routing_engine",
+        "to": "ems_dispatch_node"
+      },
+      {
+        "from": "api_service",
+        "to": "ems_dispatch_node"
+      },
+      {
+        "from": "message_queue",
+        "to": "telemetry_ingest_node"
+      }
+    ]
+  },
+  "repo": {
+    "README.md": "# wildfire_response\nAutomated System Synthesis by ShiftOps-OS.\nArchetype: Emergency Management",
+    "shiftops.config.json": "{\n  \"intent\": \"Wildfire Incident Coordination Platform (WICP)\",\n  \"goal\": \"wildfire_response\",\n  \"objective\": [\n    \"Consolidate diverse data sources into a single, actionable platform.\",\n    \"Enable efficient communication and collaboration between emergency responders and command centers.\",\n    \"Optimize resource deployment and utilization based on real-time data and predictive analytics.\",\n    \"Minimize casualties and property damage through improved situational awareness and response coordination.\",\n    \"Maintain continuous operation even during regional network outages.\",\n    \"Provide clear, concise summaries of the situation for executive-level stakeholders.\"\n  ],\n  \"functional_requirements\": {\n    \"command_center_dashboard\": {\n      \"incident_monitoring_visualization\": [\n        \"Display real-time incident severity ranking based on a proprietary algorithm considering fire size, proximity to populated areas, weather conditions, and available resources.\",\n        \"Visualize predicted fire spread zones using a probabilistic model leveraging weather forecasts, fuel maps, and topography data.\",\n        \"Display the location and status of available firefighting resources (personnel, equipment, air support) in real-time.\",\n        \"Track evacuation progress by zone, including the number of people evacuated, vehicles remaining, and estimated completion time.\",\n        \"Overlay road closures, hospital capacity data, and other relevant information on the map.\",\n        \"Provide interactive tools for zooming, panning, filtering, and querying data.\",\n        \"Support user-defined alerts based on pre-defined thresholds (e.g., fire spread exceeding a certain rate, evacuation progress falling behind schedule).\"\n      ],\n      \"resource_management\": [\n        \"Facilitate resource deployment requests and approvals.\",\n        \"Recommend resource deployment strategies based on real-time conditions and predicted fire spread.\",\n        \"Track resource utilization and availability across multiple states.\",\n        \"Provide tools for managing resource inventories and maintenance schedules.\"\n      ],\n      \"communication_collaboration\": [\n        \"Enable secure communication between command centers and field responders via text messaging, voice communication, and video conferencing.\",\n        \"Provide a shared incident log for tracking key events and decisions.\",\n        \"Support integration with existing emergency communication systems.\"\n      ]\n    },\n    \"mobile_responder_interface\": {\n      \"task_management\": [\n        \"Display assigned tasks, including location, priority, and deadlines.\",\n        \"Allow responders to acknowledge, update, and complete tasks.\",\n        \"Provide real-time updates from command regarding changes in tasks or priorities.\"\n      ],\n      \"navigation_hazard_awareness\": [\n        \"Provide turn-by-turn navigation routes, avoiding blocked roads and hazardous areas.\",\n        \"Display the location of nearby hazards, including fire fronts, smoke plumes, and downed power lines.\",\n        \"Alert responders to potential dangers in their vicinity.\",\n        \"Integrate with GPS and other location-based services.\",\n        \"Support offline map caching for use in areas with limited network connectivity.\"\n      ],\n      \"situational_awareness\": [\n        \"Display real-time data from command, including weather updates, fire spread predictions, and evacuation progress.\",\n        \"Allow responders to report observations and incidents to command.\",\n        \"Facilitate communication with other responders in the field.\"\n      ]\n    },\n    \"executive_briefing_surface\": {\n      \"summary_dashboards\": [\n        \"Provide concise summaries of casualty counts (fatalities and injuries), property damage estimates (acres burned, structures destroyed), and evacuation status by county.\",\n        \"Visualize resource utilization across the affected area, including the number of personnel deployed, equipment in use, and air support hours flown.\",\n        \"Present key performance indicators (KPIs) related to incident response, such as time to containment, evacuation completion rate, and resource deployment efficiency.\"\n      ],\n      \"reporting\": [\n        \"Generate automated reports on incident status, resource utilization, and financial impact.\",\n        \"Allow users to customize reports and export data in various formats.\",\n        \"Provide access to historical incident data for analysis and trend identification.\"\n      ]\n    },\n    \"simulation_capabilities\": {\n      \"evacuation_scenario_simulation\": [\n        \"Simulate evacuation scenarios based on different fire spread models, population densities, and transportation networks.\",\n        \"Identify potential bottlenecks and optimize evacuation routes.\",\n        \"Estimate the time required to complete evacuations under different conditions.\"\n      ],\n      \"resource_allocation_simulation\": [\n        \"Simulate the impact of different resource allocation strategies on fire containment and evacuation progress.\",\n        \"Identify optimal resource deployment patterns based on predicted fire behavior.\",\n        \"Evaluate the effectiveness of different firefighting tactics.\"\n      ]\n    },\n    \"intelligent_resource_deployment_recommendation\": [\n      \"Automatically recommend resource deployment strategies based on real-time conditions and predicted fire spread.\",\n      \"Analyze fire spread predictions from the fire spread model.\",\n      \"Assess the risk to human life and property in the predicted fire zones.\",\n      \"Evaluate the availability of firefighting resources, considering both location and capabilities.\",\n      \"Use a rules-based engine augmented by machine learning to recommend the optimal deployment of resources.\",\n      \"Provide a rationale for each recommendation, explaining the factors considered and the expected impact of the deployment.\",\n      \"Allow command center personnel to override the recommendations based on their own judgment.\"\n    ]\n  },\n  \"non_functional_requirements\": {\n    \"performance\": {\n      \"throughput\": \"Process 1 million telemetry events per minute with sub-second latency.\",\n      \"response_time\": \"Command Center Dashboard and Mobile Responder Interface must respond to user requests within 2 seconds.\",\n      \"scalability\": \"The system must be scalable to accommodate future growth in data volume and user base.\"\n    },\n    \"availability\": {\n      \"uptime\": \"The system must maintain 99.99% uptime.\",\n      \"disaster_recovery\": \"The system must be resilient to regional network outages and other disasters. A geographically diverse hot/cold disaster recovery site must be available and capable of failover within 15 minutes. The system will automatically switch to using available local cellular or satellite connections during network outages, although at potentially degraded performance.\"\n    },\n    \"security\": {\n      \"authentication_authorization\": \"The system must implement robust authentication and authorization mechanisms to protect sensitive data.\",\n      \"data_encryption\": \"All data transmitted over the network and stored at rest must be encrypted.\",\n      \"compliance\": \"The system must comply with all relevant security regulations and standards.\"\n    },\n    \"usability\": {\n      \"user_interface\": \"The Command Center Dashboard, Mobile Responder Interface, and Executive Briefing Surface must have intuitive and user-friendly interfaces. UI/UX design principles will adhere to modern best practices and accessibility standards.\",\n      \"training\": \"Comprehensive training materials and support must be provided to users.\"\n    },\n    \"maintainability\": \"The system must be designed with a modular architecture to facilitate maintenance and upgrades. Comprehensive logging and monitoring capabilities must be implemented to track system performance and identify potential issues.\",\n    \"data_integrity\": \"The system must ensure data integrity through rigorous validation and error handling. Transactional data consistency is critical.\",\n    \"interoperability\": \"The system shall support standard data formats (e.g. GeoJSON, KML) for interoperability with existing GIS systems.\"\n  },\n  \"system_architecture\": \"Layered Monolith\",\n  \"technology_stack\": {\n    \"programming_languages\": [\n      \"Java\",\n      \"JavaScript\",\n      \"Python\"\n    ],\n    \"frameworks\": [\n      \"Spring Boot\",\n      \"React.js\",\n      \"React Native\"\n    ],\n    \"databases\": [\n      \"PostgreSQL/PostGIS\",\n      \"InfluxDB\"\n    ],\n    \"object_storage\": \"AWS S3\",\n    \"message_queue\": \"Apache Kafka\",\n    \"api_gateway\": \"Kong or similar\",\n    \"cloud_platform\": \"AWS or Azure\"\n  },\n  \"future_considerations\": [\n    \"Integration with Machine Learning Platforms: Enhance predictive capabilities by leveraging cloud-based machine learning platforms for more sophisticated fire spread modeling, resource optimization, and evacuation planning.\",\n    \"Drone-Based Autonomous Monitoring: Integrate autonomous drone monitoring capabilities to provide real-time situational awareness in areas inaccessible to human firefighters.\",\n    \"Digital Twin Creation: Exploration of creating a digital twin of high-risk areas, incorporating detailed 3D models and real-time sensor data, to enable more accurate simulations and decision-making.\"\n  ],\n  \"output_type\": \"dashboard\",\n  \"security_envelope\": {\n    \"data_classification\": \"Sensitive\",\n    \"access_control\": \"Role-Based Access Control (RBAC)\",\n    \"encryption_at_rest\": \"AES-256\",\n    \"encryption_in_transit\": \"TLS 1.3\",\n    \"vulnerability_scanning\": \"Regular automated vulnerability scans\",\n    \"incident_response\": \"Defined incident response plan\"\n  },\n  \"professional_goal_name\": \"Enterprise Wildfire Incident Coordination\",\n  \"outputs\": {\n    \"system\": {\n      \"enabled\": true,\n      \"type\": \"custom_assembly\",\n      \"bootstrap_env\": true,\n      \"components\": [\n        {\n          \"id\": \"auth_service\",\n          \"name\": \"auth_service\",\n          \"type\": \"fastapi_service\",\n          \"description\": \"Inferred auth_service service to satisfy system intent.\",\n          \"depends_on\": [],\n          \"capability_class\": \"inferred_capability\",\n          \"compatible_with\": [],\n          \"traits\": [\n            \"auth_service\"\n          ],\n          \"outputs\": {}\n        },\n        {\n          \"id\": \"cache_layer\",\n          \"name\": \"cache_layer\",\n          \"type\": \"cache_service\",\n          \"description\": \"Caching layer to reduce load on analytics\",\n          \"depends_on\": [],\n          \"capability_class\": \"\",\n          \"compatible_with\": [],\n          \"traits\": [\n            \"cache_service\"\n          ],\n          \"outputs\": {}\n        },\n        {\n          \"id\": \"api_service\",\n          \"name\": \"api_service\",\n          \"type\": \"web_api_generator\",\n          \"description\": \"A FastAPI-based central communication hub.\",\n          \"depends_on\": [\n            \"cache_layer\"\n          ],\n          \"capability_class\": \"interface\",\n          \"compatible_with\": [],\n          \"traits\": [\n            \"api_gateway\",\n            \"central_hub\"\n          ],\n          \"outputs\": {}\n        },\n        {\n          \"id\": \"data_ingestion\",\n          \"name\": \"data_ingestion\",\n          \"type\": \"compute_generator\",\n          \"description\": \"Background worker for parsing and populating operational data.\",\n          \"depends_on\": [\n            \"api_service\"\n          ],\n          \"capability_class\": \"interface\",\n          \"compatible_with\": [],\n          \"traits\": [\n            \"ingestion_pipeline\"\n          ],\n          \"outputs\": {}\n        },\n        {\n          \"id\": \"postgres_db\",\n          \"name\": \"postgres_db\",\n          \"type\": \"database_service\",\n          \"description\": \"Relational data storage provider.\",\n          \"depends_on\": [],\n          \"capability_class\": \"storage\",\n          \"compatible_with\": [],\n          \"traits\": [\n            \"storage_provider\",\n            \"relational_db\"\n          ],\n          \"outputs\": {}\n        },\n        {\n          \"id\": \"analytics_engine\",\n          \"name\": \"analytics_engine\",\n          \"type\": \"compute_generator\",\n          \"description\": \"Service for computing KPIs, trends, and business intelligence.\",\n          \"depends_on\": [\n            \"api_service\",\n            \"postgres_db\"\n          ],\n          \"capability_class\": \"compute\",\n          \"compatible_with\": [],\n          \"traits\": [\n            \"compute_cluster\",\n            \"analytics_provider\"\n          ],\n          \"outputs\": {\n            \"kpis\": [\n              \"id\",\n              \"name\",\n              \"value\",\n              \"unit\",\n              \"trend\"\n            ],\n            \"alerts\": [\n              \"id\",\n              \"severity\",\n              \"message\",\n              \"timestamp\"\n            ],\n            \"performance_metrics\": [\n              \"cpu_usage\",\n              \"memory_usage\",\n              \"request_count\"\n            ]\n          }\n        },\n        {\n          \"id\": \"ai_reasoning\",\n          \"name\": \"ai_reasoning\",\n          \"type\": \"reasoning_generator\",\n          \"description\": \"Advanced AI layer for anomaly detection and operational guidance.\",\n          \"depends_on\": [\n            \"analytics_engine\"\n          ],\n          \"capability_class\": \"reasoning\",\n          \"compatible_with\": [],\n          \"traits\": [\n            \"reasoning_engine\"\n          ],\n          \"outputs\": {}\n        },\n        {\n          \"id\": \"stream_processor\",\n          \"name\": \"stream_processor\",\n          \"type\": \"compute_generator\",\n          \"description\": \"Real-time data stream processing capability.\",\n          \"depends_on\": [],\n          \"capability_class\": \"compute\",\n          \"compatible_with\": [],\n          \"traits\": [\n            \"stream_provider\"\n          ],\n          \"outputs\": {}\n        },\n        {\n          \"id\": \"sensor_ingestion\",\n          \"name\": \"sensor_ingestion\",\n          \"type\": \"web_api_generator\",\n          \"description\": \"Ingests telemetry from robotics sensors.\",\n          \"depends_on\": [],\n          \"capability_class\": \"interface\",\n          \"compatible_with\": [],\n          \"traits\": [\n            \"sensor_provider\"\n          ],\n          \"outputs\": {}\n        },\n        {\n          \"id\": \"mobile_app_ui\",\n          \"name\": \"mobile_app_ui\",\n          \"type\": \"dashboard\",\n          \"description\": \"Inferred mobile_app_ui service to satisfy system intent.\",\n          \"depends_on\": [],\n          \"capability_class\": \"inferred_capability\",\n          \"compatible_with\": [],\n          \"traits\": [\n            \"mobile_app_ui\"\n          ],\n          \"outputs\": {}\n        },\n        {\n          \"id\": \"data_storage\",\n          \"name\": \"data_storage\",\n          \"type\": \"fastapi_service\",\n          \"description\": \"Inferred data_storage service to satisfy system intent.\",\n          \"depends_on\": [],\n          \"capability_class\": \"inferred_capability\",\n          \"compatible_with\": [],\n          \"traits\": [\n            \"data_storage\"\n          ],\n          \"outputs\": {}\n        },\n        {\n          \"id\": \"api_gateway\",\n          \"name\": \"api_gateway\",\n          \"type\": \"fastapi_service\",\n          \"description\": \"Inferred api_gateway service to satisfy system intent.\",\n          \"depends_on\": [],\n          \"capability_class\": \"inferred_capability\",\n          \"compatible_with\": [],\n          \"traits\": [\n            \"api_gateway\"\n          ],\n          \"outputs\": {}\n        },\n        {\n          \"id\": \"dashboard_ui\",\n          \"name\": \"dashboard_ui\",\n          \"type\": \"ui_generator\",\n          \"description\": \"A real-time visual interface for operations monitoring.\",\n          \"depends_on\": [\n            \"api_service\"\n          ],\n          \"capability_class\": \"presentation\",\n          \"compatible_with\": [],\n          \"traits\": [\n            \"user_interface\"\n          ],\n          \"outputs\": {}\n        },\n        {\n          \"id\": \"message_queue\",\n          \"name\": \"message_queue\",\n          \"type\": \"fastapi_service\",\n          \"description\": \"Inferred message_queue service to satisfy system intent.\",\n          \"depends_on\": [],\n          \"capability_class\": \"inferred_capability\",\n          \"compatible_with\": [],\n          \"traits\": [\n            \"message_queue\"\n          ],\n          \"outputs\": {}\n        },\n        {\n          \"id\": \"gis_routing_engine\",\n          \"name\": \"gis_routing_engine\",\n          \"type\": \"fastapi_service\",\n          \"description\": \"High-performance geospatial routing engine for real-time unit optimization and ETA calculation.\",\n          \"depends_on\": [\n            \"data_storage\",\n            \"api_gateway\"\n          ],\n          \"capability_class\": \"geospatial_node\",\n          \"compatible_with\": [],\n          \"traits\": [\n            \"routing\",\n            \"gis\",\n            \"geospatial\"\n          ],\n          \"outputs\": {}\n        },\n        {\n          \"id\": \"storage_service\",\n          \"name\": \"storage_service\",\n          \"type\": \"fastapi_service\",\n          \"description\": \"Inferred storage_service service to satisfy system intent.\",\n          \"depends_on\": [],\n          \"capability_class\": \"inferred_capability\",\n          \"compatible_with\": [],\n          \"traits\": [\n            \"storage_service\"\n          ],\n          \"outputs\": {}\n        },\n        {\n          \"id\": \"realtime_alert_node\",\n          \"name\": \"realtime_alert_node\",\n          \"type\": \"worker_service\",\n          \"description\": \"Low-latency alert generation engine that monitors system state and triggers push notifications.\",\n          \"depends_on\": [\n            \"message_queue\",\n            \"api_service\"\n          ],\n          \"capability_class\": \"reasoning_generator\",\n          \"compatible_with\": [],\n          \"traits\": [\n            \"alerts\",\n            \"notifications\"\n          ],\n          \"outputs\": {}\n        },\n        {\n          \"id\": \"ems_dispatch_node\",\n          \"name\": \"ems_dispatch_node\",\n          \"type\": \"fastapi_service\",\n          \"description\": \"Central orchestration layer for EMS dispatch, coordinating between field units and hospital systems.\",\n          \"depends_on\": [\n            \"gis_routing_engine\",\n            \"api_service\"\n          ],\n          \"capability_class\": \"control_generator\",\n          \"compatible_with\": [],\n          \"traits\": [\n            \"dispatch\",\n            \"orchestration\",\n            \"command_and_control\"\n          ],\n          \"outputs\": {\n            \"active_incidents\": [\n              \"id\",\n              \"type\",\n              \"priority\",\n              \"location\",\n              \"status\"\n            ],\n            \"unit_status\": [\n              \"unit_id\",\n              \"status\",\n              \"assigned_incident_id\",\n              \"location\"\n            ],\n            \"dispatch_metrics\": [\n              \"avg_response_time\",\n              \"active_units_count\",\n              \"pending_incidents\"\n            ]\n          }\n        },\n        {\n          \"id\": \"telemetry_ingest_node\",\n          \"name\": \"telemetry_ingest_node\",\n          \"type\": \"worker_service\",\n          \"description\": \"Stream-based telemetry ingestion node capable of processing 100k+ sensor signals per second.\",\n          \"depends_on\": [\n            \"message_queue\"\n          ],\n          \"capability_class\": \"compute_generator\",\n          \"compatible_with\": [],\n          \"traits\": [\n            \"telemetry\",\n            \"ingestion\",\n            \"stream_processing\"\n          ],\n          \"outputs\": {}\n        }\n      ]\n    }\n  },\n  \"validated\": true,\n  \"NON_EXECUTABLE_PLAN\": true,\n  \"expanded_vision\": \"## Enterprise-Grade System Requirement Description: Wildfire Incident Coordination Platform (WICP)\\n\\n**1. Introduction**\\n\\nThis document outlines the system requirements for the Wildfire Incident Coordination Platform (WICP), an enterprise-grade platform designed to coordinate emergency wildfire response across multiple U.S. states simultaneously. The WICP will provide a unified operational picture to improve situational awareness, optimize resource allocation, and minimize the impact of wildfires on human life and property. The system architecture will be a layered monolith, emphasizing resilience, performance, and modern user experience.  The Design Entropy Seed 6829 will guide variation in design choices to introduce unique implementations that ensure performance and scalability.\\n\\n**2. Goals & Objectives**\\n\\n*   **Goal:** Provide a comprehensive, real-time view of wildfire incidents across participating states.\\n*   **Objectives:**\\n    *   Consolidate diverse data sources into a single, actionable platform.\\n    *   Enable efficient communication and collaboration between emergency responders and command centers.\\n    *   Optimize resource deployment and utilization based on real-time data and predictive analytics.\\n    *   Minimize casualties and property damage through improved situational awareness and response coordination.\\n    *   Maintain continuous operation even during regional network outages.\\n    *   Provide clear, concise summaries of the situation for executive-level stakeholders.\\n\\n**3. Functional Requirements**\\n\\nThe WICP must provide three distinct operational surfaces:\\n\\n**3.1 Command Center Dashboard (State Emergency Operations Centers)**\\n\\n*   **3.1.1 Incident Monitoring & Visualization:**\\n    *   Display real-time incident severity ranking based on a proprietary algorithm considering factors such as fire size, proximity to populated areas, weather conditions, and available resources.  This ranking should incorporate weighted scoring and dynamically adjust the weighting based on historical incident data analysis (Design Entropy Seed inspired choice \\u2013 using historical analysis for improved ranking accuracy).\\n    *   Visualize predicted fire spread zones using a probabilistic model leveraging weather forecasts, fuel maps, and topography data.  The model shall integrate machine learning to improve accuracy over time based on observed fire behavior.\\n    *   Display the location and status of available firefighting resources (personnel, equipment, air support) in real-time.\\n    *   Track evacuation progress by zone, including the number of people evacuated, vehicles remaining, and estimated completion time.\\n    *   Overlay road closures, hospital capacity data, and other relevant information on the map.\\n    *   Provide interactive tools for zooming, panning, filtering, and querying data.\\n    *   Support user-defined alerts based on pre-defined thresholds (e.g., fire spread exceeding a certain rate, evacuation progress falling behind schedule).\\n*   **3.1.2 Resource Management:**\\n    *   Facilitate resource deployment requests and approvals.\\n    *   Recommend resource deployment strategies based on real-time conditions and predicted fire spread (see Section 3.5 for details).\\n    *   Track resource utilization and availability across multiple states.\\n    *   Provide tools for managing resource inventories and maintenance schedules.\\n*   **3.1.3 Communication & Collaboration:**\\n    *   Enable secure communication between command centers and field responders via text messaging, voice communication, and video conferencing.\\n    *   Provide a shared incident log for tracking key events and decisions.\\n    *   Support integration with existing emergency communication systems.\\n\\n**3.2 Mobile Responder Interface (Firefighters)**\\n\\n*   **3.2.1 Task Management:**\\n    *   Display assigned tasks, including location, priority, and deadlines.\\n    *   Allow responders to acknowledge, update, and complete tasks.\\n    *   Provide real-time updates from command regarding changes in tasks or priorities.\\n*   **3.2.2 Navigation & Hazard Awareness:**\\n    *   Provide turn-by-turn navigation routes, avoiding blocked roads and hazardous areas.\\n    *   Display the location of nearby hazards, including fire fronts, smoke plumes, and downed power lines.\\n    *   Alert responders to potential dangers in their vicinity.\\n    *   Integrate with GPS and other location-based services.\\n    *   Support offline map caching for use in areas with limited network connectivity (Design Entropy Seed inspired choice \\u2013 offline caching for optimized field performance).\\n*   **3.2.3 Situational Awareness:**\\n    *   Display real-time data from command, including weather updates, fire spread predictions, and evacuation progress.\\n    *   Allow responders to report observations and incidents to command.\\n    *   Facilitate communication with other responders in the field.\\n\\n**3.3 Executive Briefing Surface**\\n\\n*   **3.3.1 Summary Dashboards:**\\n    *   Provide concise summaries of casualty counts (fatalities and injuries), property damage estimates (acres burned, structures destroyed), and evacuation status by county.\\n    *   Visualize resource utilization across the affected area, including the number of personnel deployed, equipment in use, and air support hours flown.\\n    *   Present key performance indicators (KPIs) related to incident response, such as time to containment, evacuation completion rate, and resource deployment efficiency.\\n*   **3.3.2 Reporting:**\\n    *   Generate automated reports on incident status, resource utilization, and financial impact.\\n    *   Allow users to customize reports and export data in various formats.\\n    *   Provide access to historical incident data for analysis and trend identification.\\n\\n**3.4 Simulation Capabilities**\\n\\n*   **3.4.1 Evacuation Scenario Simulation:**\\n    *   Simulate evacuation scenarios based on different fire spread models, population densities, and transportation networks.\\n    *   Identify potential bottlenecks and optimize evacuation routes.\\n    *   Estimate the time required to complete evacuations under different conditions.\\n*   **3.4.2 Resource Allocation Simulation:**\\n    *   Simulate the impact of different resource allocation strategies on fire containment and evacuation progress.\\n    *   Identify optimal resource deployment patterns based on predicted fire behavior.\\n    *   Evaluate the effectiveness of different firefighting tactics.\\n\\n**3.5 Intelligent Resource Deployment Recommendation**\\n\\n*   The system must automatically recommend resource deployment strategies based on real-time conditions and predicted fire spread. This module will:\\n    *   Analyze fire spread predictions from the fire spread model.\\n    *   Assess the risk to human life and property in the predicted fire zones.\\n    *   Evaluate the availability of firefighting resources, considering both location and capabilities.\\n    *   Use a rules-based engine augmented by machine learning (Design Entropy Seed inspired choice \\u2013 hybrid rules/ML for explainability and adaptability) to recommend the optimal deployment of resources.  The machine learning component will learn from past incidents and deployment outcomes to improve the accuracy of recommendations over time.\\n    *   Provide a rationale for each recommendation, explaining the factors considered and the expected impact of the deployment.\\n    *   Allow command center personnel to override the recommendations based on their own judgment.\\n\\n**4. Non-Functional Requirements**\\n\\n*   **4.1 Performance:**\\n    *   **Throughput:** The system must process 1 million telemetry events per minute with sub-second latency.\\n    *   **Response Time:** The Command Center Dashboard and Mobile Responder Interface must respond to user requests within 2 seconds.\\n    *   **Scalability:** The system must be scalable to accommodate future growth in data volume and user base.\\n*   **4.2 Availability:**\\n    *   **Uptime:** The system must maintain 99.99% uptime.\\n    *   **Disaster Recovery:** The system must be resilient to regional network outages and other disasters.  A geographically diverse hot/cold disaster recovery site must be available and capable of failover within 15 minutes (Design Entropy Seed inspired choice \\u2013 fast DR failover). The system will automatically switch to using available local cellular or satellite connections during network outages, although at potentially degraded performance.\\n*   **4.3 Security:**\\n    *   **Authentication & Authorization:** The system must implement robust authentication and authorization mechanisms to protect sensitive data.\\n    *   **Data Encryption:** All data transmitted over the network and stored at rest must be encrypted.\\n    *   **Compliance:** The system must comply with all relevant security regulations and standards.\\n*   **4.4 Usability:**\\n    *   **User Interface:** The Command Center Dashboard, Mobile Responder Interface, and Executive Briefing Surface must have intuitive and user-friendly interfaces.  UI/UX design principles will adhere to modern best practices and accessibility standards.\\n    *   **Training:** Comprehensive training materials and support must be provided to users.\\n*   **4.5 Maintainability:**\\n    *   **Modularity:** The system must be designed with a modular architecture to facilitate maintenance and upgrades.\\n    *   **Logging & Monitoring:** Comprehensive logging and monitoring capabilities must be implemented to track system performance and identify potential issues.\\n*   **4.6 Data Integrity:** The system must ensure data integrity through rigorous validation and error handling. Transactional data consistency is critical.\\n*   **4.7 Interoperability:** The system shall support standard data formats (e.g. GeoJSON, KML) for interoperability with existing GIS systems.\\n\\n**5. System Architecture (Layered Monolith)**\\n\\nThe WICP will be implemented as a layered monolithic architecture.  While a microservices architecture might seem tempting for global scale, a layered monolith offers advantages in initial development speed, easier debugging, and simplified deployment/management for this specific use case and team skillsets.  Careful attention to modularity and well-defined interfaces within the layers will prevent the monolith from becoming tightly coupled and difficult to maintain.\\n\\nThe architecture will consist of the following layers:\\n\\n*   **Presentation Layer:** This layer provides the user interfaces for the Command Center Dashboard, Mobile Responder Interface, and Executive Briefing Surface. It will be implemented using modern web technologies such as React.js (for desktop) and React Native (for mobile) using a responsive design to ensure usability across different devices.\\n*   **Application Layer:** This layer contains the business logic for the platform, including incident management, resource allocation, simulation, and recommendation. It will be implemented using a robust framework like Spring Boot (Java) or similar framework suited for a layered architecture.\\n*   **Data Access Layer:** This layer provides access to the underlying data storage.  It will use an Object-Relational Mapping (ORM) framework like Hibernate or Entity Framework to map data between the application layer and the data storage layer.\\n*   **Data Storage Layer:** This layer stores the data used by the platform. It will consist of the following components:\\n    *   **Relational Database:** A relational database (e.g., PostgreSQL) will store structured data such as incident information, resource details, and evacuation plans.\\n    *   **Geospatial Database:** A geospatial database (e.g., PostGIS) will store geospatial data such as satellite imagery, drone telemetry, and road closures.\\n    *   **Time-Series Database:** A time-series database (e.g., InfluxDB) will store telemetry data (sensor readings, GPS positions) for high-performance ingestion and querying.  Data will be downsampled appropriately to balance accuracy with storage capacity. (Design Entropy Seed inspired choice \\u2013 dedicated time series DB for optimized telemetry handling).\\n    *   **Object Storage:** Object storage (e.g., AWS S3) will store large, unstructured data such as satellite imagery and drone video.\\n*   **Integration Layer:** This layer integrates with external systems, such as satellite providers, drone operators, weather services, and emergency call centers. It will use a combination of APIs, message queues (e.g., Kafka), and other integration technologies to ensure seamless data flow. Data Transformation Services will be implemented using technologies like Apache Camel to cleanse and convert incoming data into a common data model.\\n\\n**6. Data Flow**\\n\\n1.  **Data Ingestion:** Live satellite imagery, drone telemetry, firefighter GPS positions, weather forecasts, road closure data, hospital capacity data, and emergency call center feeds are ingested by the Integration Layer.\\n2.  **Data Transformation:** The Integration Layer transforms the ingested data into a common data model.\\n3.  **Data Storage:** The transformed data is stored in the appropriate data storage component (relational database, geospatial database, time-series database, object storage).\\n4.  **Data Processing:** The Application Layer processes the data to generate real-time incident severity ranking, predicted fire spread zones, and resource deployment recommendations.\\n5.  **Data Visualization:** The Presentation Layer visualizes the processed data in the Command Center Dashboard, Mobile Responder Interface, and Executive Briefing Surface.\\n6.  **User Interaction:** Users interact with the Presentation Layer to monitor incidents, manage resources, and make decisions.\\n7.  **Feedback Loop:** User actions and decisions are fed back into the Application Layer to improve the accuracy of the incident severity ranking, fire spread predictions, and resource deployment recommendations.\\n\\n**7. Technology Stack**\\n\\n*   **Programming Languages:** Java, JavaScript, Python\\n*   **Frameworks:** Spring Boot, React.js, React Native\\n*   **Databases:** PostgreSQL/PostGIS, InfluxDB\\n*   **Object Storage:** AWS S3\\n*   **Message Queue:** Apache Kafka\\n*   **API Gateway:** Kong or similar\\n*   **Cloud Platform:** AWS or Azure\\n\\n**8. Future Considerations**\\n\\n*   **Integration with Machine Learning Platforms:**  Enhance predictive capabilities by leveraging cloud-based machine learning platforms for more sophisticated fire spread modeling, resource optimization, and evacuation planning.\\n*   **Drone-Based Autonomous Monitoring:** Integrate autonomous drone monitoring capabilities to provide real-time situational awareness in areas inaccessible to human firefighters.\\n*   **Digital Twin Creation:** Exploration of creating a digital twin of high-risk areas, incorporating detailed 3D models and real-time sensor data, to enable more accurate simulations and decision-making.\\n\\nThis document provides a comprehensive overview of the system requirements for the Wildfire Incident Coordination Platform. It will serve as a guide for the development team throughout the design, development, and deployment phases of the project.\\n\"\n}",
+    "docker-compose.yml": "version: '3.8'\nservices:\n  auth_service:\n    build: ./services/auth_service\n    ports: [\"8000:8000\"]\n  cache_layer:\n    build: ./services/cache_layer\n    ports: [\"8001:8000\"]\n  api_service:\n    build: ./services/api_service\n    ports: [\"8002:8000\"]\n  data_ingestion:\n    build: ./services/data_ingestion\n    ports: [\"8003:8000\"]\n  postgres_db:\n    build: ./services/postgres_db\n    ports: [\"8004:8000\"]\n  analytics_engine:\n    build: ./services/analytics_engine\n    ports: [\"8005:8000\"]\n  ai_reasoning:\n    build: ./services/ai_reasoning\n    ports: [\"8006:8000\"]\n  stream_processor:\n    build: ./services/stream_processor\n    ports: [\"8007:8000\"]\n  sensor_ingestion:\n    build: ./services/sensor_ingestion\n    ports: [\"8008:8000\"]\n  mobile_app_ui:\n    build: ./services/mobile_app_ui\n    ports: [\"8009:8000\"]\n  data_storage:\n    build: ./services/data_storage\n    ports: [\"8010:8000\"]\n  api_gateway:\n    build: ./services/api_gateway\n    ports: [\"8011:8000\"]\n  dashboard_ui:\n    build: ./services/dashboard_ui\n    ports: [\"8012:8000\"]\n  message_queue:\n    build: ./services/message_queue\n    ports: [\"8013:8000\"]\n  gis_routing_engine:\n    build: ./services/gis_routing_engine\n    ports: [\"8014:8000\"]\n  storage_service:\n    build: ./services/storage_service\n    ports: [\"8015:8000\"]\n  realtime_alert_node:\n    build: ./services/realtime_alert_node\n    ports: [\"8016:8000\"]\n  ems_dispatch_node:\n    build: ./services/ems_dispatch_node\n    ports: [\"8017:8000\"]\n  telemetry_ingest_node:\n    build: ./services/telemetry_ingest_node\n    ports: [\"8018:8000\"]\n",
+    "surface_manifest.json": "{\n  \"surfaces\": [\n    {\n      \"id\": \"command_center_dashboard\",\n      \"title\": \"State Emergency Operations Center Dashboard\",\n      \"projection\": \"dashboard\",\n      \"layers\": [\n        {\n          \"id\": \"incident_overview\",\n          \"components\": [\n            {\n              \"type\": \"metric\",\n              \"label\": \"Real-time Incident Severity Ranking\",\n              \"binding\": {\n                \"data_source\": \"analytics_engine\",\n                \"endpoint\": \"/incident_severity\",\n                \"method\": \"GET\",\n                \"response_model\": {\n                  \"severity_score\": \"integer\"\n                }\n              }\n            },\n            {\n              \"type\": \"map\",\n              \"label\": \"Predicted Fire Spread Zones\",\n              \"binding\": {\n                \"data_source\": \"ai_reasoning\",\n                \"endpoint\": \"/fire_spread_prediction\",\n                \"method\": \"GET\",\n                \"response_model\": {\n                  \"geo_json\": \"geojson\"\n                }\n              }\n            },\n            {\n              \"type\": \"list\",\n              \"label\": \"Available Firefighting Resources\",\n              \"binding\": {\n                \"data_source\": \"api_service\",\n                \"endpoint\": \"/resources/available\",\n                \"method\": \"GET\",\n                \"response_model\": {\n                  \"resource_type\": \"string\",\n                  \"resource_count\": \"integer\"\n                }\n              }\n            },\n            {\n              \"type\": \"metric\",\n              \"label\": \"Evacuation Completion Rate\",\n              \"binding\": {\n                \"data_source\": \"analytics_engine\",\n                \"endpoint\": \"/evacuation_completion\",\n                \"method\": \"GET\",\n                \"response_model\": {\n                  \"completion_rate\": \"float\"\n                }\n              }\n            }\n          ]\n        },\n        {\n          \"id\": \"resource_management\",\n          \"components\": [\n            {\n              \"type\": \"map\",\n              \"label\": \"Firefighter GPS Positions\",\n              \"binding\": {\n                \"data_source\": \"api_service\",\n                \"endpoint\": \"/firefighter_locations\",\n                \"method\": \"GET\",\n                \"response_model\": {\n                  \"geo_json\": \"geojson\"\n                }\n              }\n            },\n            {\n              \"type\": \"list\",\n              \"label\": \"Road Closure Data\",\n              \"binding\": {\n                \"data_source\": \"api_service\",\n                \"endpoint\": \"/road_closures\",\n                \"method\": \"GET\",\n                \"response_model\": {\n                  \"road_name\": \"string\",\n                  \"closure_reason\": \"string\"\n                }\n              }\n            },\n            {\n              \"type\": \"list\",\n              \"label\": \"Available Hospital Beds\",\n              \"binding\": {\n                \"data_source\": \"api_service\",\n                \"endpoint\": \"/hospital_capacity\",\n                \"method\": \"GET\",\n                \"response_model\": {\n                  \"hospital_name\": \"string\",\n                  \"available_beds\": \"integer\"\n                }\n              }\n            },\n            {\n              \"type\": \"incidents\",\n              \"label\": \"Incident Reports\",\n              \"binding\": {\n                \"data_source\": \"api_service\",\n                \"endpoint\": \"/incident_reports\",\n                \"method\": \"GET\",\n                \"response_model\": {\n                  \"type\": \"string\",\n                  \"location\": \"string\",\n                  \"severity\": \"string\"\n                }\n              }\n            }\n          ]\n        }\n      ]\n    },\n    {\n      \"id\": \"mobile_responder_interface\",\n      \"title\": \"Firefighter Mobile Interface\",\n      \"projection\": \"mobile\",\n      \"layers\": [\n        {\n          \"id\": \"task_management\",\n          \"components\": [\n            {\n              \"type\": \"list\",\n              \"label\": \"Assigned Tasks\",\n              \"binding\": {\n                \"data_source\": \"api_service\",\n                \"endpoint\": \"/tasks/assigned\",\n                \"method\": \"GET\",\n                \"response_model\": {\n                  \"task_id\": \"string\",\n                  \"description\": \"string\",\n                  \"priority\": \"string\"\n                }\n              }\n            },\n            {\n              \"type\": \"map\",\n              \"label\": \"Navigation Routes\",\n              \"binding\": {\n                \"data_source\": \"gis_routing_engine\",\n                \"endpoint\": \"/route\",\n                \"method\": \"POST\",\n                \"response_model\": {\n                  \"geo_json\": \"geojson\"\n                }\n              }\n            },\n            {\n              \"type\": \"map\",\n              \"label\": \"Nearby Hazards and Fire Fronts\",\n              \"binding\": {\n                \"data_source\": \"api_service\",\n                \"endpoint\": \"/hazards/nearby\",\n                \"method\": \"GET\",\n                \"response_model\": {\n                  \"geo_json\": \"geojson\",\n                  \"hazard_type\": \"string\"\n                }\n              }\n            },\n            {\n              \"type\": \"chat\",\n              \"label\": \"Live Updates from Command\",\n              \"binding\": {\n                \"data_source\": \"api_service\",\n                \"endpoint\": \"/command_updates\",\n                \"method\": \"GET\",\n                \"response_model\": {\n                  \"message\": \"string\",\n                  \"timestamp\": \"string\"\n                }\n              }\n            }\n          ]\n        }\n      ]\n    },\n    {\n      \"id\": \"executive_briefing\",\n      \"title\": \"Executive Briefing Dashboard\",\n      \"projection\": \"dashboard\",\n      \"layers\": [\n        {\n          \"id\": \"summary_metrics\",\n          \"components\": [\n            {\n              \"type\": \"metric\",\n              \"label\": \"Casualty Counts\",\n              \"binding\": {\n                \"data_source\": \"analytics_engine\",\n                \"endpoint\": \"/casualty_count\",\n                \"method\": \"GET\",\n                \"response_model\": {\n                  \"casualty_count\": \"integer\"\n                }\n              }\n            },\n            {\n              \"type\": \"metric\",\n              \"label\": \"Property Damage Estimates\",\n              \"binding\": {\n                \"data_source\": \"analytics_engine\",\n                \"endpoint\": \"/damage_estimates\",\n                \"method\": \"GET\",\n                \"response_model\": {\n                  \"damage_estimate\": \"float\"\n                }\n              }\n            },\n            {\n              \"type\": \"list\",\n              \"label\": \"Evacuation Status by County\",\n              \"binding\": {\n                \"data_source\": \"api_service\",\n                \"endpoint\": \"/evacuation_status\",\n                \"method\": \"GET\",\n                \"response_model\": {\n                  \"county_name\": \"string\",\n                  \"evacuation_status\": \"string\",\n                  \"completion_percentage\": \"float\"\n                }\n              }\n            },\n            {\n              \"type\": \"list\",\n              \"label\": \"Resource Utilization\",\n              \"binding\": {\n                \"data_source\": \"analytics_engine\",\n                \"endpoint\": \"/resource_utilization\",\n                \"method\": \"GET\",\n                \"response_model\": {\n                  \"resource_type\": \"string\",\n                  \"utilization_rate\": \"float\"\n                }\n              }\n            }\n          ]\n        }\n      ]\n    }\n  ]\n}",
+    "services/auth_service/main.py": "# Service: auth_service\n# Synthesized by ShiftOps-OS ContractMaterializer\n# Domain Archetype: Emergency Management\n\nfrom fastapi import FastAPI\nfrom datetime import datetime\nimport random\nimport os\n\napp = FastAPI(title=\"auth_service\")\n\n@app.get(\"/\")\nasync def root():\n    return {\n        \"status\": \"active\", \n        \"service\": \"auth_service\",\n        \"ui_bindings\": 0,\n        \"telemetry_engine\": \"enabled\",\n        \"domain\": \"Emergency Management\"\n    }\n\n@app.get(\"/health\")\nasync def health():\n    return {\"health\": \"nominal\", \"uptime\": \"stable\"}\n\n",
+    "services/auth_service/Dockerfile": "FROM python:3.9-slim\nWORKDIR /app\nCOPY . .\nRUN pip install -r requirements.txt\nCMD [\"uvicorn\", \"main:app\", \"--host\", \"0.0.0.0\", \"--port\", \"8000\"]",
+    "services/auth_service/requirements.txt": "fastapi\nuvicorn\npydantic",
+    "services/cache_layer/main.py": "# Service: cache_layer\n# Synthesized by ShiftOps-OS ContractMaterializer\n# Domain Archetype: Emergency Management\n\nfrom fastapi import FastAPI\nfrom datetime import datetime\nimport random\nimport os\n\napp = FastAPI(title=\"cache_layer\")\n\n@app.get(\"/\")\nasync def root():\n    return {\n        \"status\": \"active\", \n        \"service\": \"cache_layer\",\n        \"ui_bindings\": 0,\n        \"telemetry_engine\": \"enabled\",\n        \"domain\": \"Emergency Management\"\n    }\n\n@app.get(\"/health\")\nasync def health():\n    return {\"health\": \"nominal\", \"uptime\": \"stable\"}\n\n",
+    "services/cache_layer/Dockerfile": "FROM python:3.9-slim\nWORKDIR /app\nCOPY . .\nRUN pip install -r requirements.txt\nCMD [\"uvicorn\", \"main:app\", \"--host\", \"0.0.0.0\", \"--port\", \"8000\"]",
+    "services/cache_layer/requirements.txt": "fastapi\nuvicorn\npydantic",
+    "services/api_service/main.py": "# Service: api_service\n# Synthesized by ShiftOps-OS ContractMaterializer\n# Domain Archetype: Emergency Management\n\nfrom fastapi import FastAPI\nfrom datetime import datetime\nimport random\nimport os\n\napp = FastAPI(title=\"api_service\")\n\n@app.get(\"/\")\nasync def root():\n    return {\n        \"status\": \"active\", \n        \"service\": \"api_service\",\n        \"ui_bindings\": 9,\n        \"telemetry_engine\": \"enabled\",\n        \"domain\": \"Emergency Management\"\n    }\n\n@app.get(\"/health\")\nasync def health():\n    return {\"health\": \"nominal\", \"uptime\": \"stable\"}\n\n@app.get(\"/resources/available\")\nasync def handle_resources_available_ui():\n    \"\"\"Operational endpoint bound to UI: Unknown Metric.\"\"\"\n    return {\n        \"resource_type\": f\"{random.choice([\"Sector_A\", \"Sector_B\", \"Alpha\", \"Bravo\"])}_Data\", \"resource_count\": random.randint(100, 5000)\n    }\n\n@app.get(\"/firefighter_locations\")\nasync def handle_firefighter_locations_ui():\n    \"\"\"Operational endpoint bound to UI: Unknown Metric.\"\"\"\n    return {\n        \"geo_json\": f\"{random.choice([\"Sector_A\", \"Sector_B\", \"Alpha\", \"Bravo\"])}_Data\"\n    }\n\n@app.get(\"/road_closures\")\nasync def handle_road_closures_ui():\n    \"\"\"Operational endpoint bound to UI: Unknown Metric.\"\"\"\n    return {\n        \"road_name\": f\"{random.choice([\"Sector_A\", \"Sector_B\", \"Alpha\", \"Bravo\"])}_Data\", \"closure_reason\": f\"{random.choice([\"Sector_A\", \"Sector_B\", \"Alpha\", \"Bravo\"])}_Data\"\n    }\n\n@app.get(\"/hospital_capacity\")\nasync def handle_hospital_capacity_ui():\n    \"\"\"Operational endpoint bound to UI: Unknown Metric.\"\"\"\n    return {\n        \"hospital_name\": f\"{random.choice([\"Sector_A\", \"Sector_B\", \"Alpha\", \"Bravo\"])}_Data\", \"available_beds\": random.randint(100, 5000)\n    }\n\n@app.get(\"/incident_reports\")\nasync def handle_incident_reports_ui():\n    \"\"\"Operational endpoint bound to UI: Unknown Metric.\"\"\"\n    return {\n        \"type\": f\"{random.choice([\"Sector_A\", \"Sector_B\", \"Alpha\", \"Bravo\"])}_Data\", \"location\": f\"{random.choice([\"Sector_A\", \"Sector_B\", \"Alpha\", \"Bravo\"])}_Data\", \"severity\": random.randint(0, 100)\n    }\n\n@app.get(\"/tasks/assigned\")\nasync def handle_tasks_assigned_ui():\n    \"\"\"Operational endpoint bound to UI: Unknown Metric.\"\"\"\n    return {\n        \"task_id\": f\"{random.choice([\"Sector_A\", \"Sector_B\", \"Alpha\", \"Bravo\"])}_Data\", \"description\": f\"{random.choice([\"Sector_A\", \"Sector_B\", \"Alpha\", \"Bravo\"])}_Data\", \"priority\": f\"{random.choice([\"Sector_A\", \"Sector_B\", \"Alpha\", \"Bravo\"])}_Data\"\n    }\n\n@app.get(\"/hazards/nearby\")\nasync def handle_hazards_nearby_ui():\n    \"\"\"Operational endpoint bound to UI: Unknown Metric.\"\"\"\n    return {\n        \"geo_json\": f\"{random.choice([\"Sector_A\", \"Sector_B\", \"Alpha\", \"Bravo\"])}_Data\", \"hazard_type\": f\"{random.choice([\"Sector_A\", \"Sector_B\", \"Alpha\", \"Bravo\"])}_Data\"\n    }\n\n@app.get(\"/command_updates\")\nasync def handle_command_updates_ui():\n    \"\"\"Operational endpoint bound to UI: Unknown Metric.\"\"\"\n    return {\n        \"message\": random.choice([\"Perimeter Breach\", \"Spot Fire Ignition\", \"Resource Shortage (Water)\", \"Communication Outage (Zone)\", \"Medical Emergency (Responder)\", \"Evacuation Route Blocked\", \"Wind Shift\", \"Unpredicted Fire Acceleration\", \"Telemetry Stream Interruption\"]), \"timestamp\": datetime.now().isoformat()\n    }\n\n@app.get(\"/evacuation_status\")\nasync def handle_evacuation_status_ui():\n    \"\"\"Operational endpoint bound to UI: Unknown Metric.\"\"\"\n    return {\n        \"county_name\": random.randint(100, 5000), \"evacuation_status\": random.choice([\"nominal\", \"critical\", \"warning\"]), \"completion_percentage\": round(random.uniform(70.0, 99.5), 1)\n    }\n\n",
+    "services/api_service/Dockerfile": "FROM python:3.9-slim\nWORKDIR /app\nCOPY . .\nRUN pip install -r requirements.txt\nCMD [\"uvicorn\", \"main:app\", \"--host\", \"0.0.0.0\", \"--port\", \"8000\"]",
+    "services/api_service/requirements.txt": "fastapi\nuvicorn\npydantic",
+    "services/data_ingestion/main.py": "# Service: data_ingestion\n# Synthesized by ShiftOps-OS ContractMaterializer\n# Domain Archetype: Emergency Management\n\nfrom fastapi import FastAPI\nfrom datetime import datetime\nimport random\nimport os\n\napp = FastAPI(title=\"data_ingestion\")\n\n@app.get(\"/\")\nasync def root():\n    return {\n        \"status\": \"active\", \n        \"service\": \"data_ingestion\",\n        \"ui_bindings\": 0,\n        \"telemetry_engine\": \"enabled\",\n        \"domain\": \"Emergency Management\"\n    }\n\n@app.get(\"/health\")\nasync def health():\n    return {\"health\": \"nominal\", \"uptime\": \"stable\"}\n\n",
+    "services/data_ingestion/Dockerfile": "FROM python:3.9-slim\nWORKDIR /app\nCOPY . .\nRUN pip install -r requirements.txt\nCMD [\"uvicorn\", \"main:app\", \"--host\", \"0.0.0.0\", \"--port\", \"8000\"]",
+    "services/data_ingestion/requirements.txt": "fastapi\nuvicorn\npydantic",
+    "services/postgres_db/main.py": "# Service: postgres_db\n# Synthesized by ShiftOps-OS ContractMaterializer\n# Domain Archetype: Emergency Management\n\nfrom fastapi import FastAPI\nfrom datetime import datetime\nimport random\nimport os\n\napp = FastAPI(title=\"postgres_db\")\n\n@app.get(\"/\")\nasync def root():\n    return {\n        \"status\": \"active\", \n        \"service\": \"postgres_db\",\n        \"ui_bindings\": 0,\n        \"telemetry_engine\": \"enabled\",\n        \"domain\": \"Emergency Management\"\n    }\n\n@app.get(\"/health\")\nasync def health():\n    return {\"health\": \"nominal\", \"uptime\": \"stable\"}\n\n",
+    "services/postgres_db/Dockerfile": "FROM python:3.9-slim\nWORKDIR /app\nCOPY . .\nRUN pip install -r requirements.txt\nCMD [\"uvicorn\", \"main:app\", \"--host\", \"0.0.0.0\", \"--port\", \"8000\"]",
+    "services/postgres_db/requirements.txt": "fastapi\nuvicorn\npydantic",
+    "services/analytics_engine/main.py": "# Service: analytics_engine\n# Synthesized by ShiftOps-OS ContractMaterializer\n# Domain Archetype: Emergency Management\n\nfrom fastapi import FastAPI\nfrom datetime import datetime\nimport random\nimport os\n\napp = FastAPI(title=\"analytics_engine\")\n\n@app.get(\"/\")\nasync def root():\n    return {\n        \"status\": \"active\", \n        \"service\": \"analytics_engine\",\n        \"ui_bindings\": 5,\n        \"telemetry_engine\": \"enabled\",\n        \"domain\": \"Emergency Management\"\n    }\n\n@app.get(\"/health\")\nasync def health():\n    return {\"health\": \"nominal\", \"uptime\": \"stable\"}\n\n@app.get(\"/kpis\")\nasync def get_kpis():\n    \"\"\"Auto-generated capability endpoint for kpis.\"\"\"\n    return { \n        \"kpis\": [{ \"id\": f\"ANALYTICS_ENGINE_{i:03}\", \"name\": \"nominal\", \"value\": \"nominal\", \"unit\": \"nominal\", \"trend\": \"nominal\" } for i in range(5)],\n        \"timestamp\": datetime.now().isoformat()\n    }\n\n@app.get(\"/alerts\")\nasync def get_alerts():\n    \"\"\"Auto-generated capability endpoint for alerts.\"\"\"\n    return { \n        \"alerts\": [{ \"id\": f\"ANALYTICS_ENGINE_{i:03}\", \"severity\": \"nominal\", \"message\": \"nominal\", \"timestamp\": \"nominal\" } for i in range(5)],\n        \"timestamp\": datetime.now().isoformat()\n    }\n\n@app.get(\"/performance_metrics\")\nasync def get_performance_metrics():\n    \"\"\"Auto-generated capability endpoint for performance_metrics.\"\"\"\n    return { \n        \"performance_metrics\": [{ \"cpu_usage\": \"nominal\", \"memory_usage\": \"nominal\", \"request_count\": \"nominal\" } for i in range(5)],\n        \"timestamp\": datetime.now().isoformat()\n    }\n\n@app.get(\"/incident_severity\")\nasync def handle_incident_severity_ui():\n    \"\"\"Operational endpoint bound to UI: Unknown Metric.\"\"\"\n    return {\n        \"severity_score\": random.randint(1, 10)\n    }\n\n@app.get(\"/evacuation_completion\")\nasync def handle_evacuation_completion_ui():\n    \"\"\"Operational endpoint bound to UI: Unknown Metric.\"\"\"\n    return {\n        \"completion_rate\": round(random.uniform(70.0, 99.5), 1)\n    }\n\n@app.get(\"/casualty_count\")\nasync def handle_casualty_count_ui():\n    \"\"\"Operational endpoint bound to UI: Unknown Metric.\"\"\"\n    return {\n        \"casualty_count\": random.randint(100, 5000)\n    }\n\n@app.get(\"/damage_estimates\")\nasync def handle_damage_estimates_ui():\n    \"\"\"Operational endpoint bound to UI: Unknown Metric.\"\"\"\n    return {\n        \"damage_estimate\": f\"{random.choice([\"Sector_A\", \"Sector_B\", \"Alpha\", \"Bravo\"])}_Data\"\n    }\n\n@app.get(\"/resource_utilization\")\nasync def handle_resource_utilization_ui():\n    \"\"\"Operational endpoint bound to UI: Unknown Metric.\"\"\"\n    return {\n        \"resource_type\": f\"{random.choice([\"Sector_A\", \"Sector_B\", \"Alpha\", \"Bravo\"])}_Data\", \"utilization_rate\": round(random.uniform(70.0, 99.5), 1)\n    }\n\n",
+    "services/analytics_engine/Dockerfile": "FROM python:3.9-slim\nWORKDIR /app\nCOPY . .\nRUN pip install -r requirements.txt\nCMD [\"uvicorn\", \"main:app\", \"--host\", \"0.0.0.0\", \"--port\", \"8000\"]",
+    "services/analytics_engine/requirements.txt": "fastapi\nuvicorn\npydantic",
+    "services/ai_reasoning/main.py": "# Service: ai_reasoning\n# Synthesized by ShiftOps-OS ContractMaterializer\n# Domain Archetype: Emergency Management\n\nfrom fastapi import FastAPI\nfrom datetime import datetime\nimport random\nimport os\n\napp = FastAPI(title=\"ai_reasoning\")\n\n@app.get(\"/\")\nasync def root():\n    return {\n        \"status\": \"active\", \n        \"service\": \"ai_reasoning\",\n        \"ui_bindings\": 1,\n        \"telemetry_engine\": \"enabled\",\n        \"domain\": \"Emergency Management\"\n    }\n\n@app.get(\"/health\")\nasync def health():\n    return {\"health\": \"nominal\", \"uptime\": \"stable\"}\n\n@app.get(\"/fire_spread_prediction\")\nasync def handle_fire_spread_prediction_ui():\n    \"\"\"Operational endpoint bound to UI: Unknown Metric.\"\"\"\n    return {\n        \"geo_json\": f\"{random.choice([\"Sector_A\", \"Sector_B\", \"Alpha\", \"Bravo\"])}_Data\"\n    }\n\n",
+    "services/ai_reasoning/Dockerfile": "FROM python:3.9-slim\nWORKDIR /app\nCOPY . .\nRUN pip install -r requirements.txt\nCMD [\"uvicorn\", \"main:app\", \"--host\", \"0.0.0.0\", \"--port\", \"8000\"]",
+    "services/ai_reasoning/requirements.txt": "fastapi\nuvicorn\npydantic",
+    "services/stream_processor/main.py": "# Service: stream_processor\n# Synthesized by ShiftOps-OS ContractMaterializer\n# Domain Archetype: Emergency Management\n\nfrom fastapi import FastAPI\nfrom datetime import datetime\nimport random\nimport os\n\napp = FastAPI(title=\"stream_processor\")\n\n@app.get(\"/\")\nasync def root():\n    return {\n        \"status\": \"active\", \n        \"service\": \"stream_processor\",\n        \"ui_bindings\": 0,\n        \"telemetry_engine\": \"enabled\",\n        \"domain\": \"Emergency Management\"\n    }\n\n@app.get(\"/health\")\nasync def health():\n    return {\"health\": \"nominal\", \"uptime\": \"stable\"}\n\n",
+    "services/stream_processor/Dockerfile": "FROM python:3.9-slim\nWORKDIR /app\nCOPY . .\nRUN pip install -r requirements.txt\nCMD [\"uvicorn\", \"main:app\", \"--host\", \"0.0.0.0\", \"--port\", \"8000\"]",
+    "services/stream_processor/requirements.txt": "fastapi\nuvicorn\npydantic",
+    "services/sensor_ingestion/main.py": "# Service: sensor_ingestion\n# Synthesized by ShiftOps-OS ContractMaterializer\n# Domain Archetype: Emergency Management\n\nfrom fastapi import FastAPI\nfrom datetime import datetime\nimport random\nimport os\n\napp = FastAPI(title=\"sensor_ingestion\")\n\n@app.get(\"/\")\nasync def root():\n    return {\n        \"status\": \"active\", \n        \"service\": \"sensor_ingestion\",\n        \"ui_bindings\": 0,\n        \"telemetry_engine\": \"enabled\",\n        \"domain\": \"Emergency Management\"\n    }\n\n@app.get(\"/health\")\nasync def health():\n    return {\"health\": \"nominal\", \"uptime\": \"stable\"}\n\n",
+    "services/sensor_ingestion/Dockerfile": "FROM python:3.9-slim\nWORKDIR /app\nCOPY . .\nRUN pip install -r requirements.txt\nCMD [\"uvicorn\", \"main:app\", \"--host\", \"0.0.0.0\", \"--port\", \"8000\"]",
+    "services/sensor_ingestion/requirements.txt": "fastapi\nuvicorn\npydantic",
+    "services/mobile_app_ui/main.py": "# Service: mobile_app_ui\n# Synthesized by ShiftOps-OS ContractMaterializer\n# Domain Archetype: Emergency Management\n\nfrom fastapi import FastAPI\nfrom datetime import datetime\nimport random\nimport os\n\napp = FastAPI(title=\"mobile_app_ui\")\n\n@app.get(\"/\")\nasync def root():\n    return {\n        \"status\": \"active\", \n        \"service\": \"mobile_app_ui\",\n        \"ui_bindings\": 0,\n        \"telemetry_engine\": \"enabled\",\n        \"domain\": \"Emergency Management\"\n    }\n\n@app.get(\"/health\")\nasync def health():\n    return {\"health\": \"nominal\", \"uptime\": \"stable\"}\n\n",
+    "services/mobile_app_ui/Dockerfile": "FROM python:3.9-slim\nWORKDIR /app\nCOPY . .\nRUN pip install -r requirements.txt\nCMD [\"uvicorn\", \"main:app\", \"--host\", \"0.0.0.0\", \"--port\", \"8000\"]",
+    "services/mobile_app_ui/requirements.txt": "fastapi\nuvicorn\npydantic",
+    "services/data_storage/main.py": "# Service: data_storage\n# Synthesized by ShiftOps-OS ContractMaterializer\n# Domain Archetype: Emergency Management\n\nfrom fastapi import FastAPI\nfrom datetime import datetime\nimport random\nimport os\n\napp = FastAPI(title=\"data_storage\")\n\n@app.get(\"/\")\nasync def root():\n    return {\n        \"status\": \"active\", \n        \"service\": \"data_storage\",\n        \"ui_bindings\": 0,\n        \"telemetry_engine\": \"enabled\",\n        \"domain\": \"Emergency Management\"\n    }\n\n@app.get(\"/health\")\nasync def health():\n    return {\"health\": \"nominal\", \"uptime\": \"stable\"}\n\n",
+    "services/data_storage/Dockerfile": "FROM python:3.9-slim\nWORKDIR /app\nCOPY . .\nRUN pip install -r requirements.txt\nCMD [\"uvicorn\", \"main:app\", \"--host\", \"0.0.0.0\", \"--port\", \"8000\"]",
+    "services/data_storage/requirements.txt": "fastapi\nuvicorn\npydantic",
+    "services/api_gateway/main.py": "# Service: api_gateway\n# Synthesized by ShiftOps-OS ContractMaterializer\n# Domain Archetype: Emergency Management\n\nfrom fastapi import FastAPI\nfrom datetime import datetime\nimport random\nimport os\n\napp = FastAPI(title=\"api_gateway\")\n\n@app.get(\"/\")\nasync def root():\n    return {\n        \"status\": \"active\", \n        \"service\": \"api_gateway\",\n        \"ui_bindings\": 0,\n        \"telemetry_engine\": \"enabled\",\n        \"domain\": \"Emergency Management\"\n    }\n\n@app.get(\"/health\")\nasync def health():\n    return {\"health\": \"nominal\", \"uptime\": \"stable\"}\n\n",
+    "services/api_gateway/Dockerfile": "FROM python:3.9-slim\nWORKDIR /app\nCOPY . .\nRUN pip install -r requirements.txt\nCMD [\"uvicorn\", \"main:app\", \"--host\", \"0.0.0.0\", \"--port\", \"8000\"]",
+    "services/api_gateway/requirements.txt": "fastapi\nuvicorn\npydantic",
+    "services/dashboard_ui/main.py": "# Service: dashboard_ui\n# Synthesized by ShiftOps-OS ContractMaterializer\n# Domain Archetype: Emergency Management\n\nfrom fastapi import FastAPI\nfrom datetime import datetime\nimport random\nimport os\n\napp = FastAPI(title=\"dashboard_ui\")\n\n@app.get(\"/\")\nasync def root():\n    return {\n        \"status\": \"active\", \n        \"service\": \"dashboard_ui\",\n        \"ui_bindings\": 0,\n        \"telemetry_engine\": \"enabled\",\n        \"domain\": \"Emergency Management\"\n    }\n\n@app.get(\"/health\")\nasync def health():\n    return {\"health\": \"nominal\", \"uptime\": \"stable\"}\n\n",
+    "services/dashboard_ui/Dockerfile": "FROM python:3.9-slim\nWORKDIR /app\nCOPY . .\nRUN pip install -r requirements.txt\nCMD [\"uvicorn\", \"main:app\", \"--host\", \"0.0.0.0\", \"--port\", \"8000\"]",
+    "services/dashboard_ui/requirements.txt": "fastapi\nuvicorn\npydantic",
+    "services/message_queue/main.py": "# Service: message_queue\n# Synthesized by ShiftOps-OS ContractMaterializer\n# Domain Archetype: Emergency Management\n\nfrom fastapi import FastAPI\nfrom datetime import datetime\nimport random\nimport os\n\napp = FastAPI(title=\"message_queue\")\n\n@app.get(\"/\")\nasync def root():\n    return {\n        \"status\": \"active\", \n        \"service\": \"message_queue\",\n        \"ui_bindings\": 0,\n        \"telemetry_engine\": \"enabled\",\n        \"domain\": \"Emergency Management\"\n    }\n\n@app.get(\"/health\")\nasync def health():\n    return {\"health\": \"nominal\", \"uptime\": \"stable\"}\n\n",
+    "services/message_queue/Dockerfile": "FROM python:3.9-slim\nWORKDIR /app\nCOPY . .\nRUN pip install -r requirements.txt\nCMD [\"uvicorn\", \"main:app\", \"--host\", \"0.0.0.0\", \"--port\", \"8000\"]",
+    "services/message_queue/requirements.txt": "fastapi\nuvicorn\npydantic",
+    "services/gis_routing_engine/main.py": "# Service: gis_routing_engine\n# Synthesized by ShiftOps-OS ContractMaterializer\n# Domain Archetype: Emergency Management\n\nfrom fastapi import FastAPI\nfrom datetime import datetime\nimport random\nimport os\n\napp = FastAPI(title=\"gis_routing_engine\")\n\n@app.get(\"/\")\nasync def root():\n    return {\n        \"status\": \"active\", \n        \"service\": \"gis_routing_engine\",\n        \"ui_bindings\": 1,\n        \"telemetry_engine\": \"enabled\",\n        \"domain\": \"Emergency Management\"\n    }\n\n@app.get(\"/health\")\nasync def health():\n    return {\"health\": \"nominal\", \"uptime\": \"stable\"}\n\n@app.post(\"/route\")\nasync def handle_route_ui():\n    \"\"\"Operational endpoint bound to UI: Unknown Metric.\"\"\"\n    return {\n        \"geo_json\": f\"{random.choice([\"Sector_A\", \"Sector_B\", \"Alpha\", \"Bravo\"])}_Data\"\n    }\n\n",
+    "services/gis_routing_engine/Dockerfile": "FROM python:3.9-slim\nWORKDIR /app\nCOPY . .\nRUN pip install -r requirements.txt\nCMD [\"uvicorn\", \"main:app\", \"--host\", \"0.0.0.0\", \"--port\", \"8000\"]",
+    "services/gis_routing_engine/requirements.txt": "fastapi\nuvicorn\npydantic",
+    "services/storage_service/main.py": "# Service: storage_service\n# Synthesized by ShiftOps-OS ContractMaterializer\n# Domain Archetype: Emergency Management\n\nfrom fastapi import FastAPI\nfrom datetime import datetime\nimport random\nimport os\n\napp = FastAPI(title=\"storage_service\")\n\n@app.get(\"/\")\nasync def root():\n    return {\n        \"status\": \"active\", \n        \"service\": \"storage_service\",\n        \"ui_bindings\": 0,\n        \"telemetry_engine\": \"enabled\",\n        \"domain\": \"Emergency Management\"\n    }\n\n@app.get(\"/health\")\nasync def health():\n    return {\"health\": \"nominal\", \"uptime\": \"stable\"}\n\n",
+    "services/storage_service/Dockerfile": "FROM python:3.9-slim\nWORKDIR /app\nCOPY . .\nRUN pip install -r requirements.txt\nCMD [\"uvicorn\", \"main:app\", \"--host\", \"0.0.0.0\", \"--port\", \"8000\"]",
+    "services/storage_service/requirements.txt": "fastapi\nuvicorn\npydantic",
+    "services/realtime_alert_node/main.py": "# Service: realtime_alert_node\n# Synthesized by ShiftOps-OS ContractMaterializer\n# Domain Archetype: Emergency Management\n\nfrom fastapi import FastAPI\nfrom datetime import datetime\nimport random\nimport os\n\napp = FastAPI(title=\"realtime_alert_node\")\n\n@app.get(\"/\")\nasync def root():\n    return {\n        \"status\": \"active\", \n        \"service\": \"realtime_alert_node\",\n        \"ui_bindings\": 0,\n        \"telemetry_engine\": \"enabled\",\n        \"domain\": \"Emergency Management\"\n    }\n\n@app.get(\"/health\")\nasync def health():\n    return {\"health\": \"nominal\", \"uptime\": \"stable\"}\n\n",
+    "services/realtime_alert_node/Dockerfile": "FROM python:3.9-slim\nWORKDIR /app\nCOPY . .\nRUN pip install -r requirements.txt\nCMD [\"uvicorn\", \"main:app\", \"--host\", \"0.0.0.0\", \"--port\", \"8000\"]",
+    "services/realtime_alert_node/requirements.txt": "fastapi\nuvicorn\npydantic",
+    "services/ems_dispatch_node/main.py": "# Service: ems_dispatch_node\n# Synthesized by ShiftOps-OS ContractMaterializer\n# Domain Archetype: Emergency Management\n\nfrom fastapi import FastAPI\nfrom datetime import datetime\nimport random\nimport os\n\napp = FastAPI(title=\"ems_dispatch_node\")\n\n@app.get(\"/\")\nasync def root():\n    return {\n        \"status\": \"active\", \n        \"service\": \"ems_dispatch_node\",\n        \"ui_bindings\": 0,\n        \"telemetry_engine\": \"enabled\",\n        \"domain\": \"Emergency Management\"\n    }\n\n@app.get(\"/health\")\nasync def health():\n    return {\"health\": \"nominal\", \"uptime\": \"stable\"}\n\n@app.get(\"/active_incidents\")\nasync def get_active_incidents():\n    \"\"\"Auto-generated capability endpoint for active_incidents.\"\"\"\n    return { \n        \"active_incidents\": [{ \"id\": f\"EMS_DISPATCH_NODE_{i:03}\", \"type\": \"nominal\", \"priority\": \"nominal\", \"location\": \"nominal\", \"status\": random.choice([\"active\", \"standby\", \"maintenance\"]) } for i in range(5)],\n        \"timestamp\": datetime.now().isoformat()\n    }\n\n@app.get(\"/unit_status\")\nasync def get_unit_status():\n    \"\"\"Auto-generated capability endpoint for unit_status.\"\"\"\n    return { \n        \"unit_status\": [{ \"unit_id\": f\"EMS_DISPATCH_NODE_{i:03}\", \"status\": random.choice([\"active\", \"standby\", \"maintenance\"]), \"assigned_incident_id\": f\"EMS_DISPATCH_NODE_{i:03}\", \"location\": \"nominal\" } for i in range(5)],\n        \"timestamp\": datetime.now().isoformat()\n    }\n\n@app.get(\"/dispatch_metrics\")\nasync def get_dispatch_metrics():\n    \"\"\"Auto-generated capability endpoint for dispatch_metrics.\"\"\"\n    return { \n        \"dispatch_metrics\": [{ \"avg_response_time\": \"nominal\", \"active_units_count\": \"nominal\", \"pending_incidents\": f\"EMS_DISPATCH_NODE_{i:03}\" } for i in range(5)],\n        \"timestamp\": datetime.now().isoformat()\n    }\n\n",
+    "services/ems_dispatch_node/Dockerfile": "FROM python:3.9-slim\nWORKDIR /app\nCOPY . .\nRUN pip install -r requirements.txt\nCMD [\"uvicorn\", \"main:app\", \"--host\", \"0.0.0.0\", \"--port\", \"8000\"]",
+    "services/ems_dispatch_node/requirements.txt": "fastapi\nuvicorn\npydantic",
+    "services/telemetry_ingest_node/main.py": "# Service: telemetry_ingest_node\n# Synthesized by ShiftOps-OS ContractMaterializer\n# Domain Archetype: Emergency Management\n\nfrom fastapi import FastAPI\nfrom datetime import datetime\nimport random\nimport os\n\napp = FastAPI(title=\"telemetry_ingest_node\")\n\n@app.get(\"/\")\nasync def root():\n    return {\n        \"status\": \"active\", \n        \"service\": \"telemetry_ingest_node\",\n        \"ui_bindings\": 0,\n        \"telemetry_engine\": \"enabled\",\n        \"domain\": \"Emergency Management\"\n    }\n\n@app.get(\"/health\")\nasync def health():\n    return {\"health\": \"nominal\", \"uptime\": \"stable\"}\n\n",
+    "services/telemetry_ingest_node/Dockerfile": "FROM python:3.9-slim\nWORKDIR /app\nCOPY . .\nRUN pip install -r requirements.txt\nCMD [\"uvicorn\", \"main:app\", \"--host\", \"0.0.0.0\", \"--port\", \"8000\"]",
+    "services/telemetry_ingest_node/requirements.txt": "fastapi\nuvicorn\npydantic"
+  },
+  "surface_manifest": {
+    "surfaces": [
+      {
+        "id": "command_center_dashboard",
+        "title": "State Emergency Operations Center Dashboard",
+        "projection": "dashboard",
+        "layers": [
+          {
+            "id": "incident_overview",
+            "components": [
+              {
+                "type": "metric",
+                "label": "Real-time Incident Severity Ranking",
+                "binding": {
+                  "data_source": "analytics_engine",
+                  "endpoint": "/incident_severity",
+                  "method": "GET",
+                  "response_model": {
+                    "severity_score": "integer"
+                  }
+                }
+              },
+              {
+                "type": "map",
+                "label": "Predicted Fire Spread Zones",
+                "binding": {
+                  "data_source": "ai_reasoning",
+                  "endpoint": "/fire_spread_prediction",
+                  "method": "GET",
+                  "response_model": {
+                    "geo_json": "geojson"
+                  }
+                }
+              },
+              {
+                "type": "list",
+                "label": "Available Firefighting Resources",
+                "binding": {
+                  "data_source": "api_service",
+                  "endpoint": "/resources/available",
+                  "method": "GET",
+                  "response_model": {
+                    "resource_type": "string",
+                    "resource_count": "integer"
+                  }
+                }
+              },
+              {
+                "type": "metric",
+                "label": "Evacuation Completion Rate",
+                "binding": {
+                  "data_source": "analytics_engine",
+                  "endpoint": "/evacuation_completion",
+                  "method": "GET",
+                  "response_model": {
+                    "completion_rate": "float"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "id": "resource_management",
+            "components": [
+              {
+                "type": "map",
+                "label": "Firefighter GPS Positions",
+                "binding": {
+                  "data_source": "api_service",
+                  "endpoint": "/firefighter_locations",
+                  "method": "GET",
+                  "response_model": {
+                    "geo_json": "geojson"
+                  }
+                }
+              },
+              {
+                "type": "list",
+                "label": "Road Closure Data",
+                "binding": {
+                  "data_source": "api_service",
+                  "endpoint": "/road_closures",
+                  "method": "GET",
+                  "response_model": {
+                    "road_name": "string",
+                    "closure_reason": "string"
+                  }
+                }
+              },
+              {
+                "type": "list",
+                "label": "Available Hospital Beds",
+                "binding": {
+                  "data_source": "api_service",
+                  "endpoint": "/hospital_capacity",
+                  "method": "GET",
+                  "response_model": {
+                    "hospital_name": "string",
+                    "available_beds": "integer"
+                  }
+                }
+              },
+              {
+                "type": "incidents",
+                "label": "Incident Reports",
+                "binding": {
+                  "data_source": "api_service",
+                  "endpoint": "/incident_reports",
+                  "method": "GET",
+                  "response_model": {
+                    "type": "string",
+                    "location": "string",
+                    "severity": "string"
+                  }
+                }
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "mobile_responder_interface",
+        "title": "Firefighter Mobile Interface",
+        "projection": "mobile",
+        "layers": [
+          {
+            "id": "task_management",
+            "components": [
+              {
+                "type": "list",
+                "label": "Assigned Tasks",
+                "binding": {
+                  "data_source": "api_service",
+                  "endpoint": "/tasks/assigned",
+                  "method": "GET",
+                  "response_model": {
+                    "task_id": "string",
+                    "description": "string",
+                    "priority": "string"
+                  }
+                }
+              },
+              {
+                "type": "map",
+                "label": "Navigation Routes",
+                "binding": {
+                  "data_source": "gis_routing_engine",
+                  "endpoint": "/route",
+                  "method": "POST",
+                  "response_model": {
+                    "geo_json": "geojson"
+                  }
+                }
+              },
+              {
+                "type": "map",
+                "label": "Nearby Hazards and Fire Fronts",
+                "binding": {
+                  "data_source": "api_service",
+                  "endpoint": "/hazards/nearby",
+                  "method": "GET",
+                  "response_model": {
+                    "geo_json": "geojson",
+                    "hazard_type": "string"
+                  }
+                }
+              },
+              {
+                "type": "chat",
+                "label": "Live Updates from Command",
+                "binding": {
+                  "data_source": "api_service",
+                  "endpoint": "/command_updates",
+                  "method": "GET",
+                  "response_model": {
+                    "message": "string",
+                    "timestamp": "string"
+                  }
+                }
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "executive_briefing",
+        "title": "Executive Briefing Dashboard",
+        "projection": "dashboard",
+        "layers": [
+          {
+            "id": "summary_metrics",
+            "components": [
+              {
+                "type": "metric",
+                "label": "Casualty Counts",
+                "binding": {
+                  "data_source": "analytics_engine",
+                  "endpoint": "/casualty_count",
+                  "method": "GET",
+                  "response_model": {
+                    "casualty_count": "integer"
+                  }
+                }
+              },
+              {
+                "type": "metric",
+                "label": "Property Damage Estimates",
+                "binding": {
+                  "data_source": "analytics_engine",
+                  "endpoint": "/damage_estimates",
+                  "method": "GET",
+                  "response_model": {
+                    "damage_estimate": "float"
+                  }
+                }
+              },
+              {
+                "type": "list",
+                "label": "Evacuation Status by County",
+                "binding": {
+                  "data_source": "api_service",
+                  "endpoint": "/evacuation_status",
+                  "method": "GET",
+                  "response_model": {
+                    "county_name": "string",
+                    "evacuation_status": "string",
+                    "completion_percentage": "float"
+                  }
+                }
+              },
+              {
+                "type": "list",
+                "label": "Resource Utilization",
+                "binding": {
+                  "data_source": "analytics_engine",
+                  "endpoint": "/resource_utilization",
+                  "method": "GET",
+                  "response_model": {
+                    "resource_type": "string",
+                    "utilization_rate": "float"
+                  }
+                }
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "narrative_summary": "Okay, here's a director-level summary of the wildfire response system architecture, focusing on its resilience and capabilities:\n\n**Wildfire Response System: Overview for the Director**\n\nThis system is designed to provide a comprehensive operational platform for coordinating emergency wildfire response across three states simultaneously. Its core strength is its **resilience**, built to withstand significant disruptions and maintain operational effectiveness, giving us a resilience score of **20.77**.\n\n**Key Capabilities:**\n\n*   **Real-Time Awareness:** The system ingests a massive amount of live data from multiple sources \u2013 satellites, drones, firefighter GPS, weather, road closures, hospital capacity, and emergency calls \u2013 to provide a near real-time, unified view of the situation.\n*   **Three Tailored Operational Interfaces:**\n    *   **Command Center Dashboard:** A central hub for state emergency operations centers, offering critical information like incident severity, predicted fire spread, resource availability, and evacuation progress.\n    *   **Mobile Responder Interface:** Empowers firefighters in the field with assigned tasks, safe navigation routes, hazard alerts, and direct communication with command.\n    *   **Executive Briefing Surface:** Delivers concise summaries of key metrics like casualties, property damage, evacuation status, and resource utilization to inform decision-making at the highest level.\n*   **Resilience & Performance:**\n    *   **High Throughput:** The system can process 1 million telemetry events per minute, ensuring responsiveness even under peak load.\n    *   **Offline Operability:** Designed to remain operational during regional network outages, maintaining critical functionality when communication is compromised.\n    *   **Scenario Planning:** Supports simulation of evacuation scenarios, enabling proactive decision-making and resource allocation.\n    *   **Automated Resource Deployment:** The system analyzes the data and automatically recommends optimal resource deployment strategies, improving efficiency and effectiveness.\n\n**Focus on Handling Emergency:**\n\nThe system's primary focus is to enhance our ability to respond effectively and efficiently to wildfire emergencies by:\n\n*   Providing a complete, current, and readily understandable picture of the situation.\n*   Enabling better coordination between command centers and firefighters in the field.\n*   Facilitating informed decision-making at all levels, from tactical resource allocation to strategic evacuation planning.\n*   Allowing simulation for different scenarios to improve preparedness.\n\nIn essence, this system significantly enhances our ability to manage complex, multi-state wildfire events, reduce risk, and protect lives and property.",
+  "diagnostics": {
+    "confidence": 0.6076999999999999,
+    "fitness_score": 60.769999999999996,
+    "archetype": "Emergency Management",
+    "kpis": [
+      {
+        "name": "Containment Percentage",
+        "range": [
+          0,
+          100
+        ],
+        "unit": "%",
+        "description": "Percentage of the fire perimeter that is contained."
+      },
+      {
+        "name": "Fire Spread Rate",
+        "range": [
+          0,
+          500
+        ],
+        "unit": "acres/hour",
+        "description": "Rate at which the fire is spreading."
+      },
+      {
+        "name": "Evacuation Completion Rate",
+        "range": [
+          0,
+          100
+        ],
+        "unit": "%",
+        "description": "Percentage of residents evacuated from designated zones."
+      },
+      {
+        "name": "Resource Utilization Rate (Firefighters)",
+        "range": [
+          0,
+          100
+        ],
+        "unit": "%",
+        "description": "Percentage of available firefighters currently deployed."
+      },
+      {
+        "name": "Resource Utilization Rate (Equipment)",
+        "range": [
+          0,
+          100
+        ],
+        "unit": "%",
+        "description": "Percentage of available equipment (e.g., water tankers, helicopters) currently deployed."
+      },
+      {
+        "name": "Telemetry Latency",
+        "range": [
+          0,
+          5000
+        ],
+        "unit": "milliseconds",
+        "description": "Delay between data generation and ingestion into the system."
+      },
+      {
+        "name": "Incident Severity Score",
+        "range": [
+          0,
+          100
+        ],
+        "unit": "unitless",
+        "description": "A composite score reflecting the overall severity of the wildfire incident (based on spread rate, population density, infrastructure at risk, etc.)."
+      },
+      {
+        "name": "Available Hospital Beds",
+        "range": [
+          0,
+          2000
+        ],
+        "unit": "beds",
+        "description": "Number of available hospital beds across impacted region"
+      },
+      {
+        "name": "Number of Structures Damaged",
+        "range": [
+          0,
+          10000
+        ],
+        "unit": "structures",
+        "description": "Number of buildings and other structures damaged by the fire."
+      },
+      {
+        "name": "Cost of Damages",
+        "range": [
+          0,
+          1000000000
+        ],
+        "unit": "USD",
+        "description": "Estimated financial value of all damages caused by the fire."
+      }
+    ],
+    "incidents": [
+      {
+        "type": "Perimeter Breach",
+        "severity_levels": [
+          "low",
+          "medium",
+          "high",
+          "critical"
+        ]
+      },
+      {
+        "type": "Spot Fire Ignition",
+        "severity_levels": [
+          "low",
+          "medium",
+          "high",
+          "critical"
+        ]
+      },
+      {
+        "type": "Resource Shortage (Water)",
+        "severity_levels": [
+          "low",
+          "medium",
+          "high",
+          "critical"
+        ]
+      },
+      {
+        "type": "Communication Outage (Zone)",
+        "severity_levels": [
+          "low",
+          "medium",
+          "high",
+          "critical"
+        ]
+      },
+      {
+        "type": "Medical Emergency (Responder)",
+        "severity_levels": [
+          "low",
+          "medium",
+          "high",
+          "critical"
+        ]
+      },
+      {
+        "type": "Evacuation Route Blocked",
+        "severity_levels": [
+          "low",
+          "medium",
+          "high",
+          "critical"
+        ]
+      },
+      {
+        "type": "Wind Shift",
+        "severity_levels": [
+          "low",
+          "medium",
+          "high",
+          "critical"
+        ]
+      },
+      {
+        "type": "Unpredicted Fire Acceleration",
+        "severity_levels": [
+          "low",
+          "medium",
+          "high",
+          "critical"
+        ]
+      },
+      {
+        "type": "Telemetry Stream Interruption",
+        "severity_levels": [
+          "low",
+          "medium",
+          "high",
+          "critical"
+        ]
+      }
+    ],
+    "reasons": [
+      "Highly parallelized ingestion layer designed for global scale concurrency."
+    ],
+    "roadmap": [
+      {
+        "step": "01",
+        "title": "Foundation and Data Ingestion Layer",
+        "desc": "Establish a robust and scalable data ingestion and processing pipeline. This includes provisioning cloud infrastructure (VPC, Kubernetes clusters across multiple availability zones for redundancy), setting up secure networking (VPNs, Direct Connect for on-premise integration), and implementing a high-throughput data ingestion layer using technologies like Apache Kafka, AWS Kinesis, or Google Cloud Pub/Sub. Focus on ingesting and normalizing all data sources: live satellite imagery, drone telemetry, firefighter GPS, weather forecasts, road closures, hospital capacity, and emergency call center feeds. Implement initial data validation and cleansing procedures."
+      },
+      {
+        "step": "02",
+        "title": "Real-time Processing and Core Engine Development",
+        "desc": "Develop the core processing engine responsible for real-time analysis, incident severity ranking, fire spread prediction, resource optimization, and evacuation simulation. This involves selecting appropriate geospatial libraries (e.g., GDAL, GeoPandas), developing machine learning models for fire spread prediction and resource recommendation (consider using platforms like TensorFlow or PyTorch), and implementing the logic for integrating and correlating various data streams. Implement robust error handling and data quality monitoring within the processing pipeline. This step also includes designing the data storage and retrieval mechanisms for processed information, considering options like NoSQL databases (e.g., Cassandra, DynamoDB) for scalability and speed."
+      },
+      {
+        "step": "03",
+        "title": "Operational Surfaces and Mobile Responder Interface",
+        "desc": "Develop the three operational surfaces: command center dashboard, mobile responder interface, and executive briefing surface. The command center dashboard should visualize real-time incident severity, predicted fire spread, available resources, and evacuation progress. The mobile responder interface should provide firefighters with assigned tasks, navigation routes (avoiding blocked roads), nearby hazards, and live updates from command. The executive briefing surface should summarize casualty counts, property damage estimates, evacuation status by county, and resource utilization. Focus on user experience and accessibility for all interfaces, ensuring clear and concise information delivery. Prioritize offline capabilities and data synchronization for the mobile responder interface to ensure functionality during network outages. Implement secure authentication and authorization for all surfaces."
+      },
+      {
+        "step": "04",
+        "title": "Testing, Deployment, and Continuous Improvement",
+        "desc": "Conduct rigorous testing of all system components, including performance testing to meet the 1 million telemetry events per minute requirement, failover testing to ensure operational resilience during network outages, and user acceptance testing to validate usability and effectiveness of the operational surfaces. Implement a phased deployment strategy, starting with a pilot program in a limited geographic area before expanding to full statewide and multi-state coverage. Establish a continuous monitoring and improvement process to track system performance, identify areas for optimization, and incorporate feedback from users. Implement automated deployment pipelines (CI/CD) to facilitate rapid iteration and deployment of new features and bug fixes. Focus on security hardening and compliance with relevant regulations."
+      }
+    ],
+    "scalability_index": 11.66,
+    "resilience_score": 1.5
+  }
+}

@@ -1,0 +1,4 @@
+week_start,ordered_units,shipped_units,received_units,fill_rate_%,late_runs,staffing_gaps,total_scheduled_hours,headcount_count
+2026-03-09,76500.0,0.0,78200.0,0.0,1.0,2.0,3559.0,93.0
+2026-03-02,,,,,,,505.0,50.0
+2026-02-23,0.0,101400.0,0.0,10140000.0,0.0,2.0,,

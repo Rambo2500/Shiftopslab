@@ -1,0 +1,18 @@
+{
+  "topic": "Python CLI tools",
+  "sources": [
+    {
+      "type": "search",
+      "reference": "Search engine AI summary"
+    }
+  ],
+  "observations": [
+    "Most Python CLI tools use argparse or click.",
+    "Separating CLI parsing from core logic improves testability.",
+    "Entry points are often defined via setup.py or pyproject.toml."
+  ],
+  "constraints": [
+    "CLI frameworks vary in complexity.",
+    "Some environments restrict package installation."
+  ]
+}

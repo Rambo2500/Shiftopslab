@@ -1,0 +1,23 @@
+{
+  "goal": "Generate a summary CSV from tabular input data",
+
+  "inputs": [
+    "source_data.csv"
+  ],
+
+  "constraints": [
+    "Do not infer missing columns",
+    "Do not assume aggregation logic",
+    "Fail if required fields are not explicitly specified"
+  ],
+
+  "confidence": "MEDIUM",
+
+  "context_references": [
+    {
+      "context_id": "basic_tabular_report_context",
+      "source_path": "examples/context_harvest_basic.json",
+      "usage_note": "Reviewed common tabular reporting steps to ensure correct ordering before defining intent. No decisions were taken from context."
+    }
+  ]
+}

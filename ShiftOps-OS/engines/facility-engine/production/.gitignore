@@ -1,0 +1,9 @@
+__pycache__/
+*.pyc
+.pytest_cache/
+outputs/data/
+outputs/reports/
+outputs/charts/
+outputs/pipeline_log.csv
+data_raw/*.csv
+data_raw/*.txt

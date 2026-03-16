@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elkhart Dock Command Center</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .timeline-bar { transition: width 0.5s ease-in-out; }
+        body { background-color: #f5f5f4; color: #1c1917; font-family: ui-sans-serif, system-ui, -apple-system, sans-serif; }
+        .status-pulse { animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: .5; } }
+        .tab-active { border-bottom: 3px solid #f59e0b; color: #f59e0b; }
+    </style>
+</head>
+<body class="antialiased pb-20">
+
+    <nav class="bg-stone-900 text-white shadow-xl sticky top-0 z-50">
+        <div class="max-w-[1600px] mx-auto px-4 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-10">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-amber-500 rounded-lg flex items-center justify-center text-stone-900 font-black text-2xl">E</div>
+                    <h1 class="font-bold text-xl leading-none">Elkhart Command</h1>
+                </div>
+                <div class="flex gap-8 h-16 items-center text-[10px] font-black uppercase tracking-widest text-stone-500">
+                    <button onclick="switchTab('tab-command')" id="btn-command" class="h-full px-2 tab-active">Command Center</button>
+                    <button onclick="switchTab('tab-recon')" id="btn-recon" class="h-full px-2">Recon Truth</button>
+                </div>
+            </div>
+            <div class="flex items-center gap-6">
+                <div class="text-right">
+                    <select id="date-selector" class="bg-stone-800 text-amber-500 text-[10px] font-bold border-none rounded px-2" onchange="renderUI()"></select>
+                    <p id="live-clock" class="text-xl font-mono text-amber-400">--:--:--</p>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-[1600px] mx-auto px-4 py-6 space-y-6">
+        <div id="tab-command" class="space-y-6">
+            <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+                <!-- Next Load Predictor -->
+                <div class="lg:col-span-2 bg-white rounded-2xl shadow-sm border-l-8 border-amber-500 p-6 flex flex-col justify-between">
+                    <div>
+                        <div class="flex justify-between items-start">
+                            <span class="text-xs font-bold text-amber-600 uppercase tracking-widest">Next Load Up</span>
+                            <div id="next-load-timer" class="px-2 py-1 bg-amber-100 text-amber-800 text-[10px] font-bold rounded uppercase status-pulse">STANDBY</div>
+                        </div>
+                        <h2 id="next-load-dest" class="text-4xl font-black text-stone-900 mt-2">--</h2>
+                        <div class="grid grid-cols-3 gap-4 mt-4">
+                            <div><p class="text-xs text-stone-500 uppercase">Door</p><p id="next-load-door" class="text-xl font-bold">--</p></div>
+                            <div><p class="text-xs text-stone-500 uppercase">Est. Ready</p><p id="next-load-eta" class="text-xl font-bold text-amber-600">--</p></div>
+                            <div><p class="text-xs text-stone-500 uppercase">Stacks</p><p id="next-load-stacks" class="text-xl font-bold">--</p></div>
+                        </div>
+                    </div>
+                    <div class="mt-4 pt-4 border-t border-stone-100 flex justify-between items-center">
+                        <p id="next-load-context" class="text-xs text-stone-400 italic">--</p>
+                        <div id="next-load-risk" class="text-[10px] font-bold uppercase text-red-600"></div>
+                    </div>
+                </div>
+
+                <!-- KPIs -->
+                <div class="bg-stone-900 rounded-2xl p-6 text-white flex flex-col justify-between">
+                    <span class="text-xs font-bold text-stone-400 uppercase tracking-widest">Shift Progress</span>
+                    <div class="mt-2">
+                        <div class="flex justify-between text-sm mb-1"><span>Fulfillment</span><span id="kpi-count">0 / 0</span></div>
+                        <div class="w-full bg-stone-700 h-2 rounded-full overflow-hidden"><div id="kpi-bar" class="bg-amber-500 h-full w-0 transition-all duration-1000"></div></div>
+                    </div>
+                    <div class="grid grid-cols-3 gap-2 mt-4 text-center">
+                        <div><p class="text-[8px] text-stone-500 uppercase font-black">Needed</p><p id="kpi-needed" class="text-xs font-bold">--</p></div>
+                        <div><p class="text-[8px] text-stone-500 uppercase font-black">Loading</p><p id="kpi-loading" class="text-xs font-bold text-green-400">--</p></div>
+                        <div><p class="text-[8px] text-stone-500 uppercase font-black">At Risk</p><p id="kpi-at-risk" class="text-xs font-bold text-red-400">--</p></div>
+                    </div>
+                </div>
+
+                <!-- Controls -->
+                <div class="bg-white rounded-2xl shadow-sm border border-stone-200 p-6">
+                    <span class="text-xs font-bold text-stone-500 uppercase tracking-widest">Controls</span>
+                    <div class="mt-4 space-y-3">
+                        <div>
+                            <label class="text-[9px] text-stone-400 uppercase font-bold">UPH Override</label>
+                            <input type="number" id="input-uph" value="4132" class="w-full bg-stone-50 border border-stone-200 rounded px-2 py-1 font-bold text-xs" oninput="renderUI()">
+                        </div>
+                        <div>
+                            <label class="text-[9px] text-stone-400 uppercase font-bold">Tray/Stack</label>
+                            <input type="number" id="input-trays" value="170" class="w-full bg-stone-50 border border-stone-200 rounded px-2 py-1 font-bold text-xs" oninput="renderUI()">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Timeline -->
+            <div class="bg-white rounded-2xl shadow-sm border border-stone-200 p-6">
+                <h3 class="text-lg font-bold text-stone-800 mb-6 uppercase tracking-tighter">Production Queue Timeline</h3>
+                <div id="timeline-rows" class="space-y-4"></div>
+            </div>
+
+            <div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
+                <div class="xl:col-span-2 space-y-6">
+                    <!-- Readiness Table -->
+                    <div class="bg-white rounded-2xl shadow-sm border border-stone-200 overflow-hidden">
+                        <table class="w-full text-left">
+                            <thead class="bg-stone-50 text-[10px] font-bold uppercase text-stone-500 border-b border-stone-100">
+                                <tr>
+                                    <th class="px-6 py-4">DC / Facility</th>
+                                    <th class="px-6 py-4 text-center">Needed (Stacks)</th>
+                                    <th class="px-6 py-4">ETA Ready</th>
+                                    <th class="px-6 py-4">Cutoff</th>
+                                    <th class="px-6 py-4 text-right">Health</th>
+                                </tr>
+                            </thead>
+                            <tbody id="readiness-table-body" class="text-sm"></tbody>
+                        </table>
+                    </div>
+                    <!-- Inventory -->
+                    <div class="bg-white rounded-2xl shadow-sm border border-stone-200 p-6">
+                        <h3 class="text-lg font-bold text-stone-800 mb-4">Inventory Breakdown</h3>
+                        <div class="grid grid-cols-3 gap-4">
+                            <div class="bg-stone-50 p-4 rounded-xl text-center">
+                                <p class="text-[10px] text-stone-400 font-bold uppercase">Allocated Total</p>
+                                <p id="inv-produced" class="text-2xl font-black">0</p>
+                            </div>
+                            <div class="bg-stone-50 p-4 rounded-xl text-center">
+                                <p class="text-[10px] text-stone-400 font-bold uppercase">Shipped Total</p>
+                                <p id="inv-shipped" class="text-2xl font-black">0</p>
+                            </div>
+                            <div class="bg-stone-50 p-4 rounded-xl text-center border-2 border-amber-100">
+                                <p class="text-[10px] text-amber-600 font-bold uppercase">Variance</p>
+                                <p id="inv-variance" class="text-2xl font-black text-amber-600">0</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Dock Map -->
+                <div class="bg-stone-900 rounded-3xl p-6 text-white border-t-4 border-amber-500 shadow-2xl h-fit">
+                    <h3 class="text-lg font-bold mb-6 flex items-center gap-2"><span class="w-2 h-2 bg-amber-500 rounded-full status-pulse"></span>Live Dock Map</h3>
+                    <div class="grid grid-cols-3 gap-3" id="dock-grid"></div>
+                </div>
+            </div>
+        </div>
+
+        <div id="tab-recon" class="hidden space-y-6">
+            <div class="bg-white rounded-2xl p-10 text-center border border-stone-200 shadow-sm">
+                <h3 class="text-2xl font-black text-stone-800 uppercase tracking-tighter">Recon Truth Engine</h3>
+                <p class="text-stone-400 mt-2">Inventory allocated vs actually shipped. Use the dashboard cards for live totals.</p>
+            </div>
+        </div>
+    </main>
+
+    <footer class="fixed bottom-0 w-full bg-white border-t border-stone-200 h-10 flex items-center px-6 justify-between text-[9px] font-bold uppercase text-stone-400">
+        <div>Site: Elkhart, IN • v4.0 (Digital Twin)</div>
+        <div id="last-update">Last Update: --:--:--</div>
+    </footer>
+
+    <script>
+        const DOCK_LAYOUT = [
+            { id: 1, label: 'Recon' }, { id: 2, label: 'Recycle' }, { id: 3, label: 'Special' },
+            { id: 4, label: 'Swing' }, { id: 5, label: 'Inv OB' }, { id: 6, label: 'Inv OB' },
+            { id: 7, label: 'Special' }, { id: 8, label: 'OPEN' }, { id: 9, label: 'Inbound' },
+            { id: 10, label: 'FCR' }, { id: 11, label: 'FJA' }, { id: 12, label: 'KC/Riverside' },
+            { id: 13, label: 'N Aurora (1)' }, { id: 14, label: 'N Aurora (2)' }, { id: 15, label: 'S Bend (1)' },
+            { id: 16, label: 'S Bend (2)' }, { id: 17, label: 'Inbound' }, { id: 18, label: 'BROKEN' }
+        ];
+
+        let appState = { loads: [], available_dates: [], recon_summary: {}, last_update: "", currentTab: 'tab-command' };
+
+        function switchTab(tabId) {
+            appState.currentTab = tabId;
+            document.getElementById('tab-command').classList.toggle('hidden', tabId !== 'tab-command');
+            document.getElementById('tab-recon').classList.toggle('hidden', tabId !== 'tab-recon');
+            document.querySelectorAll('nav button').forEach(btn => btn.classList.remove('tab-active'));
+            document.getElementById('btn-' + tabId.split('-')[1]).classList.add('tab-active');
+        }
+
+        async function fetchLiveData() {
+            try {
+                const response = await fetch('dashboard_data.json?t=' + new Date().getTime());
+                const data = await response.json();
+                appState = { ...appState, ...data };
+                updateSelector();
+                renderUI();
+            } catch (e) { console.error(e); }
+        }
+
+        function updateSelector() {
+            const sel = document.getElementById('date-selector');
+            const current = sel.value;
+            sel.innerHTML = '';
+            appState.available_dates.forEach(d => {
+                const opt = document.createElement('option');
+                opt.value = d; opt.innerText = d;
+                sel.appendChild(opt);
+            });
+            if (current && appState.available_dates.includes(current)) sel.value = current;
+            else if (appState.available_dates.length) sel.value = appState.available_dates[appState.available_dates.length-1];
+        }
+
+        function renderUI() {
+            const selDate = document.getElementById('date-selector').value;
+            const uph = parseFloat(document.getElementById('input-uph').value) || appState.velocity || 4132;
+            const trayStack = parseFloat(document.getElementById('input-trays').value) || 170;
+
+            document.getElementById('last-update').innerText = "Last Update: " + appState.last_update;
+
+            const loads = appState.loads.filter(l => {
+                if (!selDate) return true;
+                return new Date(l.sales_date).toDateString() === new Date(selDate).toDateString();
+            });
+            const pending = loads.filter(l => l.status !== 'Shipped' && l.status !== 'Delivered');
+
+            // KPIs
+            const totalOrd = loads.reduce((a,b) => a+(b.ordered||0), 0);
+            const totalAlc = loads.reduce((a,b) => a+(b.allocated||0), 0);
+            document.getElementById('kpi-count').innerText = `${totalAlc.toLocaleString()} / ${totalOrd.toLocaleString()}`;
+            document.getElementById('kpi-bar').style.width = `${(totalAlc/(totalOrd||1)*100)||0}%`;
+            document.getElementById('kpi-needed').innerText = (totalOrd - totalAlc).toLocaleString();
+            document.getElementById('kpi-loading').innerText = loads.filter(l => l.status === 'Loading Started').length;
+            document.getElementById('kpi-at-risk').innerText = pending.filter(l => l.health === 'RED').length;
+
+            // Next Load
+            const next = pending[0];
+            if (next) {
+                const etaMins = Math.round(((next.needed||0) / uph) * 60);
+                document.getElementById('next-load-dest').innerText = next.dest;
+                const predictedDoor = DOCK_LAYOUT.find(d => d.label.includes(next.dest_code))?.id || next.dock;
+                document.getElementById('next-load-door').innerText = predictedDoor !== '--' ? "DOOR " + predictedDoor : "PENDING";
+                document.getElementById('next-load-stacks').innerText = Math.round((next.ordered||0) / trayStack);
+                document.getElementById('next-load-eta').innerText = etaMins + " mins";
+                document.getElementById('next-load-timer').innerText = etaMins <= 0 ? "READY" : `READY IN ${etaMins} MINS`;
+                document.getElementById('next-load-context').innerText = `Priority ${next.priority} | Window ${next.deadline}`;
+                document.getElementById('next-load-risk').innerText = next.health === 'RED' ? 'AT RISK' : '';
+            } else {
+                document.getElementById('next-load-dest').innerText = "No Pending Loads";
+                document.getElementById('next-load-timer').innerText = "STANDBY";
+            }
+
+            // Timeline
+            const tl = document.getElementById('timeline-rows');
+            tl.innerHTML = '';
+            pending.slice(0, 8).forEach(l => {
+                const etaMins = Math.round(((l.needed||0) / uph) * 60);
+                const widthPct = Math.min((etaMins / 720) * 100, 100);
+                const color = l.health === 'RED' ? 'bg-red-500' : (l.health === 'YELLOW' ? 'bg-amber-500' : 'bg-green-500');
+                const row = document.createElement('div');
+                row.className = 'flex items-center gap-4';
+                row.innerHTML = `<div class="w-24 text-[10px] font-black uppercase text-stone-500 truncate">${l.dest}</div>
+                    <div class="flex-1 bg-stone-100 rounded-full h-4 relative">
+                        <div class="timeline-bar h-full rounded-full ${color}" style="width: ${widthPct}%"></div>
+                        <span class="absolute right-2 top-0 text-[8px] font-bold text-stone-500">ETA ${etaMins}m</span>
+                    </div>`;
+                tl.appendChild(row);
+            });
+
+            // Table
+            const tbody = document.getElementById('readiness-table-body');
+            tbody.innerHTML = '';
+            pending.forEach(l => {
+                const etaMins = Math.round(((l.needed||0) / uph) * 60);
+                const row = document.createElement('tr');
+                row.className = "border-b border-stone-50 hover:bg-stone-50";
+                row.innerHTML = `<td class="px-6 py-4 font-bold">${l.dest} <span class="text-[10px] text-stone-400 font-normal">(${l.dest_code})</span></td>
+                    <td class="px-6 py-4 text-center font-bold text-amber-600">${Math.round((l.needed||0) / trayStack)}</td>
+                    <td class="px-6 py-4 font-mono font-bold">${etaMins}m</td>
+                    <td class="px-6 py-4 text-stone-500 font-mono text-xs">${l.deadline}</td>
+                    <td class="px-6 py-4 text-right"><span class="px-2 py-1 rounded text-[10px] font-black uppercase ${l.health === 'RED' ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700'}">${l.health}</span></td>`;
+                tbody.appendChild(row);
+            });
+
+            // Recon
+            const r = (appState.recon_summary && appState.recon_summary[selDate]) || { produced: 0, shipped: 0, variance: 0 };
+            document.getElementById('inv-produced').innerText = r.produced.toLocaleString();
+            document.getElementById('inv-shipped').innerText = r.shipped.toLocaleString();
+            document.getElementById('inv-variance').innerText = r.variance.toLocaleString();
+
+            // Dock Map
+            const grid = document.getElementById('dock-grid');
+            grid.innerHTML = '';
+            DOCK_LAYOUT.forEach(door => {
+                const load = loads.find(l => l.dock == door.id.toString() && l.status !== 'Shipped' && l.status !== 'Delivered');
+                const active = !!load;
+                const div = document.createElement('div');
+                div.className = `p-2 rounded-xl flex flex-col justify-between aspect-square transition-all shadow-inner ${active ? 'bg-amber-500 ring-2 ring-amber-300' : 'bg-stone-800 opacity-60'}`;
+                div.innerHTML = `<div class="font-black text-[10px]">${door.id}</div>
+                    <div class="space-y-1">
+                        <p class="text-[7px] text-stone-400 uppercase font-black tracking-tighter">${door.label}</p>
+                        <p class="text-[10px] font-bold truncate leading-tight">${active ? load.dest : '--'}</p>
+                        ${active ? `<p class="text-[7px] text-amber-900 uppercase font-black">${load.status}</p>` : ''}
+                    </div>`;
+                grid.appendChild(div);
+            });
+        }
+
+        setInterval(() => document.getElementById('live-clock').innerText = new Date().toLocaleTimeString(), 1000);
+        setInterval(fetchLiveData, 5000);
+        window.onload = fetchLiveData;
+    </script>
+</body>
+</html>

@@ -1,0 +1,65 @@
+{
+  "identifier": "penny_pincher.scenario_rules.v1",
+  "schema_type": "contract",
+  "contract_name": "scenario_rules",
+  "authoritative": true,
+
+  "definition": {
+    "scenario": "A named variation of inputs used to model a specific financial event without altering core system logic."
+  },
+
+  "rules": [
+    {
+      "id": "SCN001",
+      "rule": "A scenario may only modify input values, not contract logic.",
+      "severity": "hard"
+    },
+    {
+      "id": "SCN002",
+      "rule": "Scenarios must reference the same input schema as baseline runs.",
+      "severity": "hard"
+    },
+    {
+      "id": "SCN003",
+      "rule": "A scenario may introduce one_time_events but may not reclassify mandatory obligations.",
+      "severity": "hard"
+    },
+    {
+      "id": "SCN004",
+      "rule": "Scenario-specific notes are allowed but must not affect calculations.",
+      "severity": "soft"
+    },
+    {
+      "id": "SCN005",
+      "rule": "Multiple scenarios may be compared, but no scenario may mutate another scenario’s data.",
+      "severity": "hard"
+    }
+  ],
+
+  "scenario_types": [
+    "baseline",
+    "post_travel_spend",
+    "medical_event",
+    "income_disruption",
+    "unexpected_fee_cluster"
+  ],
+
+  "validation_requirements": {
+    "must_include": [
+      "identifier",
+      "currency",
+      "timezone",
+      "start_date",
+      "planning_window_days"
+    ],
+    "must_reference": "contracts/input_schema.json"
+  },
+
+  "output_behavior": {
+    "comparison_allowed": true,
+    "ranking_disallowed": true,
+    "recommendations_disallowed": true
+  },
+
+  "notes": "Scenarios are descriptive variations for learning and clarity. They do not alter system rules or suggest actions."
+}

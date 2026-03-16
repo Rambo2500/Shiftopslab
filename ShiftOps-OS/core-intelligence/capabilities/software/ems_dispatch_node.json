@@ -1,0 +1,19 @@
+{
+  "id": "ems_dispatch_node",
+  "name": "EMS Dispatch Orchestrator",
+  "artifact_type": "fastapi_service",
+  "class": "control_generator",
+  "description": "Central orchestration layer for EMS dispatch, coordinating between field units and hospital systems.",
+  "provides": ["dispatch", "orchestration", "command_and_control"],
+  "requires": ["gis_routing_engine", "api_service"],
+  "traits": {
+    "latency": "ultra-low",
+    "reliability": "critical"
+  },
+  "outputs": {
+    "active_incidents": ["id", "type", "priority", "location", "status"],
+    "unit_status": ["unit_id", "status", "assigned_incident_id", "location"],
+    "dispatch_metrics": ["avg_response_time", "active_units_count", "pending_incidents"]
+  },
+  "compatible_with": ["dashboard_ui", "notification_worker"]
+}

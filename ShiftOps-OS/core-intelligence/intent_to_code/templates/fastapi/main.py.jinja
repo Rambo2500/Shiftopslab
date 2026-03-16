@@ -1,0 +1,23 @@
+from fastapi import FastAPI
+from typing import List, Optional
+
+app = FastAPI(title="{{ goal }}")
+
+@app.get("/")
+def root():
+    return {
+        "goal": "{{ goal }}",
+        "status": "online",
+        "inputs_expected": {{ inputs | tojson }},
+        "system": {
+            "parent": "{{ system_context.parent_system if system_context else '' }}",
+            "name": "{{ system_context.name if system_context else '' }}",
+            "depends_on": {{ (system_context.depends_on if system_context else []) | tojson }},
+            "registry": {{ (system_context.registry if system_context else {}) | tojson }}
+        }
+    }
+
+@app.post("/execute")
+def execute(data: dict):
+    # Intent-driven execution stub
+    return {"status": "received", "data": data}

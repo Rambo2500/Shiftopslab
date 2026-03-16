@@ -1,0 +1,17 @@
+{
+  "validated": false,
+  "NON_EXECUTABLE_PLAN": true,
+  "goal": "dock_dashboard_api",
+  "inputs": ["shipment_data", "inventory"],
+  "outputs": {
+    "code": {
+      "enabled": true,
+      "type": "fastapi_service"
+    }
+  },
+  "security_envelope": {
+    "network": {
+      "outbound": "ALLOW_TRUSTED"
+    }
+  }
+}

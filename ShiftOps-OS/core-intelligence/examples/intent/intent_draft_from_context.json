@@ -1,0 +1,19 @@
+{
+  "goal_suggestion": "Python CLI tools",
+  "considerations": [
+    "Most Python CLI tools use argparse or click.",
+    "Separating CLI parsing from core logic improves testability.",
+    "Entry points are often defined via setup.py or pyproject.toml."
+  ],
+  "known_constraints": [
+    "CLI frameworks vary in complexity.",
+    "Some environments restrict package installation."
+  ],
+  "outputs_hint": {
+    "guidance": true,
+    "code": {
+      "enabled": false
+    }
+  },
+  "note": "This is a draft scaffold only. Human must author final intent."
+}

@@ -1,0 +1,21 @@
+{
+  "validated": false,
+  "NON_EXECUTABLE_PLAN": true,
+
+  "goal": "Plan a small automation project",
+
+  "outputs": {
+    "guidance": true
+  },
+
+  "security_envelope": {
+    "impact_class": "LOW",
+    "data_classification": "PUBLIC",
+    "pii_present": false,
+
+    "network": {
+      "inbound": "DENY_ALL",
+      "outbound": "ALLOW"
+    }
+  }
+}

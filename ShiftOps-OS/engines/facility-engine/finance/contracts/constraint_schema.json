@@ -1,0 +1,43 @@
+{
+  "identifier": "penny_pincher.constraint_schema.v1",
+  "schema_type": "contract",
+  "contract_name": "constraints",
+  "authoritative": true,
+
+  "priority_order": [
+    "mandatory_housing",
+    "mandatory_utilities",
+    "mandatory_food_medicine_transport",
+    "mandatory_legal_child_support",
+    "minimum_debt_requirements",
+    "other_fixed",
+    "variable_essentials",
+    "non_essential"
+  ],
+
+  "rules": {
+    "mandatory_means_non_optional": true,
+    "do_not_generate_recommendations": true,
+    "surface_shortfalls_explicitly": true,
+    "no_hidden_defaults": true
+  },
+
+  "classification": {
+    "fixed_obligation_category_to_priority": {
+      "housing": "mandatory_housing",
+      "utilities": "mandatory_utilities",
+      "legal": "mandatory_legal_child_support",
+      "child_support": "mandatory_legal_child_support",
+      "debt": "minimum_debt_requirements",
+      "insurance": "other_fixed",
+      "other": "other_fixed"
+    },
+    "variable_essential_category_to_priority": {
+      "food": "mandatory_food_medicine_transport",
+      "medicine": "mandatory_food_medicine_transport",
+      "transportation": "mandatory_food_medicine_transport",
+      "fuel": "mandatory_food_medicine_transport",
+      "other": "variable_essentials"
+    }
+  }
+}

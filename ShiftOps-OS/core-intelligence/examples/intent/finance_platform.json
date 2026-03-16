@@ -1,0 +1,14 @@
+{
+  "validated": true,
+  "NON_EXECUTABLE_PLAN": true,
+  "goal": "Build a finance and bank transaction platform",
+  "inputs": [],
+  "outputs": {
+    "platform": {
+      "enabled": true
+    }
+  },
+  "security_envelope": {
+    "trusted_domains": ["*"]
+  }
+}

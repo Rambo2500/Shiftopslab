@@ -1,0 +1,39 @@
+{
+  "ontology_id": "satellite_ops_v1",
+  "version": "1.0",
+  "entities": {
+    "satellite": {
+      "type": "SPACECRAFT",
+      "state_fields": ["altitude_km", "battery_charge", "wheel_rpm", "thermal_index"],
+      "description": "Orbital asset in LEO."
+    }
+  },
+  "constraints": [
+    {
+      "id": "orbital_safety",
+      "expression": "altitude_km >= 300.0",
+      "severity": "SAFETY",
+      "error_message": "Critical orbital decay detected. Altitude below safety floor."
+    },
+    {
+      "id": "thermal_integrity",
+      "expression": "thermal_index < 85.0",
+      "severity": "SAFETY",
+      "error_message": "Equipment overheating. Entering safe mode."
+    }
+  ],
+  "actuators": [
+    {
+      "entity_type": "satellite",
+      "transition_type": "ORBITAL_MANEUVER",
+      "connector_id": "thruster_control_api"
+    }
+  ],
+  "metadata": {
+    "industry": "Aerospace",
+    "derived_variables": {
+      "altitude_km": "raw_altitude",
+      "thermal_index": "sensor_7_value"
+    }
+  }
+}

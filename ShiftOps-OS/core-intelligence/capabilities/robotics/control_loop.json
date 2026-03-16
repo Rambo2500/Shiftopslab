@@ -1,0 +1,10 @@
+{
+  "id": "control_loop",
+  "name": "Control Loop",
+  "description": "Maintains system state based on sensor input.",
+  "artifact_type": "control_generator",
+  "class": "control",
+  "provides": ["control_loop_provider"],
+  "requires": [{"trait": "sensor_provider"}],
+  "compatible_with": ["sensor_ingestion"]
+}

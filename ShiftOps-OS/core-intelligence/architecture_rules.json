@@ -1,0 +1,22 @@
+{
+  "component_biases": {
+    "robotics": {
+      "cache_layer": 3,
+      "api_gateway": 3,
+      "message_queue": 3
+    },
+    "analytics": {
+      "cache_layer": 1,
+      "api_gateway": 1,
+      "message_queue": 1
+    },
+    "default": {
+      "cache_layer": 31,
+      "api_gateway": 31,
+      "message_queue": 31,
+      "stream_processor": 19
+    }
+  },
+  "successful_mutations": {},
+  "high_score_threshold": 8.0
+}

@@ -1,0 +1,10 @@
+{
+  "id": "ai_reasoning",
+  "name": "AI Reasoning Agent",
+  "description": "Advanced AI layer for anomaly detection and operational guidance.",
+  "artifact_type": "reasoning_generator",
+  "class": "reasoning",
+  "provides": ["reasoning_engine"],
+  "requires": [{"trait": "analytics_provider"}],
+  "compatible_with": ["analytics_engine", "api_service"]
+}

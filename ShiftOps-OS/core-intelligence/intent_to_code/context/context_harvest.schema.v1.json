@@ -1,0 +1,47 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "ContextHarvest",
+  "type": "object",
+  "required": ["topic", "sources", "observations"],
+  "properties": {
+    "topic": {
+      "type": "string",
+      "description": "The subject area the context describes."
+    },
+    "sources": {
+      "type": "array",
+      "description": "Where the context came from (search engines, docs, humans).",
+      "items": {
+        "type": "object",
+        "required": ["type", "reference"],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": ["search", "documentation", "human", "other"]
+          },
+          "reference": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "observations": {
+      "type": "array",
+      "description": "Non-authoritative facts or patterns observed.",
+      "items": {
+        "type": "string"
+      }
+    },
+    "constraints": {
+      "type": "array",
+      "description": "Known limitations or boundaries.",
+      "items": {
+        "type": "string"
+      }
+    },
+    "notes": {
+      "type": "string",
+      "description": "Optional free-form context notes."
+    }
+  }
+}

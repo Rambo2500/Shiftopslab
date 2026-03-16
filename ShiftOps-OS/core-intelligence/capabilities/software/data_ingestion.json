@@ -1,0 +1,14 @@
+{
+  "id": "data_ingestion",
+  "name": "Data Ingestion Worker",
+  "description": "Background worker for parsing and populating operational data.",
+  "artifact_type": "compute_generator",
+  "class": "interface",
+  "provides": ["ingestion_pipeline"],
+  "requires": [{"trait": "api_gateway"}],
+  "traits": {
+    "throughput": "high",
+    "cost": "low"
+  },
+  "compatible_with": ["api_service", "storage_generator"]
+}

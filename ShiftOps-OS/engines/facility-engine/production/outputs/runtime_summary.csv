@@ -1,0 +1,3 @@
+line,unit_ref,scheduled_start,scheduled_end,status,runtime_hours,previous_end,overlap_warning
+Bread Line 03,PH202063,2026-03-08 06:00:00,2026-03-08 14:00:00,Scheduled,8.0,,False
+Bread Line 03,PH302174,2026-03-08 14:00:00,2026-03-08 22:00:00,Scheduled,8.0,2026-03-08 14:00:00,False

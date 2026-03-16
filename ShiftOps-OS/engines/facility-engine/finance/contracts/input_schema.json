@@ -1,0 +1,61 @@
+{
+  "identifier": "penny_pincher.input_schema.v1",
+  "schema_type": "contract",
+  "contract_name": "input",
+  "authoritative": true,
+
+  "required": {
+    "currency": "string",
+    "timezone": "string",
+    "planning_window_days": "integer",
+    "start_date": "date",
+
+    "income_sources": {
+      "type": "array",
+      "min_items": 1,
+      "items": {
+        "name": "string",
+        "amount": "number",
+        "frequency": "enum:weekly|biweekly|monthly|irregular",
+        "next_payment_date": "date"
+      }
+    },
+
+    "fixed_obligations": {
+      "type": "array",
+      "min_items": 1,
+      "items": {
+        "name": "string",
+        "amount": "number",
+        "due_date": "date",
+        "category": "enum:housing|utilities|debt|insurance|child_support|legal|other",
+        "mandatory": "boolean"
+      }
+    },
+
+    "variable_essentials": {
+      "type": "array",
+      "min_items": 0,
+      "items": {
+        "name": "string",
+        "estimated_amount": "number",
+        "frequency": "enum:weekly|monthly",
+        "category": "enum:food|fuel|medicine|transportation|other"
+      }
+    }
+  },
+
+  "optional": {
+    "one_time_events": {
+      "type": "array",
+      "items": {
+        "name": "string",
+        "amount": "number",
+        "date": "date",
+        "category": "enum:travel|medical|repair|fees|other"
+      }
+    },
+    "notes": "string"
+  }
+}
+

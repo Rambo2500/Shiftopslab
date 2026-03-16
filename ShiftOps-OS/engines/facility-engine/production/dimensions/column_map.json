@@ -1,0 +1,27 @@
+{
+  "orders": {
+    "date": "date",
+    "product code": "fg_legacy_ref",
+    "ord. units": "ordered_units"
+  },
+  "work_orders": {
+    "line": "line",
+    "sales date": "date",
+    "production date": "production_date",
+    "fg oracle ref": "sku",
+    "wms work order id": "work_order_id",
+    "submit qty (packs)": "booked_units",
+    "current qty (packs)": "booked_units"
+  },
+  "receipts": {
+    "received ts": "received_ts",
+    "item": "sku",
+    "work order nbr": "work_order_id",
+    "received qty": "received_units"
+  },
+  "shipments": {
+    "sales date": "date",
+    "item code": "sku",
+    "qty shipped": "shipped_units"
+  }
+}

@@ -1,0 +1,5 @@
+line,sku,units_per_minute,workers_per_line,setup_minutes,cleanup_minutes
+Bread Line 03,76937,400,6,20,10
+Bread Line 03,76728,400,6,20,10
+Bread Line 03,76004,380,6,20,10
+Bread Line 03,76816,380,6,20,10

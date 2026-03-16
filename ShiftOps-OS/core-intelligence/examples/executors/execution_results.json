@@ -1,0 +1,9 @@
+[
+  {
+    "type": "checklist",
+    "result": {
+      "format": "markdown",
+      "content": "# Checklist: Create a simple Python CLI tool\n\n- [ ] Define the tool's primary responsibility and inputs.\n- [ ] Choose a CLI framework (argparse, click, etc.).\n- [ ] Implement core logic in a separate module.\n- [ ] Wire the CLI entrypoint to the core logic."
+    }
+  }
+]

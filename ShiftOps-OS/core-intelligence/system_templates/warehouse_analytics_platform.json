@@ -1,0 +1,41 @@
+{
+  "system": "warehouse_analytics_platform",
+  "description": "Enterprise-grade warehouse operations platform with automated ingestion and AI insights.",
+  "components": [
+    { 
+      "name": "api", 
+      "type": "fastapi_service",
+      "description": "Central API for data access and dashboard support."
+    },
+    { 
+      "name": "dashboard", 
+      "type": "dashboard",
+      "depends_on": ["api"],
+      "description": "Real-time visualization of warehouse metrics."
+    },
+    { 
+      "name": "ingestion", 
+      "type": "worker_service",
+      "depends_on": ["api"],
+      "description": "Parses WMS exports and populates the data store."
+    },
+    { 
+      "name": "analytics", 
+      "type": "analytics_service",
+      "depends_on": ["api"],
+      "description": "Computes operational KPIs and trends."
+    },
+    { 
+      "name": "ai_service", 
+      "type": "ai_reasoning_service",
+      "depends_on": ["analytics"],
+      "description": "Analyzes metrics to produce actionable operational guidance."
+    },
+    { 
+      "name": "reports", 
+      "type": "report_service",
+      "depends_on": ["analytics"],
+      "description": "Generates PDF/HTML summaries for executive review."
+    }
+  ]
+}

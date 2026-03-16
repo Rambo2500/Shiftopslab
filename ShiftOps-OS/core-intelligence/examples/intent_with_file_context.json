@@ -1,0 +1,24 @@
+{
+  "goal": "Rename a batch of files using a deterministic naming rule",
+
+  "inputs": [
+    "directory_path",
+    "filename_pattern"
+  ],
+
+  "constraints": [
+    "Do not overwrite existing files",
+    "Do not infer naming rules",
+    "Fail if name collisions are detected"
+  ],
+
+  "confidence": "MEDIUM",
+
+  "context_references": [
+    {
+      "context_id": "basic_file_renaming_context",
+      "source_path": "examples/context_harvest_file_renaming.json",
+      "usage_note": "Reviewed common file renaming steps to ensure conflict checks occur before rename operations. Naming decisions are explicitly defined in intent."
+    }
+  ]
+}

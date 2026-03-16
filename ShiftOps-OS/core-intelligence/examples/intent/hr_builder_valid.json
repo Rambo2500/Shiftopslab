@@ -1,0 +1,48 @@
+{
+  "validated": true,
+  "NON_EXECUTABLE_PLAN": true,
+
+  "goal": "Design a basic HR onboarding process",
+
+  "outputs": {
+    "guidance": true
+  },
+
+  "security_envelope": {
+    "impact_class": "LOW",
+    "data_classification": "PUBLIC",
+    "pii_present": false,
+
+    "allowed_storage": {
+      "cloud": false,
+      "encryption_at_rest_required": false,
+      "encryption_in_transit_required": false
+    },
+
+    "auth": {
+      "mode": "NONE",
+      "secret_reference_only": true
+    },
+
+    "network": {
+      "inbound": "DENY_ALL",
+      "outbound": "ALLOW"
+    },
+
+    "audit": {
+      "append_only": true,
+      "hash_chain": true,
+      "log_fields_required": [
+        "timestamp_utc",
+        "actor",
+        "action",
+        "result",
+        "intent_hash"
+      ]
+    },
+
+    "failsafe": {
+      "on_error": ["NOTIFY"]
+    }
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "system": "ShiftOps-OS Facility",
+  "description": "A high-velocity operational OS for manufacturing and logistics nodes.",
+  "industry_agnostic": true,
+  "components": [
+    {
+      "name": "inbound_orders",
+      "type": "api_service",
+      "description": "Ingests and normalizes demand signals (orders, POs)."
+    },
+    {
+      "name": "production_engine",
+      "type": "analytics_engine",
+      "depends_on": ["inbound_orders"],
+      "description": "Calculates transformation throughput and equipment utilization."
+    },
+    {
+      "name": "labor_orchestrator",
+      "type": "analytics_engine",
+      "depends_on": ["production_engine"],
+      "description": "Matches workforce rosters to production requirements."
+    },
+    {
+      "name": "finance_risk_engine",
+      "type": "risk_engine",
+      "depends_on": ["production_engine", "labor_orchestrator"],
+      "description": "Calculates revenue at risk and cost per unit."
+    },
+    {
+      "name": "command_center_ui",
+      "type": "dashboard_ui",
+      "depends_on": ["finance_risk_engine"],
+      "description": "The unified visual control tower for the facility."
+    }
+  ],
+  "base_dir": "engines/facility-engine"
+}

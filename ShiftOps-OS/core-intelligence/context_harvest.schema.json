@@ -1,0 +1,55 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "ContextHarvest",
+  "description": "Normalized, non-authoritative context extracted from search or external information sources to support intent-to-code workflows.",
+  "type": "object",
+  "required": [
+    "source",
+    "domain",
+    "build_class",
+    "decision_axes",
+    "structural_requirements",
+    "ordering_constraints"
+  ],
+  "properties": {
+    "source": {
+      "type": "object",
+      "required": ["engine", "mode"],
+      "properties": {
+        "engine": {
+          "type": "string",
+          "enum": ["google", "bing", "edge", "other"]
+        },
+        "mode": {
+          "type": "string",
+          "description": "How the information was surfaced (ai_summary, serp_cluster, inline_steps, etc.)"
+        }
+      }
+    },
+    "domain": {
+      "type": "string"
+    },
+    "build_class": {
+      "type": "string"
+    },
+    "decision_axes": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "structural_requirements": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "ordering_constraints": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "implicit_blockers": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "notes": {
+      "type": "string"
+    }
+  }
+}

@@ -1,0 +1,530 @@
+﻿{
+  "id": "qr_punch_tracker",
+  "status": "active",
+  "domain_archetype": "Manufacturing",
+  "architecture": {
+    "nodes": [
+      {
+        "id": "data_storage",
+        "name": "data_storage",
+        "type": "database_service",
+        "description": "Persistent data storage",
+        "depends_on": [],
+        "capability_class": "",
+        "compatible_with": [],
+        "traits": [
+          "database_service"
+        ],
+        "outputs": {}
+      },
+      {
+        "id": "api_service",
+        "name": "api_service",
+        "type": "web_api_generator",
+        "description": "A FastAPI-based central communication hub.",
+        "depends_on": [
+          "data_storage"
+        ],
+        "capability_class": "interface",
+        "compatible_with": [],
+        "traits": [
+          "api_gateway",
+          "central_hub"
+        ],
+        "outputs": {}
+      },
+      {
+        "id": "sensor_ingestion",
+        "name": "sensor_ingestion",
+        "type": "web_api_generator",
+        "description": "Ingests telemetry from robotics sensors.",
+        "depends_on": [],
+        "capability_class": "interface",
+        "compatible_with": [],
+        "traits": [
+          "sensor_provider"
+        ],
+        "outputs": {}
+      },
+      {
+        "id": "storage_service",
+        "name": "storage_service",
+        "type": "fastapi_service",
+        "description": "Inferred storage_service service to satisfy system intent.",
+        "depends_on": [],
+        "capability_class": "inferred_capability",
+        "compatible_with": [],
+        "traits": [
+          "storage_service"
+        ],
+        "outputs": {}
+      },
+      {
+        "id": "data_ingestion",
+        "name": "data_ingestion",
+        "type": "compute_generator",
+        "description": "Background worker for parsing and populating operational data.",
+        "depends_on": [
+          "api_service"
+        ],
+        "capability_class": "interface",
+        "compatible_with": [],
+        "traits": [
+          "ingestion_pipeline"
+        ],
+        "outputs": {}
+      }
+    ],
+    "edges": [
+      {
+        "from": "data_storage",
+        "to": "api_service"
+      },
+      {
+        "from": "api_service",
+        "to": "data_ingestion"
+      }
+    ]
+  },
+  "repo": {
+    "README.md": "# QR Punch Tracker\nAutomated System Synthesis by ShiftOps-OS.\nArchetype: Manufacturing",
+    "shiftops.config.json": "{\n  \"intent\": {\n    \"goal_name\": \"Minimalist QR Code Attendance Tracker\",\n    \"description\": \"Develop a simple, cost-effective system to track employee attendance using QR code scans, recording attendance events (Clock-In/Clock-Out) with timestamps and employee identifiers in a local data file (CSV or Excel). Focus on simplicity, maintainability, and local data storage without advanced features like real-time dashboards or integrations.\",\n    \"goal_type\": \"application\",\n    \"functionality\": [\n      {\n        \"feature\": \"QR Code Scanning\",\n        \"description\": \"Enable users to scan QR codes to initiate attendance events.\",\n        \"technology\": \"pyzbar, webcam/USB QR code scanner\"\n      },\n      {\n        \"feature\": \"Attendance Event Recording\",\n        \"description\": \"Record employee identifier, timestamp (date & time), and event type (Clock-In/Clock-Out) upon QR code scan.\",\n        \"data_fields\": [\n          \"employee_id\",\n          \"timestamp\",\n          \"event_type (Clock-In/Clock-Out)\"\n        ]\n      },\n      {\n        \"feature\": \"Data Storage\",\n        \"description\": \"Store attendance event data in a single, accessible local file.\",\n        \"data_format\": [\n          \"CSV\",\n          \"Excel (.xlsx)\"\n        ],\n        \"location\": \"Local machine\"\n      },\n      {\n        \"feature\": \"KPI Calculation (Manual)\",\n        \"description\": \"Enable manual calculation of KPIs like Clock-in Accuracy, Clock-out Accuracy, Total Attendance Hours, Unexcused Absence Rate, Overtime Hours and Late Punches.\",\n        \"kpis\": [\n          \"Clock-in Accuracy\",\n          \"Clock-out Accuracy\",\n          \"Total Attendance Hours\",\n          \"Unexcused Absence Rate\",\n          \"Overtime Hours\",\n          \"Late Punches\"\n        ]\n      }\n    ],\n    \"non_functional_requirements\": [\n      {\n        \"requirement\": \"Simplicity\",\n        \"description\": \"Easy to understand, implement, and maintain.\"\n      },\n      {\n        \"requirement\": \"Cost-Effectiveness\",\n        \"description\": \"Utilize readily available, low-cost tools and technologies.\"\n      },\n      {\n        \"requirement\": \"Local Data Storage\",\n        \"description\": \"Data must be stored locally on a single machine.\"\n      },\n      {\n        \"requirement\": \"Maintainability\",\n        \"description\": \"Designed for easy updates and modifications.\"\n      },\n      {\n        \"requirement\": \"Accuracy\",\n        \"description\": \"Accurate timestamping of attendance events.\"\n      },\n      {\n        \"requirement\": \"Security\",\n        \"description\": \"Basic protection against unauthorized data modification (e.g., file permissions).\"\n      }\n    ],\n    \"out_of_scope\": [\n      \"Real-time dashboards or reporting\",\n      \"Integration with existing HR/Payroll systems\",\n      \"Cloud-based storage or distributed processing\",\n      \"Advanced user authentication or authorization\",\n      \"Mobile application development\"\n    ],\n    \"implementation_suggestions\": {\n      \"scripting_language\": \"Python\",\n      \"libraries\": [\n        \"openpyxl (for Excel) / csv (for CSV)\",\n        \"pyzbar (for QR code reading)\"\n      ],\n      \"hardware\": \"Existing webcam or USB QR code scanner\"\n    },\n    \"output_type\": \"application\",\n    \"security_envelope\": {\n      \"data_encryption\": \"None\",\n      \"access_control\": \"File permissions\",\n      \"audit_logging\": \"None\"\n    }\n  },\n  \"outputs\": {\n    \"system\": {\n      \"enabled\": true,\n      \"type\": \"custom_assembly\",\n      \"bootstrap_env\": true,\n      \"components\": [\n        {\n          \"id\": \"data_storage\",\n          \"name\": \"data_storage\",\n          \"type\": \"database_service\",\n          \"description\": \"Persistent data storage\",\n          \"depends_on\": [],\n          \"capability_class\": \"\",\n          \"compatible_with\": [],\n          \"traits\": [\n            \"database_service\"\n          ],\n          \"outputs\": {}\n        },\n        {\n          \"id\": \"api_service\",\n          \"name\": \"api_service\",\n          \"type\": \"web_api_generator\",\n          \"description\": \"A FastAPI-based central communication hub.\",\n          \"depends_on\": [\n            \"data_storage\"\n          ],\n          \"capability_class\": \"interface\",\n          \"compatible_with\": [],\n          \"traits\": [\n            \"api_gateway\",\n            \"central_hub\"\n          ],\n          \"outputs\": {}\n        },\n        {\n          \"id\": \"sensor_ingestion\",\n          \"name\": \"sensor_ingestion\",\n          \"type\": \"web_api_generator\",\n          \"description\": \"Ingests telemetry from robotics sensors.\",\n          \"depends_on\": [],\n          \"capability_class\": \"interface\",\n          \"compatible_with\": [],\n          \"traits\": [\n            \"sensor_provider\"\n          ],\n          \"outputs\": {}\n        },\n        {\n          \"id\": \"storage_service\",\n          \"name\": \"storage_service\",\n          \"type\": \"fastapi_service\",\n          \"description\": \"Inferred storage_service service to satisfy system intent.\",\n          \"depends_on\": [],\n          \"capability_class\": \"inferred_capability\",\n          \"compatible_with\": [],\n          \"traits\": [\n            \"storage_service\"\n          ],\n          \"outputs\": {}\n        },\n        {\n          \"id\": \"data_ingestion\",\n          \"name\": \"data_ingestion\",\n          \"type\": \"compute_generator\",\n          \"description\": \"Background worker for parsing and populating operational data.\",\n          \"depends_on\": [\n            \"api_service\"\n          ],\n          \"capability_class\": \"interface\",\n          \"compatible_with\": [],\n          \"traits\": [\n            \"ingestion_pipeline\"\n          ],\n          \"outputs\": {}\n        }\n      ]\n    }\n  },\n  \"goal\": \"QR Punch Tracker\",\n  \"security_envelope\": {\n    \"network\": {\n      \"outbound\": \"ALLOW_TRUSTED\"\n    }\n  },\n  \"validated\": true,\n  \"NON_EXECUTABLE_PLAN\": true,\n  \"expanded_vision\": \"## Minimalist System Requirement: QR Code Attendance Tracker\\n\\n**Goal:** Track employee attendance using QR code scans and record data in a local file.\\n\\n**Core Functionality:**\\n\\n*   **QR Code Scanning:**  System must allow users to scan a QR code to record attendance events.\\n*   **Attendance Event Recording:**  System must record the employee identifier associated with the QR code scan, timestamp of the scan (date & time), and event type (Clock-In or Clock-Out).\\n*   **Data Storage:**  System must store attendance event data in a single, accessible local file (e.g., CSV or Excel).\\n\\n**Key Attributes:**\\n\\n*   **Simplicity:** Solution must be simple to understand, implement, and maintain.\\n*   **Cost-Effectiveness:**  Utilize readily available, low-cost tools and technologies.\\n*   **Local Data Storage:**  Data must be stored locally on a single machine.\\n*   **Single-File Script Preference:** Implementation should ideally be contained within a single script file for ease of management.\\n\\n**Non-Functional Requirements:**\\n\\n*   **Maintainability:** Designed for easy updates and modifications by a single developer within a limited timeframe.\\n*   **Accuracy:**  Accurate timestamping of attendance events.\\n*   **Security:** Basic protection against unauthorized data modification (e.g., file permissions).  Focus on simplicity over robust security measures.\\n\\n**Out of Scope:**\\n\\n*   Real-time dashboards or reporting.\\n*   Integration with existing HR/Payroll systems.\\n*   Cloud-based storage or distributed processing.\\n*   Advanced user authentication or authorization.\\n*   Mobile application development.\\n\\n**Example Implementation Technologies (Suggestions):**\\n\\n*   **Scripting Language:** Python with libraries like `openpyxl` (for Excel) or `csv` (for CSV), and `pyzbar` (for QR code reading).\\n*   **Hardware (QR Code Scanner):**  Existing webcam or readily available USB QR code scanner.\\n*   **Data Storage:** Excel spreadsheet (.xlsx) or Comma Separated Values file (.csv).\\n\\n**Key Performance Indicators (KPIs) -  To be calculated *manually* from the raw data:**\\n\\n*   Clock-in Accuracy (Percentage of employees clocking in on time).\\n*   Clock-out Accuracy (Percentage of employees clocking out on time).\\n*   Total Attendance Hours (Sum of all recorded work hours).\\n*   Unexcused Absence Rate (Number of unexcused absences / Total number of employees).\\n*   Overtime Hours (Total overtime hours worked).\\n*   Late Punches (Number of late clock-in events).\\n\\n**Rationale:**\\n\\nThis simplified system focuses on capturing the essential attendance data using QR codes and storing it in a readily accessible format.  KPIs are calculated separately, allowing for maximum flexibility and minimal complexity in the initial implementation.  The focus is on creating a functional prototype quickly and easily, with the option to add more advanced features later.\\n\"\n}",
+    "docker-compose.yml": "version: '3.8'\nservices:\n  data_storage:\n    build: ./services/data_storage\n    ports: [\"8000:8000\"]\n  api_service:\n    build: ./services/api_service\n    ports: [\"8001:8000\"]\n  sensor_ingestion:\n    build: ./services/sensor_ingestion\n    ports: [\"8002:8000\"]\n  storage_service:\n    build: ./services/storage_service\n    ports: [\"8003:8000\"]\n  data_ingestion:\n    build: ./services/data_ingestion\n    ports: [\"8004:8000\"]\n",
+    "surface_manifest.json": "{\n  \"surfaces\": [\n    {\n      \"id\": \"employee_punch_dashboard\",\n      \"title\": \"Employee Attendance Tracking\",\n      \"projection\": \"dashboard\",\n      \"layers\": [\n        {\n          \"id\": \"attendance_metrics\",\n          \"components\": [\n            {\n              \"type\": \"metric\",\n              \"label\": \"Clock-in Accuracy\",\n              \"binding\": {\n                \"data_source\": \"data_storage\",\n                \"endpoint\": \"/attendance/clockin_accuracy\",\n                \"method\": \"GET\",\n                \"response_model\": {\n                  \"value\": \"float\"\n                }\n              }\n            },\n            {\n              \"type\": \"metric\",\n              \"label\": \"Clock-out Accuracy\",\n              \"binding\": {\n                \"data_source\": \"data_storage\",\n                \"endpoint\": \"/attendance/clockout_accuracy\",\n                \"method\": \"GET\",\n                \"response_model\": {\n                  \"value\": \"float\"\n                }\n              }\n            },\n            {\n              \"type\": \"metric\",\n              \"label\": \"Total Attendance Hours (Today)\",\n              \"binding\": {\n                \"data_source\": \"data_storage\",\n                \"endpoint\": \"/attendance/total_hours/today\",\n                \"method\": \"GET\",\n                \"response_model\": {\n                  \"value\": \"integer\"\n                }\n              }\n            },\n            {\n              \"type\": \"metric\",\n              \"label\": \"Unexcused Absence Rate (This Week)\",\n              \"binding\": {\n                \"data_source\": \"data_storage\",\n                \"endpoint\": \"/attendance/absence_rate/weekly\",\n                \"method\": \"GET\",\n                \"response_model\": {\n                  \"value\": \"float\"\n                }\n              }\n            },\n            {\n              \"type\": \"metric\",\n              \"label\": \"Overtime Hours (This Week)\",\n              \"binding\": {\n                \"data_source\": \"data_storage\",\n                \"endpoint\": \"/attendance/overtime_hours/weekly\",\n                \"method\": \"GET\",\n                \"response_model\": {\n                  \"value\": \"integer\"\n                }\n              }\n            },\n            {\n              \"type\": \"metric\",\n              \"label\": \"Late Punches (Today)\",\n              \"binding\": {\n                \"data_source\": \"data_storage\",\n                \"endpoint\": \"/attendance/late_punches/today\",\n                \"method\": \"GET\",\n                \"response_model\": {\n                  \"value\": \"integer\"\n                }\n              }\n            }\n          ]\n        },\n        {\n          \"id\": \"recent_punches\",\n          \"components\": [\n            {\n              \"type\": \"list\",\n              \"label\": \"Recent Employee Punches\",\n              \"binding\": {\n                \"data_source\": \"data_storage\",\n                \"endpoint\": \"/attendance/recent_punches\",\n                \"method\": \"GET\",\n                \"response_model\": {\n                  \"employee_id\": \"string\",\n                  \"timestamp\": \"datetime\",\n                  \"punch_type\": \"string\"\n                }\n              }\n            }\n          ]\n        },\n        {\n          \"id\": \"incident_feed\",\n          \"components\": [\n            {\n              \"type\": \"incidents\",\n              \"label\": \"Recent Incidents\",\n              \"binding\": {\n                \"data_source\": \"data_storage\",\n                \"endpoint\": \"/incidents/attendance\",\n                \"method\": \"GET\",\n                \"response_model\": {\n                  \"incident_type\": \"string\",\n                  \"timestamp\": \"datetime\",\n                  \"details\": \"string\"\n                }\n              }\n            }\n          ]\n        },\n        {\n          \"id\": \"manual_punch\",\n          \"components\": [\n            {\n              \"type\": \"action\",\n              \"label\": \"Manual Punch Entry\",\n              \"binding\": {\n                \"data_source\": \"api_service\",\n                \"endpoint\": \"/attendance/manual_punch\",\n                \"method\": \"POST\",\n                \"response_model\": {\n                  \"status\": \"string\",\n                  \"message\": \"string\"\n                }\n              }\n            }\n          ]\n        }\n      ]\n    },\n    {\n      \"id\": \"truth_layer\",\n      \"title\": \"Architecture Truth Layer\",\n      \"projection\": \"dashboard\",\n      \"layers\": [\n        {\n          \"id\": \"grounding_signals\",\n          \"components\": [\n            {\n              \"type\": \"metric\",\n              \"label\": \"Domain Match\",\n              \"value\": \"Manufacturing\"\n            },\n            {\n              \"type\": \"metric\",\n              \"label\": \"Complexity Class\",\n              \"value\": \"LOW\"\n            },\n            {\n              \"type\": \"metric\",\n              \"label\": \"Grounding Confidence\",\n              \"value\": \"HIGH\"\n            }\n          ]\n        },\n        {\n          \"id\": \"evidence_trace\",\n          \"components\": [\n            {\n              \"type\": \"list\",\n              \"label\": \"Researched KPIs\",\n              \"items\": [\n                \"Clock-in Accuracy\",\n                \"Clock-out Accuracy\",\n                \"Total Attendance Hours\",\n                \"Unexcused Absence Rate\",\n                \"Overtime Hours\",\n                \"Late Punches\"\n              ]\n            },\n            {\n              \"type\": \"list\",\n              \"label\": \"Researched Incidents\",\n              \"items\": [\n                \"Missed Punch\",\n                \"Unauthorized Clock-in/Clock-out\",\n                \"System Downtime\",\n                \"QR Code Scanning Failure\",\n                \"Time Theft (Suspected)\"\n              ]\n            }\n          ]\n        }\n      ]\n    },\n    {\n      \"id\": \"process_flow\",\n      \"title\": \"Process Flow Diagram\",\n      \"projection\": \"flow\",\n      \"layers\": [\n        {\n          \"id\": \"flow_layer\",\n          \"type\": \"flow_diagram\",\n          \"nodes\": [\n            {\n              \"id\": \"data_storage\",\n              \"name\": \"data_storage\",\n              \"type\": \"database_service\",\n              \"description\": \"Persistent data storage\",\n              \"depends_on\": [],\n              \"capability_class\": \"\",\n              \"compatible_with\": [],\n              \"traits\": [\n                \"database_service\"\n              ],\n              \"outputs\": {}\n            },\n            {\n              \"id\": \"api_service\",\n              \"name\": \"api_service\",\n              \"type\": \"web_api_generator\",\n              \"description\": \"A FastAPI-based central communication hub.\",\n              \"depends_on\": [\n                \"data_storage\"\n              ],\n              \"capability_class\": \"interface\",\n              \"compatible_with\": [],\n              \"traits\": [\n                \"api_gateway\",\n                \"central_hub\"\n              ],\n              \"outputs\": {}\n            },\n            {\n              \"id\": \"sensor_ingestion\",\n              \"name\": \"sensor_ingestion\",\n              \"type\": \"web_api_generator\",\n              \"description\": \"Ingests telemetry from robotics sensors.\",\n              \"depends_on\": [],\n              \"capability_class\": \"interface\",\n              \"compatible_with\": [],\n              \"traits\": [\n                \"sensor_provider\"\n              ],\n              \"outputs\": {}\n            },\n            {\n              \"id\": \"storage_service\",\n              \"name\": \"storage_service\",\n              \"type\": \"fastapi_service\",\n              \"description\": \"Inferred storage_service service to satisfy system intent.\",\n              \"depends_on\": [],\n              \"capability_class\": \"inferred_capability\",\n              \"compatible_with\": [],\n              \"traits\": [\n                \"storage_service\"\n              ],\n              \"outputs\": {}\n            },\n            {\n              \"id\": \"data_ingestion\",\n              \"name\": \"data_ingestion\",\n              \"type\": \"compute_generator\",\n              \"description\": \"Background worker for parsing and populating operational data.\",\n              \"depends_on\": [\n                \"api_service\"\n              ],\n              \"capability_class\": \"interface\",\n              \"compatible_with\": [],\n              \"traits\": [\n                \"ingestion_pipeline\"\n              ],\n              \"outputs\": {}\n            }\n          ],\n          \"edges\": [\n            {\n              \"from\": \"data_storage\",\n              \"to\": \"api_service\"\n            },\n            {\n              \"from\": \"api_service\",\n              \"to\": \"data_ingestion\"\n            }\n          ]\n        }\n      ]\n    }\n  ]\n}",
+    "services/data_storage/main.py": "# Service: data_storage\n# Synthesized by ShiftOps-OS ContractMaterializer\n# Domain Archetype: Manufacturing\n\nfrom fastapi import FastAPI\nfrom datetime import datetime\nimport random\nimport os\n\napp = FastAPI(title=\"data_storage\")\n\n@app.get(\"/\")\nasync def root():\n    return {\n        \"status\": \"active\", \n        \"service\": \"data_storage\",\n        \"ui_bindings\": 8,\n        \"telemetry_engine\": \"enabled\",\n        \"domain\": \"Manufacturing\"\n    }\n\n@app.get(\"/health\")\nasync def health():\n    return {\"health\": \"nominal\", \"uptime\": \"stable\"}\n\n@app.get(\"/attendance/clockin_accuracy\")\nasync def handle_attendance_clockin_accuracy_ui():\n    \"\"\"Operational endpoint bound to UI: Unknown Metric.\"\"\"\n    return {\n        \"value\": f\"{random.choice([\"Sector_A\", \"Sector_B\", \"Alpha\", \"Bravo\"])}_Data\"\n    }\n\n@app.get(\"/attendance/clockout_accuracy\")\nasync def handle_attendance_clockout_accuracy_ui():\n    \"\"\"Operational endpoint bound to UI: Unknown Metric.\"\"\"\n    return {\n        \"value\": f\"{random.choice([\"Sector_A\", \"Sector_B\", \"Alpha\", \"Bravo\"])}_Data\"\n    }\n\n@app.get(\"/attendance/total_hours/today\")\nasync def handle_attendance_total_hours_today_ui():\n    \"\"\"Operational endpoint bound to UI: Unknown Metric.\"\"\"\n    return {\n        \"value\": f\"{random.choice([\"Sector_A\", \"Sector_B\", \"Alpha\", \"Bravo\"])}_Data\"\n    }\n\n@app.get(\"/attendance/absence_rate/weekly\")\nasync def handle_attendance_absence_rate_weekly_ui():\n    \"\"\"Operational endpoint bound to UI: Unknown Metric.\"\"\"\n    return {\n        \"value\": f\"{random.choice([\"Sector_A\", \"Sector_B\", \"Alpha\", \"Bravo\"])}_Data\"\n    }\n\n@app.get(\"/attendance/overtime_hours/weekly\")\nasync def handle_attendance_overtime_hours_weekly_ui():\n    \"\"\"Operational endpoint bound to UI: Unknown Metric.\"\"\"\n    return {\n        \"value\": f\"{random.choice([\"Sector_A\", \"Sector_B\", \"Alpha\", \"Bravo\"])}_Data\"\n    }\n\n@app.get(\"/attendance/late_punches/today\")\nasync def handle_attendance_late_punches_today_ui():\n    \"\"\"Operational endpoint bound to UI: Unknown Metric.\"\"\"\n    return {\n        \"value\": f\"{random.choice([\"Sector_A\", \"Sector_B\", \"Alpha\", \"Bravo\"])}_Data\"\n    }\n\n@app.get(\"/attendance/recent_punches\")\nasync def handle_attendance_recent_punches_ui():\n    \"\"\"Operational endpoint bound to UI: Unknown Metric.\"\"\"\n    return {\n        \"employee_id\": f\"{random.choice([\"Sector_A\", \"Sector_B\", \"Alpha\", \"Bravo\"])}_Data\", \"timestamp\": datetime.now().isoformat(), \"punch_type\": f\"{random.choice([\"Sector_A\", \"Sector_B\", \"Alpha\", \"Bravo\"])}_Data\"\n    }\n\n@app.get(\"/incidents/attendance\")\nasync def handle_incidents_attendance_ui():\n    \"\"\"Operational endpoint bound to UI: Unknown Metric.\"\"\"\n    return {\n        \"incident_type\": random.choice([\"Missed Punch\", \"Unauthorized Clock-in/Clock-out\", \"System Downtime\", \"QR Code Scanning Failure\", \"Time Theft (Suspected)\"]), \"timestamp\": datetime.now().isoformat(), \"details\": datetime.now().isoformat()\n    }\n\n",
+    "services/data_storage/Dockerfile": "FROM python:3.9-slim\nWORKDIR /app\nCOPY . .\nRUN pip install -r requirements.txt\nCMD [\"uvicorn\", \"main:app\", \"--host\", \"0.0.0.0\", \"--port\", \"8000\"]",
+    "services/data_storage/requirements.txt": "fastapi\nuvicorn\npydantic",
+    "services/api_service/main.py": "# Service: api_service\n# Synthesized by ShiftOps-OS ContractMaterializer\n# Domain Archetype: Manufacturing\n\nfrom fastapi import FastAPI\nfrom datetime import datetime\nimport random\nimport os\n\napp = FastAPI(title=\"api_service\")\n\n@app.get(\"/\")\nasync def root():\n    return {\n        \"status\": \"active\", \n        \"service\": \"api_service\",\n        \"ui_bindings\": 1,\n        \"telemetry_engine\": \"enabled\",\n        \"domain\": \"Manufacturing\"\n    }\n\n@app.get(\"/health\")\nasync def health():\n    return {\"health\": \"nominal\", \"uptime\": \"stable\"}\n\n@app.post(\"/attendance/manual_punch\")\nasync def handle_attendance_manual_punch_ui():\n    \"\"\"Operational endpoint bound to UI: Unknown Metric.\"\"\"\n    return {\n        \"status\": random.choice([\"nominal\", \"critical\", \"warning\"]), \"message\": random.choice([\"Missed Punch\", \"Unauthorized Clock-in/Clock-out\", \"System Downtime\", \"QR Code Scanning Failure\", \"Time Theft (Suspected)\"])\n    }\n\n",
+    "services/api_service/Dockerfile": "FROM python:3.9-slim\nWORKDIR /app\nCOPY . .\nRUN pip install -r requirements.txt\nCMD [\"uvicorn\", \"main:app\", \"--host\", \"0.0.0.0\", \"--port\", \"8000\"]",
+    "services/api_service/requirements.txt": "fastapi\nuvicorn\npydantic",
+    "services/sensor_ingestion/main.py": "# Service: sensor_ingestion\n# Synthesized by ShiftOps-OS ContractMaterializer\n# Domain Archetype: Manufacturing\n\nfrom fastapi import FastAPI\nfrom datetime import datetime\nimport random\nimport os\n\napp = FastAPI(title=\"sensor_ingestion\")\n\n@app.get(\"/\")\nasync def root():\n    return {\n        \"status\": \"active\", \n        \"service\": \"sensor_ingestion\",\n        \"ui_bindings\": 0,\n        \"telemetry_engine\": \"enabled\",\n        \"domain\": \"Manufacturing\"\n    }\n\n@app.get(\"/health\")\nasync def health():\n    return {\"health\": \"nominal\", \"uptime\": \"stable\"}\n\n",
+    "services/sensor_ingestion/Dockerfile": "FROM python:3.9-slim\nWORKDIR /app\nCOPY . .\nRUN pip install -r requirements.txt\nCMD [\"uvicorn\", \"main:app\", \"--host\", \"0.0.0.0\", \"--port\", \"8000\"]",
+    "services/sensor_ingestion/requirements.txt": "fastapi\nuvicorn\npydantic",
+    "services/storage_service/main.py": "# Service: storage_service\n# Synthesized by ShiftOps-OS ContractMaterializer\n# Domain Archetype: Manufacturing\n\nfrom fastapi import FastAPI\nfrom datetime import datetime\nimport random\nimport os\n\napp = FastAPI(title=\"storage_service\")\n\n@app.get(\"/\")\nasync def root():\n    return {\n        \"status\": \"active\", \n        \"service\": \"storage_service\",\n        \"ui_bindings\": 0,\n        \"telemetry_engine\": \"enabled\",\n        \"domain\": \"Manufacturing\"\n    }\n\n@app.get(\"/health\")\nasync def health():\n    return {\"health\": \"nominal\", \"uptime\": \"stable\"}\n\n",
+    "services/storage_service/Dockerfile": "FROM python:3.9-slim\nWORKDIR /app\nCOPY . .\nRUN pip install -r requirements.txt\nCMD [\"uvicorn\", \"main:app\", \"--host\", \"0.0.0.0\", \"--port\", \"8000\"]",
+    "services/storage_service/requirements.txt": "fastapi\nuvicorn\npydantic",
+    "services/data_ingestion/main.py": "# Service: data_ingestion\n# Synthesized by ShiftOps-OS ContractMaterializer\n# Domain Archetype: Manufacturing\n\nfrom fastapi import FastAPI\nfrom datetime import datetime\nimport random\nimport os\n\napp = FastAPI(title=\"data_ingestion\")\n\n@app.get(\"/\")\nasync def root():\n    return {\n        \"status\": \"active\", \n        \"service\": \"data_ingestion\",\n        \"ui_bindings\": 0,\n        \"telemetry_engine\": \"enabled\",\n        \"domain\": \"Manufacturing\"\n    }\n\n@app.get(\"/health\")\nasync def health():\n    return {\"health\": \"nominal\", \"uptime\": \"stable\"}\n\n",
+    "services/data_ingestion/Dockerfile": "FROM python:3.9-slim\nWORKDIR /app\nCOPY . .\nRUN pip install -r requirements.txt\nCMD [\"uvicorn\", \"main:app\", \"--host\", \"0.0.0.0\", \"--port\", \"8000\"]",
+    "services/data_ingestion/requirements.txt": "fastapi\nuvicorn\npydantic"
+  },
+  "surface_manifest": {
+    "surfaces": [
+      {
+        "id": "employee_punch_dashboard",
+        "title": "Employee Attendance Tracking",
+        "projection": "dashboard",
+        "layers": [
+          {
+            "id": "attendance_metrics",
+            "components": [
+              {
+                "type": "metric",
+                "label": "Clock-in Accuracy",
+                "binding": {
+                  "data_source": "data_storage",
+                  "endpoint": "/attendance/clockin_accuracy",
+                  "method": "GET",
+                  "response_model": {
+                    "value": "float"
+                  }
+                }
+              },
+              {
+                "type": "metric",
+                "label": "Clock-out Accuracy",
+                "binding": {
+                  "data_source": "data_storage",
+                  "endpoint": "/attendance/clockout_accuracy",
+                  "method": "GET",
+                  "response_model": {
+                    "value": "float"
+                  }
+                }
+              },
+              {
+                "type": "metric",
+                "label": "Total Attendance Hours (Today)",
+                "binding": {
+                  "data_source": "data_storage",
+                  "endpoint": "/attendance/total_hours/today",
+                  "method": "GET",
+                  "response_model": {
+                    "value": "integer"
+                  }
+                }
+              },
+              {
+                "type": "metric",
+                "label": "Unexcused Absence Rate (This Week)",
+                "binding": {
+                  "data_source": "data_storage",
+                  "endpoint": "/attendance/absence_rate/weekly",
+                  "method": "GET",
+                  "response_model": {
+                    "value": "float"
+                  }
+                }
+              },
+              {
+                "type": "metric",
+                "label": "Overtime Hours (This Week)",
+                "binding": {
+                  "data_source": "data_storage",
+                  "endpoint": "/attendance/overtime_hours/weekly",
+                  "method": "GET",
+                  "response_model": {
+                    "value": "integer"
+                  }
+                }
+              },
+              {
+                "type": "metric",
+                "label": "Late Punches (Today)",
+                "binding": {
+                  "data_source": "data_storage",
+                  "endpoint": "/attendance/late_punches/today",
+                  "method": "GET",
+                  "response_model": {
+                    "value": "integer"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "id": "recent_punches",
+            "components": [
+              {
+                "type": "list",
+                "label": "Recent Employee Punches",
+                "binding": {
+                  "data_source": "data_storage",
+                  "endpoint": "/attendance/recent_punches",
+                  "method": "GET",
+                  "response_model": {
+                    "employee_id": "string",
+                    "timestamp": "datetime",
+                    "punch_type": "string"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "id": "incident_feed",
+            "components": [
+              {
+                "type": "incidents",
+                "label": "Recent Incidents",
+                "binding": {
+                  "data_source": "data_storage",
+                  "endpoint": "/incidents/attendance",
+                  "method": "GET",
+                  "response_model": {
+                    "incident_type": "string",
+                    "timestamp": "datetime",
+                    "details": "string"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "id": "manual_punch",
+            "components": [
+              {
+                "type": "action",
+                "label": "Manual Punch Entry",
+                "binding": {
+                  "data_source": "api_service",
+                  "endpoint": "/attendance/manual_punch",
+                  "method": "POST",
+                  "response_model": {
+                    "status": "string",
+                    "message": "string"
+                  }
+                }
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "truth_layer",
+        "title": "Architecture Truth Layer",
+        "projection": "dashboard",
+        "layers": [
+          {
+            "id": "grounding_signals",
+            "components": [
+              {
+                "type": "metric",
+                "label": "Domain Match",
+                "value": "Manufacturing"
+              },
+              {
+                "type": "metric",
+                "label": "Complexity Class",
+                "value": "LOW"
+              },
+              {
+                "type": "metric",
+                "label": "Grounding Confidence",
+                "value": "HIGH"
+              }
+            ]
+          },
+          {
+            "id": "evidence_trace",
+            "components": [
+              {
+                "type": "list",
+                "label": "Researched KPIs",
+                "items": [
+                  "Clock-in Accuracy",
+                  "Clock-out Accuracy",
+                  "Total Attendance Hours",
+                  "Unexcused Absence Rate",
+                  "Overtime Hours",
+                  "Late Punches"
+                ]
+              },
+              {
+                "type": "list",
+                "label": "Researched Incidents",
+                "items": [
+                  "Missed Punch",
+                  "Unauthorized Clock-in/Clock-out",
+                  "System Downtime",
+                  "QR Code Scanning Failure",
+                  "Time Theft (Suspected)"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "process_flow",
+        "title": "Process Flow Diagram",
+        "projection": "flow",
+        "layers": [
+          {
+            "id": "flow_layer",
+            "type": "flow_diagram",
+            "nodes": [
+              {
+                "id": "data_storage",
+                "name": "data_storage",
+                "type": "database_service",
+                "description": "Persistent data storage",
+                "depends_on": [],
+                "capability_class": "",
+                "compatible_with": [],
+                "traits": [
+                  "database_service"
+                ],
+                "outputs": {}
+              },
+              {
+                "id": "api_service",
+                "name": "api_service",
+                "type": "web_api_generator",
+                "description": "A FastAPI-based central communication hub.",
+                "depends_on": [
+                  "data_storage"
+                ],
+                "capability_class": "interface",
+                "compatible_with": [],
+                "traits": [
+                  "api_gateway",
+                  "central_hub"
+                ],
+                "outputs": {}
+              },
+              {
+                "id": "sensor_ingestion",
+                "name": "sensor_ingestion",
+                "type": "web_api_generator",
+                "description": "Ingests telemetry from robotics sensors.",
+                "depends_on": [],
+                "capability_class": "interface",
+                "compatible_with": [],
+                "traits": [
+                  "sensor_provider"
+                ],
+                "outputs": {}
+              },
+              {
+                "id": "storage_service",
+                "name": "storage_service",
+                "type": "fastapi_service",
+                "description": "Inferred storage_service service to satisfy system intent.",
+                "depends_on": [],
+                "capability_class": "inferred_capability",
+                "compatible_with": [],
+                "traits": [
+                  "storage_service"
+                ],
+                "outputs": {}
+              },
+              {
+                "id": "data_ingestion",
+                "name": "data_ingestion",
+                "type": "compute_generator",
+                "description": "Background worker for parsing and populating operational data.",
+                "depends_on": [
+                  "api_service"
+                ],
+                "capability_class": "interface",
+                "compatible_with": [],
+                "traits": [
+                  "ingestion_pipeline"
+                ],
+                "outputs": {}
+              }
+            ],
+            "edges": [
+              {
+                "from": "data_storage",
+                "to": "api_service"
+              },
+              {
+                "from": "api_service",
+                "to": "data_ingestion"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "narrative_summary": "Okay, here's a director-level summary of the \"QR Punch Tracker\" system architecture, focusing on its resilience and ability to handle data for an Excel spreadsheet:\n\n**To my mind you need a spreadsheet that does the following:**\n\n*   **QR Code Scanning:** Use your phone to scan the QR code and the spreadsheet will automatically record the time.\n*   **Employee Punch Tracking:** The system must be able to accurately record each time an employee punches in or out.\n*   **Data Export:** Export the recorded punches as an excel file\n\n***\n\n**Director-Level Summary: QR Punch Tracker System**\n\nImagine our \"QR Punch Tracker\" as a reliable time clock that uses QR codes instead of physical cards. Here's what you need to know:\n\n*   **Core Function:** Employees use their smartphones to scan a QR code when they arrive (punch in) and when they leave (punch out). This scan instantly records the time and the employee's ID. The system must be able to automatically save the new record into a formatted table.\n*   **Data Handling and Excel Integration:** The system is designed to be exported as an excel file to easily store historical punch data.\n*   **Resilience (25.03):**  We've built in layers of protection to keep the system running smoothly, even if there are temporary network issues or if one part of the system fails.  This is what Resilience 25.03 means.\n*   **Simple Reporting:** At any time, you can export the data from the database to excel.\n\n**In short:**  This system provides a reliable and easy-to-use way to track employee time using QR codes, focusing on easy integration with excel files.",
+  "diagnostics": {
+    "confidence": 0.4753,
+    "fitness_score": 47.53,
+    "archetype": "Manufacturing",
+    "kpis": [
+      {
+        "name": "Clock-in Accuracy",
+        "range": [
+          95,
+          100
+        ],
+        "unit": "%",
+        "description": "Percentage of punches recorded within a defined threshold (e.g., +/- 5 minutes) of scheduled start time."
+      },
+      {
+        "name": "Clock-out Accuracy",
+        "range": [
+          95,
+          100
+        ],
+        "unit": "%",
+        "description": "Percentage of punches recorded within a defined threshold (e.g., +/- 5 minutes) of scheduled end time."
+      },
+      {
+        "name": "Total Attendance Hours",
+        "range": [
+          0,
+          168
+        ],
+        "unit": "hours",
+        "description": "Sum of all clocked-in hours for all employees during a week."
+      },
+      {
+        "name": "Unexcused Absence Rate",
+        "range": [
+          0,
+          10
+        ],
+        "unit": "%",
+        "description": "Percentage of scheduled work time missed without approved leave."
+      },
+      {
+        "name": "Overtime Hours",
+        "range": [
+          0,
+          40
+        ],
+        "unit": "hours",
+        "description": "Number of overtime hours clocked by employees."
+      },
+      {
+        "name": "Late Punches",
+        "range": [
+          0,
+          500
+        ],
+        "unit": "count",
+        "description": "Count of punches recorded after the scheduled start time per pay period across all employees."
+      }
+    ],
+    "incidents": [
+      {
+        "type": "Missed Punch",
+        "severity_levels": [
+          "low",
+          "medium"
+        ]
+      },
+      {
+        "type": "Unauthorized Clock-in/Clock-out",
+        "severity_levels": [
+          "medium",
+          "high"
+        ]
+      },
+      {
+        "type": "System Downtime",
+        "severity_levels": [
+          "medium",
+          "high",
+          "critical"
+        ]
+      },
+      {
+        "type": "QR Code Scanning Failure",
+        "severity_levels": [
+          "low",
+          "medium"
+        ]
+      },
+      {
+        "type": "Time Theft (Suspected)",
+        "severity_levels": [
+          "high",
+          "critical"
+        ]
+      }
+    ],
+    "reasons": [
+      "Minimalist direct-path architecture chosen for cost-optimized initial deployment."
+    ],
+    "roadmap": [
+      {
+        "step": "01",
+        "title": "QR Code Generation & Data Capture Setup",
+        "desc": "Select a QR code generator (free online tools or library) to create unique QR codes for each employee.  Implement a mobile-friendly web form or mobile app (consider using low-code platforms like AppSheet or Power Apps for speed) that allows employees to scan the QR code and submit punch-in/punch-out data (timestamp and employee ID).  Optionally, integrate a simple time clock API for enhanced accuracy.  Deploy this application to a basic web server or cloud platform."
+      },
+      {
+        "step": "02",
+        "title": "Data Storage & Transformation",
+        "desc": "Configure a mechanism to receive the data from the web form/app. The simplest approach is to directly append the data to a CSV file stored in a cloud storage solution like AWS S3, Azure Blob Storage, or Google Cloud Storage. Alternatively, a lightweight database (e.g., SQLite, Google Sheets) can serve as an intermediary.  Schedule a regular process (e.g., cron job, serverless function) to transform this data into a format suitable for import into Excel. This may involve cleaning, formatting timestamps, and handling missing values."
+      },
+      {
+        "step": "03",
+        "title": "Excel Integration & Reporting",
+        "desc": "Implement a process to import the transformed data into the Excel spreadsheet. This can be done manually (download the CSV and import), or automated using VBA scripting within Excel or a scripting language (Python, PowerShell) to access the cloud storage and import the data.  Design the Excel spreadsheet with appropriate columns (Employee ID, Date, Punch-In Time, Punch-Out Time) and format the data. Create basic summary reports (e.g., daily/weekly employee hours) using Excel formulas or pivot tables."
+      },
+      {
+        "step": "04",
+        "title": "Testing & Deployment",
+        "desc": "Thoroughly test the entire system end-to-end, from QR code scanning to Excel reporting.  Test with multiple employees and scenarios (e.g., multiple punches per day, missing punch-out).  Train employees on how to use the QR code system. Deploy the web form/app to a production environment. Monitor the system for errors and data integrity issues.  Implement a backup and recovery plan for the CSV/database and Excel spreadsheet."
+      }
+    ],
+    "scalability_index": 3.4,
+    "resilience_score": 0.5,
+    "complexity": "LOW"
+  }
+}

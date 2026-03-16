@@ -1,0 +1,28 @@
+{
+  "identifier": "penny_pincher.scenario.vegas_red_eye.v1",
+  "currency": "USD",
+  "timezone": "America/Chicago",
+  "start_date": "2026-01-10",
+  "planning_window_days": 30,
+
+  "income_sources": [
+    { "name": "Paycheck", "amount": 1200, "frequency": "weekly", "next_payment_date": "2026-01-16" }
+  ],
+
+  "fixed_obligations": [
+    { "name": "Rent", "amount": 1400, "due_date": "2026-02-01", "category": "housing", "mandatory": true },
+    { "name": "Car Payment", "amount": 600, "due_date": "2026-01-25", "category": "debt", "mandatory": true },
+    { "name": "Electric", "amount": 220, "due_date": "2026-01-20", "category": "utilities", "mandatory": true }
+  ],
+
+  "variable_essentials": [
+    { "name": "Groceries", "estimated_amount": 180, "frequency": "weekly", "category": "food" },
+    { "name": "Gas", "estimated_amount": 70, "frequency": "weekly", "category": "fuel" }
+  ],
+
+  "one_time_events": [
+    { "name": "Vegas Weekend Damage", "amount": 950, "date": "2026-01-10", "category": "travel" }
+  ],
+
+  "notes": "User returned from Vegas and needs recovery clarity without advice."
+}

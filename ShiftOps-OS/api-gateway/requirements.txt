@@ -1,0 +1,12 @@
+fastapi
+uvicorn
+pydantic
+requests
+python-dotenv
+python-multipart
+google-generativeai
+google-cloud-aiplatform
+google-auth
+pandas
+openpyxl
+python-docx

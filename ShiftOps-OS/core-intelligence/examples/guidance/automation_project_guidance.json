@@ -1,0 +1,21 @@
+{
+  "goal": "Plan a small automation project",
+  "steps": [
+    {
+      "order": 1,
+      "description": "Define the scope and success criteria of the automation."
+    },
+    {
+      "order": 2,
+      "description": "Identify inputs, outputs, and constraints."
+    },
+    {
+      "order": 3,
+      "description": "Select tools or languages appropriate for the task."
+    },
+    {
+      "order": 4,
+      "description": "Draft a simple implementation plan."
+    }
+  ]
+}

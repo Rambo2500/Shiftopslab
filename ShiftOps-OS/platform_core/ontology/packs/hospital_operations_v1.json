@@ -1,0 +1,46 @@
+{
+  "ontology_id": "hospital_operations_v1",
+  "version": "1.0",
+  "entities": {
+    "patient": {
+      "type": "PERSON",
+      "state_fields": ["unit", "acuity_score", "assigned_nurse_id"],
+      "description": "An admitted patient in the care network."
+    },
+    "care_bed": {
+      "type": "EQUIPMENT",
+      "state_fields": ["id", "unit_id", "status", "isolation_mode"],
+      "description": "A physical hospital bed resource."
+    }
+  },
+  "constraints": [
+    {
+      "id": "nurse_ratio_valid",
+      "expression": "patients_per_nurse <= 4.0",
+      "severity": "SAFETY",
+      "error_message": "Critical Nurse-to-Patient ratio exceeded in unit."
+    },
+    {
+      "id": "icu_bed_availability",
+      "expression": "icu_occupied_beds < icu_total_capacity",
+      "severity": "SAFETY",
+      "error_message": "No available beds in ICU. Divert required."
+    }
+  ],
+  "actuators": [
+    {
+      "entity_type": "patient",
+      "transition_type": "UNIT_TRANSFER",
+      "connector_id": "epic_ehr_api"
+    },
+    {
+      "entity_type": "care_bed",
+      "transition_type": "STATUS_CHANGE",
+      "connector_id": "smart_facility_hub"
+    }
+  ],
+  "metadata": {
+    "industry": "Healthcare",
+    "compliance": ["HIPAA", "Joint Commission"]
+  }
+}

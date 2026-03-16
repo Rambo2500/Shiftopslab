@@ -1,0 +1,46 @@
+{
+  "identifier": "penny_pincher.readme.v1",
+  "title": "Penny Pincher",
+  "version": "0.1.0",
+  "status": "repo_bootstrap",
+  "category": "financial_recovery_clarity",
+  "execution_model": "deterministic",
+  "ai_policy": "no_ai_no_llm",
+  "tone": "light_humor_serious_math",
+
+  "summary": "A deterministic financial recovery clarity tool for post-chaos budgeting (e.g., Vegas weekend damage control). No advice, no LLM, just transparent cashflow + obligations math.",
+
+  "product_vision": {
+    "theme": "reckless_spend_then_recover",
+    "user_story": "User returns from a big spend event and needs a concrete, truthful plan to stabilize obligations and avoid further damage.",
+    "outputs_are": "descriptive_and_traceable",
+    "outputs_are_not": "advice_or_moral_judgment"
+  },
+
+  "scope": {
+    "in_scope": [
+      "cashflow_timeline",
+      "obligation_pressure_visibility",
+      "shortfall_detection",
+      "recovery_horizon_estimation",
+      "scenario_comparison"
+    ],
+    "out_of_scope": [
+      "financial_advice",
+      "investment_guidance",
+      "optimization_promises",
+      "probabilistic_forecasting",
+      "behavioral_coaching"
+    ]
+  },
+
+  "authoritative_contracts": {
+    "input": "contracts/input_schema.json",
+    "constraints": "contracts/constraint_schema.json",
+    "checker": "contracts/checker_rules.json",
+    "output": "contracts/output_schema.json"
+  },
+
+  "non_authoritative_notice": "This file is declarative only. Validation/enforcement lives exclusively in /contracts."
+}
+

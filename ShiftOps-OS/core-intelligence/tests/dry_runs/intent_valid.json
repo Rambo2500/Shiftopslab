@@ -1,0 +1,23 @@
+{
+  "validated": false,
+  "NON_EXECUTABLE_PLAN": true,
+  "goal": "Rename files safely using a deterministic rule",
+  "inputs": ["directory_path"],
+  "constraints": [
+    "Do not overwrite existing files",
+    "Fail on name collisions"
+  ],
+  "outputs": {
+    "guidance": true
+  },
+  "security_envelope": {
+    "impact_class": "LOW",
+    "auth": { "required": false },
+    "network": { "allowed": false },
+    "audit": {
+      "append_only": true,
+      "hash_chain": true
+    },
+    "failsafe": { "on_error": "abort" }
+  }
+}

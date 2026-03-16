@@ -1,0 +1,36 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Guidance",
+  "type": "object",
+  "required": ["goal", "steps"],
+  "properties": {
+    "goal": {
+      "type": "string",
+      "description": "The human-stated objective."
+    },
+    "steps": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["order", "description"],
+        "properties": {
+          "order": {
+            "type": "integer",
+            "description": "Execution order of the step."
+          },
+          "description": {
+            "type": "string",
+            "description": "What the human should do."
+          },
+          "optional": {
+            "type": "boolean",
+            "default": false
+          },
+          "notes": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

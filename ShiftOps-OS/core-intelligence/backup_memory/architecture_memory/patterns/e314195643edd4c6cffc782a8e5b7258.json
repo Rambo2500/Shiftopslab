@@ -1,0 +1,41 @@
+{
+  "pattern_id": "e314195643edd4c6cffc782a8e5b7258",
+  "goal": "ledger_system",
+  "score": 2.83,
+  "graph": {
+    "goal": "ledger_system",
+    "nodes": [
+      {
+        "name": "risk_engine",
+        "type": "reasoning_generator",
+        "description": "Evaluates financial transactions for risk and compliance.",
+        "depends_on": [],
+        "capability_class": "reasoning",
+        "compatible_with": [
+          "transport_generator",
+          "storage_generator"
+        ]
+      },
+      {
+        "name": "transaction_router",
+        "type": "transport_generator",
+        "description": "Routes and balances financial transactions.",
+        "depends_on": [
+          "risk_engine"
+        ],
+        "capability_class": "transport",
+        "compatible_with": [
+          "risk_engine"
+        ]
+      },
+      {
+        "name": "event_stream",
+        "type": "stream_service",
+        "description": "Event streaming layer",
+        "depends_on": [],
+        "capability_class": "",
+        "compatible_with": []
+      }
+    ]
+  }
+}

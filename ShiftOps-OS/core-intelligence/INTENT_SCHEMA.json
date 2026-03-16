@@ -1,0 +1,135 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Intent-to-Code Execution Intent",
+  "type": "object",
+  "additionalProperties": true,
+
+  "required": [
+    "validated",
+    "NON_EXECUTABLE_PLAN",
+    "outputs",
+    "security_envelope"
+  ],
+
+  "properties": {
+    "validated": {
+      "type": "boolean",
+      "description": "Set true only after intent validation passes"
+    },
+
+    "NON_EXECUTABLE_PLAN": {
+      "type": "boolean",
+      "const": true,
+      "description": "Guarantees that no plan may execute implicitly"
+    },
+
+    "goal": {
+      "type": "string",
+      "description": "Human-stated objective of the intent"
+    },
+
+    "inputs": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "List of input variables or data sources"
+    },
+
+    "constraints": {
+      "type": ["string", "array"],
+      "description": "Optional constraints governing execution or guidance"
+    },
+
+    "domain_tags": {
+      "type": ["string", "array"],
+      "description": "Optional domain hints for guidance production"
+    },
+
+    "outputs": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": [],
+
+      "properties": {
+        "guidance": {
+          "type": "boolean",
+          "description": "Explicitly request guidance production and rendering"
+        },
+
+        "code": {
+          "type": "object",
+          "additionalProperties": true,
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "description": "Explicitly request code compilation"
+            },
+            "type": {
+              "type": "string",
+              "enum": ["function", "fastapi_service", "dashboard", "cli_tool", "worker_service", "analytics_service", "ai_reasoning_service", "report_service"],
+              "description": "The type of artifact to generate"
+            },
+            "bootstrap_env": {
+              "type": "boolean",
+              "description": "Automatically initialize git, venv, and install dependencies"
+            }
+          }
+        },
+
+        "system": {
+          "type": "object",
+          "additionalProperties": true,
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "description": "Explicitly request system orchestration (multi-artifact)"
+            },
+            "type": {
+              "type": "string",
+              "description": "The name of the system template to use (e.g., warehouse_analytics_platform)"
+            },
+            "bootstrap_env": {
+              "type": "boolean",
+              "description": "Bootstrap all generated artifacts in the system"
+            },
+            "components": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "required": ["name", "type"],
+                "properties": {
+                  "name": { "type": "string" },
+                  "type": { "type": "string" },
+                  "depends_on": { "type": "array", "items": { "type": "string" } },
+                  "description": { "type": "string" }
+                }
+              },
+              "description": "Dynamic list of components to orchestrate (Capability-Driven)"
+            }
+          }
+        },
+
+        "platform": {
+          "type": "object",
+          "additionalProperties": true,
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "description": "Explicitly request platform orchestration (multi-system)"
+            }
+          }
+        }
+      }
+    },
+
+    "guidance": {
+      "type": ["object", "null"],
+      "description": "Optional in-memory guidance payload (produced upstream)"
+    },
+
+    "security_envelope": {
+      "type": "object",
+      "description": "Execution constraints and allowed sources",
+      "additionalProperties": true
+    }
+  }
+}

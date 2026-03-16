@@ -1,0 +1,10 @@
+{
+  "id": "transaction_router",
+  "name": "Transaction Router",
+  "description": "Routes and balances financial transactions.",
+  "artifact_type": "transport_generator",
+  "class": "transport",
+  "provides": ["routing_provider"],
+  "requires": [{"trait": "risk_provider"}],
+  "compatible_with": ["risk_engine"]
+}

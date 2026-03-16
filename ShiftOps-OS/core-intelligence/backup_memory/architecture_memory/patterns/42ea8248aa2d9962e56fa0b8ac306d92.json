@@ -1,0 +1,41 @@
+{
+  "pattern_id": "42ea8248aa2d9962e56fa0b8ac306d92",
+  "goal": "api_platform",
+  "score": 1.92,
+  "graph": {
+    "goal": "api_platform",
+    "nodes": [
+      {
+        "name": "data_storage",
+        "type": "database_service",
+        "description": "Persistent data storage",
+        "depends_on": [],
+        "capability_class": "",
+        "compatible_with": []
+      },
+      {
+        "name": "cache_layer",
+        "type": "cache_service",
+        "description": "Caching layer to reduce load on analytics",
+        "depends_on": [],
+        "capability_class": "",
+        "compatible_with": []
+      },
+      {
+        "name": "api_service",
+        "type": "web_api_generator",
+        "description": "A FastAPI-based central communication hub.",
+        "depends_on": [
+          "data_storage",
+          "cache_layer"
+        ],
+        "capability_class": "interface",
+        "compatible_with": [
+          "dashboard_ui",
+          "data_ingestion",
+          "analytics_engine"
+        ]
+      }
+    ]
+  }
+}

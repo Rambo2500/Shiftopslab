@@ -1,0 +1,69 @@
+{
+  "pattern_id": "2f4145648f927b02309dcc897b4bc29f",
+  "goal": "ai_services",
+  "score": -1.75,
+  "graph": {
+    "goal": "ai_services",
+    "nodes": [
+      {
+        "name": "data_storage",
+        "type": "database_service",
+        "description": "Persistent data storage",
+        "depends_on": [],
+        "capability_class": "",
+        "compatible_with": []
+      },
+      {
+        "name": "cache_layer",
+        "type": "cache_service",
+        "description": "Caching layer to reduce load on analytics",
+        "depends_on": [],
+        "capability_class": "",
+        "compatible_with": []
+      },
+      {
+        "name": "api_service",
+        "type": "web_api_generator",
+        "description": "A FastAPI-based central communication hub.",
+        "depends_on": [
+          "data_storage",
+          "cache_layer"
+        ],
+        "capability_class": "interface",
+        "compatible_with": [
+          "dashboard_ui",
+          "data_ingestion",
+          "analytics_engine"
+        ]
+      },
+      {
+        "name": "analytics_engine",
+        "type": "compute_generator",
+        "description": "Service for computing KPIs, trends, and business intelligence.",
+        "depends_on": [
+          "api_service",
+          "data_storage",
+          "data_storage"
+        ],
+        "capability_class": "compute",
+        "compatible_with": [
+          "api_service",
+          "storage_generator"
+        ]
+      },
+      {
+        "name": "ai_reasoning",
+        "type": "reasoning_generator",
+        "description": "Advanced AI layer for anomaly detection and operational guidance.",
+        "depends_on": [
+          "analytics_engine"
+        ],
+        "capability_class": "reasoning",
+        "compatible_with": [
+          "analytics_engine",
+          "api_service"
+        ]
+      }
+    ]
+  }
+}

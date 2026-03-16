@@ -1,0 +1,68 @@
+{
+  "context_harvest": {
+    "meta": {
+      "id": "basic_file_renaming_context",
+      "version": "1.0",
+      "domain": "filesystem_operations",
+      "scope": "batch_file_renaming",
+      "source_types": [
+        "common_industry_practice",
+        "operating_system_conventions",
+        "public_documentation"
+      ],
+      "non_authoritative": true,
+      "created_at": "2026-02-01"
+    },
+
+    "world_knowledge": {
+      "known_constraints": [
+        "Files must exist before they can be renamed",
+        "Renaming operations may overwrite existing files if not guarded",
+        "Ordering matters when names are derived from existing filenames",
+        "Filesystem permissions may block rename operations"
+      ],
+
+      "common_steps": [
+        {
+          "order": 1,
+          "name": "Identify target files",
+          "description": "Select files to be renamed based on location or pattern. No assumptions about naming structure."
+        },
+        {
+          "order": 2,
+          "name": "Define naming rule",
+          "description": "Determine how new filenames are derived (e.g., prefix, suffix, replacement). Decision comes from external intent."
+        },
+        {
+          "order": 3,
+          "name": "Check for conflicts",
+          "description": "Identify potential filename collisions before applying changes."
+        },
+        {
+          "order": 4,
+          "name": "Apply rename operation",
+          "description": "Rename files according to the defined rule."
+        },
+        {
+          "order": 5,
+          "name": "Verify results",
+          "description": "Confirm that files were renamed as expected."
+        }
+      ]
+    },
+
+    "explicit_non_claims": {
+      "does_not_decide": [
+        "Which files are selected",
+        "What the naming rule is",
+        "How conflicts are resolved",
+        "Whether overwrites are allowed"
+      ],
+      "requires_external_authority_from": [
+        "intent_contract",
+        "human_instruction",
+        "deterministic_compiler_rules"
+      ]
+    }
+  }
+}

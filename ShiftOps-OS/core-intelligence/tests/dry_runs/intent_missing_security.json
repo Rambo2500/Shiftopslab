@@ -1,0 +1,5 @@
+{
+  "goal": "Generate a CSV summary",
+  "inputs": ["data.csv"],
+  "constraints": ["Do not infer columns"]
+}

@@ -1,0 +1,10 @@
+{
+  "id": "gis_routing_engine",
+  "name": "GIS Routing Engine",
+  "artifact_type": "fastapi_service",
+  "class": "geospatial_node",
+  "description": "High-performance geospatial routing engine for real-time unit optimization and ETA calculation.",
+  "provides": ["routing", "gis", "geospatial"],
+  "requires": ["data_storage", "api_gateway"],
+  "compatible_with": ["ems_dispatch_node", "dashboard_ui"]
+}

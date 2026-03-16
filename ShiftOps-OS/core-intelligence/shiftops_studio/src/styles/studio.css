@@ -1,0 +1,175 @@
+:root {
+  --brand-blue: #1a66ff;
+  --text-dark: #e2e8f0;
+  --text-muted: #94a3b8;
+  --bg-dark: #0f172a;
+  --bg-canvas: #020617;
+  --panel-bg: #1e293b;
+  --border-color: #334155;
+}
+
+body {
+  margin: 0;
+  background-color: var(--bg-dark);
+  color: var(--text-dark);
+  font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  overflow-y: auto;
+}
+
+.app-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.header {
+  height: 80px;
+  background-color: #ffffff;
+  border-bottom: 1px solid #e2e8f0;
+  display: flex;
+  align-items: center;
+  padding: 0 24px;
+  flex-shrink: 0;
+}
+
+.studio-layout {
+  display: flex;
+  flex: 1;
+  height: calc(100vh - 80px);
+}
+
+/* 1. Left Panel (Intent Console) */
+.sidebar {
+  width: 300px;
+  background-color: var(--bg-dark);
+  border-right: 1px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+  padding: 24px;
+  gap: 20px;
+  overflow-y: auto;
+}
+
+.intent-input {
+  width: 100%;
+  background: var(--panel-bg);
+  border: 1px solid var(--border-color);
+  color: white;
+  padding: 12px;
+  border-radius: 8px;
+  font-size: 14px;
+  resize: none;
+}
+
+.generate-btn {
+  background-color: var(--brand-blue);
+  color: white;
+  border: none;
+  padding: 12px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.generate-btn:hover {
+  opacity: 0.9;
+}
+
+/* 2. Center Panel (Architecture Canvas) */
+.canvas {
+  flex: 1;
+  background-color: var(--bg-canvas);
+  position: relative;
+  overflow-y: auto;
+}
+
+/* 3. Right Panel (Intelligence Panel) */
+.metrics-panel {
+  width: 320px;
+  background-color: var(--bg-dark);
+  border-left: 1px solid var(--border-color);
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  overflow-y: auto;
+}
+
+/* Brand Styles (Your Logo) */
+.brand-container {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.logo-icon {
+  width: 48px;
+  height: 48px;
+  background-color: var(--brand-blue);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(26, 102, 255, 0.2);
+}
+
+.icon-graphic {
+  display: grid;
+  grid-template-areas: 
+      ". top ."
+      "left . right";
+  gap: 3px;
+}
+
+.triangle {
+  width: 0;
+  height: 0;
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-bottom: 7px solid rgba(255, 255, 255, 0.9);
+}
+
+.triangle.top { grid-area: top; }
+.triangle.left { grid-area: left; }
+.triangle.right { grid-area: right; }
+
+.brand-title {
+  font-size: 24px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  line-height: 1.1;
+  margin: 0;
+}
+
+.title-black { color: #1a1a1a; }
+.title-blue { color: var(--brand-blue); }
+
+.brand-subtitle {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 1.2px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  margin-top: 4px;
+}
+
+.telemetry-card {
+  background: var(--panel-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 16px;
+}
+
+.telemetry-label {
+  font-size: 11px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+.telemetry-value {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--brand-blue);
+}

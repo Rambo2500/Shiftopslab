@@ -1,0 +1,44 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Intent",
+  "type": "object",
+  "required": ["goal", "outputs"],
+  "properties": {
+    "goal": {
+      "type": "string",
+      "description": "The human-stated objective."
+    },
+    "context_refs": {
+      "type": "array",
+      "description": "Optional references to external context (e.g., search summaries).",
+      "items": { "type": "string" }
+    },
+    "outputs": {
+      "type": "object",
+      "required": ["guidance"],
+      "properties": {
+        "guidance": {
+          "type": "boolean",
+          "description": "Whether structured guidance should be produced."
+        },
+        "code": {
+          "type": "object",
+          "description": "Optional code generation request.",
+          "required": ["enabled"],
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "description": "Whether code generation is requested."
+            },
+            "language": {
+              "type": "string",
+              "description": "Target language or format (e.g., Python, JSON, Kotlin, scripts)."
+            }
+          }
+        }
+      }
+    }
+  }
+}
+This folder contains deprecated intent schemas kept for historical reference.
+They are NOT used by the execution OS.

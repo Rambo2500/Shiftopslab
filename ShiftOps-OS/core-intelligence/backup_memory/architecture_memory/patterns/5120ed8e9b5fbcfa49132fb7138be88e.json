@@ -1,0 +1,107 @@
+{
+  "pattern_id": "5120ed8e9b5fbcfa49132fb7138be88e",
+  "goal": "data_platform",
+  "score": 10.3,
+  "graph": {
+    "goal": "data_platform",
+    "nodes": [
+      {
+        "name": "postgres_db",
+        "type": "database_service",
+        "description": "Relational data storage provider.",
+        "depends_on": [],
+        "capability_class": "storage",
+        "compatible_with": []
+      },
+      {
+        "name": "data_storage",
+        "type": "database_service",
+        "description": "Persistent data storage",
+        "depends_on": [],
+        "capability_class": "",
+        "compatible_with": []
+      },
+      {
+        "name": "cache_layer",
+        "type": "cache_service",
+        "description": "Caching layer to reduce load on analytics",
+        "depends_on": [],
+        "capability_class": "",
+        "compatible_with": []
+      },
+      {
+        "name": "api_gateway",
+        "type": "gateway_service",
+        "description": "External API gateway",
+        "depends_on": [],
+        "capability_class": "",
+        "compatible_with": []
+      },
+      {
+        "name": "api_service",
+        "type": "web_api_generator",
+        "description": "A FastAPI-based central communication hub.",
+        "depends_on": [
+          "data_storage",
+          "cache_layer",
+          "api_gateway"
+        ],
+        "capability_class": "interface",
+        "compatible_with": [
+          "dashboard_ui",
+          "data_ingestion",
+          "analytics_engine"
+        ]
+      },
+      {
+        "name": "dashboard_ui",
+        "type": "ui_generator",
+        "description": "A real-time visual interface for operations monitoring.",
+        "depends_on": [
+          "api_service"
+        ],
+        "capability_class": "presentation",
+        "compatible_with": [
+          "api_service"
+        ]
+      },
+      {
+        "name": "analytics_engine",
+        "type": "compute_generator",
+        "description": "Service for computing KPIs, trends, and business intelligence.",
+        "depends_on": [
+          "api_service",
+          "postgres_db",
+          "data_storage"
+        ],
+        "capability_class": "compute",
+        "compatible_with": [
+          "api_service",
+          "storage_generator"
+        ]
+      },
+      {
+        "name": "message_queue",
+        "type": "queue_service",
+        "description": "Message queue for asynchronous processing",
+        "depends_on": [],
+        "capability_class": "",
+        "compatible_with": []
+      },
+      {
+        "name": "data_ingestion",
+        "type": "compute_generator",
+        "description": "Background worker for parsing and populating operational data.",
+        "depends_on": [
+          "api_service",
+          "message_queue"
+        ],
+        "capability_class": "interface",
+        "compatible_with": [
+          "api_service",
+          "storage_generator"
+        ]
+      }
+    ]
+  }
+}

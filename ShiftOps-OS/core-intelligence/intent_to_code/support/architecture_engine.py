@@ -1,0 +1,499 @@
+﻿from typing import Dict, Any, List, Optional, Tuple, Set
+import json
+import random
+from pathlib import Path
+from intent_to_code.support.planner import PlanningKernel
+from intent_to_code.support.capability_resolver import CapabilityResolver
+from intent_to_code.support.architecture_explorer import ArchitectureExplorer
+from intent_to_code.support.architecture_evaluator import ArchitectureEvaluator
+from intent_to_code.support.system_graph import SystemGraph, SystemNode
+from intent_to_code.compiler import compile_intent
+from intent_to_code.support.domain_scout import DomainScout
+from intent_to_code.support.complexity_classifier import ComplexityClassifier
+
+class ContractMaterializer:
+    """
+    The Bridge from Architecture to Code.
+    Materializes UI bindings into actual FastAPI service endpoints
+    with synthetic telemetry (believable operational data).
+    """
+    @staticmethod
+    def materialize_service(service_name: str, bindings: List[Dict], outputs: Dict, domain_data: Dict = None) -> str:
+        endpoints = ""
+        domain_data = domain_data or {}
+        kpis = domain_data.get("kpis", [])
+        incidents = domain_data.get("incidents", [])
+        
+        # 1. Implement generic capability outputs
+        for out_name, out_fields in outputs.items():
+            mock_vals = []
+            for f in out_fields:
+                if 'id' in f: mock_vals.append(f'"{f}": f"{service_name.upper()}_{{i:03}}"')
+                elif 'status' in f: mock_vals.append(f'"{f}": random.choice(["active", "standby", "maintenance"])')
+                elif 'level' in f or 'percent' in f: mock_vals.append(f'"{f}": random.randint(10, 95)')
+                else: mock_vals.append(f'"{f}": "nominal"')
+                
+            endpoints += f"""
+@app.get("/{out_name}")
+async def get_{out_name}():
+    \"\"\"Auto-generated capability endpoint for {out_name}.\"\"\"
+    return {{ 
+        "{out_name}": [{{ {', '.join(mock_vals)} }} for i in range(5)],
+        "timestamp": datetime.now().isoformat()
+    }}
+"""
+
+        # 2. Implement specific UI bindings with "Breathing" Data (Telemetry Fabricator)
+        for b in bindings:
+            endpoint = b.get("endpoint", "/unknown").lstrip("/")
+            method = b.get("method", "GET").lower()
+            resp_model = b.get("response_model", {})
+            label = b.get("label", "Unknown Metric")
+            
+            mock_logic = []
+            for k, v in resp_model.items():
+                k_low = k.lower()
+                
+                # Domain-Specific Clamping logic
+                matched_kpi = next((kpi for kpi in kpis if kpi['name'].lower() in k_low or k_low in kpi['name'].lower()), None)
+                
+                if matched_kpi:
+                    r = matched_kpi['range']
+                    if isinstance(r[0], int):
+                        mock_logic.append(f'"{k}": random.randint({r[0]}, {r[1]})')
+                    else:
+                        mock_logic.append(f'"{k}": round(random.uniform({r[0]}, {r[1]}), 2)')
+                elif 'severity' in k_low or 'rank' in k_low:
+                    mock_logic.append(f'"{k}": random.randint(1, 10)')
+                elif 'latitude' in k_low or 'lat' in k_low:
+                    mock_logic.append(f'"{k}": 34.0522 + (random.random() * 0.1)')
+                elif 'longitude' in k_low or 'lng' in k_low:
+                    mock_logic.append(f'"{k}": -118.2437 + (random.random() * 0.1)')
+                elif 'count' in k_low or 'available' in k_low or 'population' in k_low:
+                    mock_logic.append(f'"{k}": random.randint(100, 5000)')
+                elif 'percentage' in k_low or 'progress' in k_low or 'capacity' in k_low or 'rate' in k_low or 'efficiency' in k_low:
+                    mock_logic.append(f'"{k}": round(random.uniform(70.0, 99.5), 1)')
+                elif 'time' in k_low or 'updated' in k_low or 'timestamp' in k_low or 'eta' in k_low:
+                    mock_logic.append(f'"{k}": datetime.now().isoformat()')
+                elif 'status' in k_low:
+                    mock_logic.append(f'"{k}": random.choice(["nominal", "critical", "warning"])')
+                elif 'exception' in k_low or 'incident' in k_low or 'message' in k_low:
+                    if incidents:
+                        incident_types = [i["type"] for i in incidents]
+                        mock_logic.append(f'"{k}": random.choice({json.dumps(incident_types)})')
+                    else:
+                        mock_logic.append(f'"{k}": "System Alert"')
+                else:
+                    mock_logic.append(f'"{k}": f"{{random.choice(["Sector_A", "Sector_B", "Alpha", "Bravo"])}}_Data"')
+
+            endpoints += f"""
+@app.{method}("/{endpoint}")
+async def handle_{endpoint.replace('/', '_')}_ui():
+    \"\"\"Operational endpoint bound to UI: {label}.\"\"\"
+    return {{
+        {', '.join(mock_logic)}
+    }}
+"""
+
+        return f"""# Service: {service_name}
+# Synthesized by ShiftOps-OS ContractMaterializer
+# Domain Archetype: {domain_data.get('archetype', 'Generic')}
+
+from fastapi import FastAPI
+from datetime import datetime
+import random
+import os
+
+app = FastAPI(title="{service_name}")
+
+@app.get("/")
+async def root():
+    return {{
+        "status": "active", 
+        "service": "{service_name}",
+        "ui_bindings": {len(bindings)},
+        "telemetry_engine": "enabled",
+        "domain": "{domain_data.get('archetype', 'Generic')}"
+    }}
+
+@app.get("/health")
+async def health():
+    return {{"health": "nominal", "uptime": "stable"}}
+{endpoints}
+"""
+
+class ArchitectureEngine:
+    def __init__(self, capabilities_dir: str = "capabilities"):
+        self.resolver = CapabilityResolver(capabilities_dir)
+        self.planner = PlanningKernel()
+        self.evaluator = ArchitectureEvaluator()
+        self.explorer = ArchitectureExplorer()
+        self.scout = DomainScout()
+        self.complexity_classifier = ComplexityClassifier()
+
+    def generate_snapshot(self, goal: str, user_request: str, image_path: str = None) -> Dict[str, Any]:
+        """
+        The Unified Snapshot Generator.
+        Translates Intent -> Domain Scout -> Architecture -> Surface Manifest.
+        """
+        # 0. Domain Grounding
+        print(f"[Domain Scout] Researching '{user_request}'...")
+        domain_data = self.scout.scout(user_request)
+        
+        # 0.5 Complexity Classification
+        complexity = self.complexity_classifier.classify(user_request)
+        print(f"[Complexity] Classified as {complexity}")
+        
+        # 1. Plan the system (Complexity-Aware)
+        system_intent = self.planner.plan_system(user_request, complexity=complexity, domain_data=domain_data)
+        if not system_intent or "error" in system_intent:
+            raise Exception(f"Planning failed: {system_intent.get('error', 'Unknown')}")
+        
+        system_intent["goal"] = goal
+        outputs = system_intent.get("outputs") or {}
+        system_outputs = outputs.get("system") or {}
+        components = system_outputs.get("components") or []
+
+        # 2. Build the System Graph
+        winning_graph = SystemGraph(goal=goal)
+        for c in components:
+            if c: winning_graph.add_node(SystemNode.from_dict(c))
+            
+        # 2.5 Evaluate with Complexity Context
+        evaluation = self.evaluator.evaluate(winning_graph, complexity=complexity)
+        
+        # 3. Generate Director Summary
+        try:
+            narrative_prompt = f"Summarize this system architecture for a director: {goal}. Resilience: {evaluation.get('total_score')}. Focus on its ability to handle {user_request}."
+            narrative_summary = self.planner.model_adapter.generate_text(narrative_prompt).strip()
+        except:
+            narrative_summary = f"System v1.0. Successfully synthesized {len(components)} microservices for {goal}."
+
+        # 4. Handle Vision (If image provided)
+        blueprint = None
+        if image_path:
+            print(f"[Vision Engine] Interpreting image: {image_path}")
+            blueprint = self.scout.interpret_vision(image_path, user_request)
+
+        # 4. Universal Surface Projection
+        surface_manifest = self._generate_surface_projection(user_request, components, domain_data, complexity)
+        
+        # Add Process Flow projection
+        if "surfaces" in surface_manifest:
+            surface_manifest["surfaces"].append({
+                "id": "process_flow",
+                "title": "Process Flow Diagram",
+                "projection": "flow",
+                "layers": [
+                    {
+                        "id": "flow_layer",
+                        "type": "flow_diagram",
+                        "nodes": [n.to_dict() for n in winning_graph.nodes.values()],
+                        "edges": [{"from": d, "to": n.name} for n in winning_graph.nodes.values() for d in n.depends_on]
+                    }
+                ]
+            })
+
+        if blueprint and "surfaces" in surface_manifest:
+            surface_manifest["surfaces"].insert(0, {
+                "id": "vision_blueprint",
+                "title": blueprint.get("title", "Spatial Hologram"),
+                "projection": "blueprint",
+                "layers": blueprint.get("layers", [])
+            })
+
+        # 5. Build Repository Hologram
+        full_repo = self._orchestrate_to_hologram(system_intent, surface_manifest, domain_data)
+
+        # 6. Generate Roadmap & Technical Rationale (Decision Intelligence)
+        try:
+            roadmap_prompt = f"""
+            Act as a Lead Systems Architect. 
+            Generate a 4-step implementation roadmap for: "{user_request}".
+            Domain: {domain_data.get('archetype')}
+            Complexity: {complexity}
+            
+            Return ONLY valid JSON:
+            [
+              {{"step": "01", "title": "Infrastructure Setup", "desc": "Provisioning VPC, K8s clusters and base networking."}},
+              ...
+            ]
+            """
+            roadmap_res = self.planner.model_adapter.generate_text(roadmap_prompt)
+            roadmap = json.loads(roadmap_res.replace("```json", "").replace("```", "").strip())
+        except:
+            roadmap = [
+                {"step": "01", "title": "Foundation", "desc": f"Initialize {domain_data.get('archetype')} core service mesh."},
+                {"step": "02", "title": "Ingestion", "desc": "Connect real-time data streams and telemetry nodes."},
+                {"step": "03", "title": "Analytics", "desc": "Deploy domain-specific KPI calculation engines."},
+                {"step": "04", "title": "Surface", "desc": "Project high-fidelity operational dashboards."}
+            ]
+
+        # 7. Metadata and Confidence
+        binding_count = 0
+        if surface_manifest and "surfaces" in surface_manifest:
+            for s in surface_manifest["surfaces"]:
+                for l in s.get("layers", []):
+                    items = l.get("components", []) if "components" in l else [l]
+                    for c in items:
+                        if "binding" in c: binding_count += 1
+        
+        if binding_count > 0:
+            evaluation["total_score"] += (binding_count * 2.5)
+
+        return {
+            "id": goal.replace(" ", "_").lower(),
+            "status": "active",
+            "domain_archetype": domain_data.get("archetype"),
+            "architecture": {
+                "nodes": [n.to_dict() for n in winning_graph.nodes.values()],
+                "edges": [{"from": d, "to": n.name} for n in winning_graph.nodes.values() for d in n.depends_on]
+            },
+            "repo": full_repo,
+            "surface_manifest": surface_manifest,
+            "narrative_summary": narrative_summary,
+            "diagnostics": {
+                "confidence": min(1.0, evaluation.get("total_score", 0) / 100.0),
+                "fitness_score": evaluation.get("total_score", 0),
+                "archetype": domain_data.get("archetype"),
+                "kpis": domain_data.get("kpis", []),
+                "incidents": domain_data.get("incidents", []),
+                "reasons": evaluation.get("decision_rationale", []),
+                "roadmap": roadmap,
+                "scalability_index": evaluation.get("scalability_score", 0),
+                "resilience_score": evaluation.get("resilience_score", 0),
+                "complexity": complexity
+            }
+        }
+
+    def run_search_cycle(self, goal: str, user_request: str):
+        """
+        Streaming version of the synthesis cycle.
+        Yields search events from the ArchitectureSearchEngine.
+        """
+        # 0. Domain & Complexity
+        domain_data = self.scout.scout(user_request)
+        complexity = self.complexity_classifier.classify(user_request)
+        
+        yield {"type": "domain_researched", "domain": domain_data, "complexity": complexity}
+
+        # 1. Expand Intent
+        expanded = self.planner._expand_intent(user_request, complexity, domain_data)
+        yield {"type": "intent_expanded", "expanded": expanded}
+
+        # 2. Decompose & Resolve
+        requested = self.planner.model_adapter.decompose_goal(expanded)
+        base_graph = self.resolver.resolve(requested, goal=goal)
+        yield {"type": "base_graph_resolved", "graph": base_graph.to_dict()}
+
+        # 3. Search & Evolve
+        search_engine = self.planner.search_engine
+        for event in search_engine.search_yield(base_graph, complexity=complexity):
+            yield event
+
+    def run_full_cycle(self, goal: str, user_request: str, base_dir: Path = Path("build")) -> List[Dict]:
+        """
+        Executes the full synthesis-to-code pipeline.
+        Returns a list of compilation results.
+        """
+        # 1. Generate the snapshot (Architecture + Surface Manifest)
+        snapshot = self.generate_snapshot(goal, user_request)
+        
+        # 2. Extract components from the snapshot's architecture
+        components = snapshot["architecture"]["nodes"]
+        
+        # 3. Create a system intent for the orchestrator
+        system_intent = {
+            "goal": goal,
+            "outputs": {
+                "system": {
+                    "enabled": True,
+                    "type": "custom_assembly",
+                    "components": components,
+                    "bootstrap_env": True
+                }
+            },
+            "domain_data": {
+                "archetype": snapshot["domain_archetype"],
+                "kpis": snapshot["diagnostics"]["kpis"],
+                "incidents": snapshot["diagnostics"]["incidents"]
+            }
+        }
+        
+        # 4. Orchestrate the physical build
+        from intent_to_code.system_orchestrator import orchestrate_system
+        orchestration_result = orchestrate_system(system_intent)
+        
+        # 5. Return the list of artifacts
+        return orchestration_result.get("artifacts", [])
+
+    def evolve_snapshot(self, snapshot: Dict, mutation_request: str) -> Dict[str, Any]:
+        """
+        Takes an existing snapshot and evolves it.
+        This enables "Save -> Improve" workflow.
+        """
+        goal = snapshot.get("id", "evolved_system")
+        current_arch = snapshot.get("architecture", {})
+        
+        # 1. Convert back to SystemGraph
+        current_graph = SystemGraph.from_dict(current_arch)
+        current_graph.goal = goal
+        
+        # 2. Get Domain & Complexity
+        domain_data = self.scout.scout(mutation_request)
+        complexity = self.complexity_classifier.classify(mutation_request)
+        
+        # 3. Use Planner to suggest evolution
+        evolved_graph = self.planner.evolve(current_graph, mutation_request, domain_data)
+        
+        # 4. Re-evaluate
+        evaluation = self.evaluator.evaluate(evolved_graph, complexity=complexity)
+        
+        # 5. Generate new Snapshot
+        components = [n.to_dict() for n in evolved_graph.nodes.values()]
+        surface_manifest = self._generate_surface_projection(mutation_request, components, domain_data, complexity)
+        
+        # 6. Build the evolve result (simplified snapshot)
+        return {
+            "id": goal,
+            "status": "evolved",
+            "domain_archetype": domain_data.get("archetype"),
+            "architecture": evolved_graph.to_dict(),
+            "surface_manifest": surface_manifest,
+            "diagnostics": {
+                "confidence": min(1.0, evaluation.get("total_score", 0) / 100.0),
+                "fitness_score": evaluation.get("total_score", 0),
+                "complexity": complexity,
+                "archetype": domain_data.get("archetype"),
+                "kpis": domain_data.get("kpis", []),
+                "incidents": domain_data.get("incidents", [])
+            }
+        }
+
+    def _generate_surface_projection(self, request: str, components: List[Dict], domain_data: Dict = None, complexity: str = "MEDIUM") -> Dict:
+        comp_list = ", ".join([c['name'] for c in components])
+        domain_context = ""
+        if domain_data:
+            kpis = [k['name'] for k in domain_data.get('kpis', [])]
+            incidents = [i['type'] for i in domain_data.get('incidents', [])]
+            domain_context = f"\nResearched Domain Archetype: {domain_data.get('archetype')}\nResearched KPIs: {', '.join(kpis)}\nResearched Incidents: {', '.join(incidents)}"
+
+        prompt = f"""
+        Design a high-fidelity 'Surface Manifest' for: "{request}"
+        Available Components in Architecture: {comp_list}
+        Complexity: {complexity}
+        {domain_context}
+        
+        CRITICAL SCHEMA:
+        {{
+          "surfaces": [
+            {{
+              "id": "surface_id",
+              "title": "Surface Title",
+              "projection": "dashboard",
+              "layers": [
+                {{
+                  "id": "layer_id",
+                  "components": [
+                    {{
+                      "type": "metric|list|map|chat|incidents|action",
+                      "label": "Label",
+                      "binding": {{
+                        "data_source": "service_name",
+                        "endpoint": "/api/endpoint",
+                        "method": "GET",
+                        "response_model": {{"field": "type"}}
+                      }}
+                    }}
+                  ]
+                }}
+              ]
+            }}
+          ]
+        }}
+        
+        Output ONLY valid JSON.
+        """
+        try:
+            res = self.planner.model_adapter.generate_text(prompt)
+            manifest = json.loads(res.replace("```json", "").replace("```", "").strip())
+            if "surfaces" not in manifest and "layers" in manifest:
+                manifest = {"surfaces": [{"id": "default", "title": manifest.get("title", "Command"), "projection": "dashboard", "layers": manifest.get("layers", [])}]}
+            
+            # --- TRUTH LAYER INJECTION ---
+            if "surfaces" in manifest:
+                matches = domain_data.get("domain_matches", [])
+                signals = domain_data.get("source_signals", [])
+                
+                truth_layer = {
+                    "id": "truth_layer",
+                    "title": "Architecture Truth Layer",
+                    "projection": "dashboard",
+                    "layers": [
+                        {
+                            "id": "grounding_signals",
+                            "components": [
+                                {"type": "metric", "label": "Domain Archetype", "value": domain_data.get("archetype", "Unknown")},
+                                {"type": "metric", "label": "Complexity Class", "value": complexity},
+                                {"type": "metric", "label": "Evidence Density", "value": "HIGH" if len(signals) > 3 else "MEDIUM"}
+                            ]
+                        },
+                        {
+                            "id": "domain_correlation",
+                            "components": [
+                                {"type": "list", "label": "Domain Matches", "items": [f"{m['name']} ({int(m['score']*100)}%)" for m in matches]}
+                            ]
+                        },
+                        {
+                            "id": "evidence_trace",
+                            "components": [
+                                {"type": "list", "label": "Source Signals Detected", "items": signals},
+                                {"type": "list", "label": "Targeted KPIs", "items": [k["name"] for k in domain_data.get("kpis", [])]}
+                            ]
+                        }
+                    ]
+                }
+                manifest["surfaces"].append(truth_layer)
+                
+            return manifest
+        except:
+            return {"surfaces": [{"id": "default", "title": "Dashboard", "projection": "dashboard", "layers": []}]}
+
+
+    def _orchestrate_to_hologram(self, intent, surface_manifest=None, domain_data=None):
+        components = intent.get("outputs", {}).get("system", {}).get("components", [])
+        goal = intent.get("goal", "System")
+        domain_data = domain_data or {}
+        
+        full_repo = {
+            "README.md": f"# {goal}\nAutomated System Synthesis by ShiftOps-OS.\nArchetype: {domain_data.get('archetype', 'Generic')}",
+            "shiftops.config.json": json.dumps(intent, indent=2),
+            "docker-compose.yml": "version: '3.8'\nservices:\n"
+        }
+
+        if surface_manifest:
+            full_repo["surface_manifest.json"] = json.dumps(surface_manifest, indent=2)
+
+        service_bindings = {}
+        if surface_manifest and "surfaces" in surface_manifest:
+            for surface in surface_manifest["surfaces"]:
+                for layer in surface.get("layers", []):
+                    items = layer.get("components", []) if "components" in layer else [layer]
+                    for comp in items:
+                        binding = comp.get("binding")
+                        if binding and "data_source" in binding:
+                            src = binding["data_source"]
+                            if src not in service_bindings: service_bindings[src] = []
+                            service_bindings[src].append(binding)
+
+        for c in components:
+            name = c['name']
+            outputs = c.get('outputs', {})
+            bindings = service_bindings.get(name, [])
+            full_repo["docker-compose.yml"] += f"  {name}:\n    build: ./services/{name}\n    ports: [\"{8000 + components.index(c)}:8000\"]\n"
+            full_repo[f"services/{name}/main.py"] = ContractMaterializer.materialize_service(name, bindings, outputs, domain_data)
+            full_repo[f"services/{name}/Dockerfile"] = "FROM python:3.9-slim\nWORKDIR /app\nCOPY . .\nRUN pip install -r requirements.txt\nCMD [\"uvicorn\", \"main:app\", \"--host\", \"0.0.0.0\", \"--port\", \"8000\"]"
+            full_repo[f"services/{name}/requirements.txt"] = "fastapi\nuvicorn\npydantic"
+            
+        return full_repo
+

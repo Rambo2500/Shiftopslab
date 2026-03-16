@@ -1,0 +1,68 @@
+{
+  "context_harvest": {
+    "meta": {
+      "id": "basic_tabular_report_context",
+      "version": "1.0",
+      "domain": "tabular_data_reporting",
+      "scope": "generic_csv_to_summary_output",
+      "source_types": [
+        "common_industry_practice",
+        "public_documentation",
+        "general_tooling_conventions"
+      ],
+      "non_authoritative": true,
+      "created_at": "2026-02-01"
+    },
+
+    "world_knowledge": {
+      "known_constraints": [
+        "Source data must exist before any transformation can occur",
+        "Column names are required to reference fields reliably",
+        "Aggregation requires numeric or countable fields",
+        "Output format must be defined before generation"
+      ],
+
+      "common_steps": [
+        {
+          "order": 1,
+          "name": "Locate source data",
+          "description": "Identify the tabular input (e.g., CSV, spreadsheet, table export). No assumptions about schema."
+        },
+        {
+          "order": 2,
+          "name": "Inspect structure",
+          "description": "Observe available columns, data types, and row volume."
+        },
+        {
+          "order": 3,
+          "name": "Select fields of interest",
+          "description": "Determine which columns are relevant for the intended report."
+        },
+        {
+          "order": 4,
+          "name": "Apply aggregation or transformation",
+          "description": "Summarize, group, or transform data according to an external decision."
+        },
+        {
+          "order": 5,
+          "name": "Produce output",
+          "description": "Generate a new artifact (e.g., CSV, table, sheet) reflecting the transformation."
+        }
+      ]
+    },
+
+    "explicit_non_claims": {
+      "does_not_decide": [
+        "Which columns are selected",
+        "Which aggregations are valid",
+        "How errors are handled",
+        "What output format is preferred"
+      ],
+      "requires_external_authority_from": [
+        "intent_contract",
+        "human_instruction",
+        "deterministic_compiler_rules"
+      ]
+    }
+  }
+}

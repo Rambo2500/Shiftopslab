@@ -1,0 +1,10 @@
+{
+  "id": "dashboard_ui",
+  "name": "Frontend Dashboard",
+  "description": "A real-time visual interface for operations monitoring.",
+  "artifact_type": "ui_generator",
+  "class": "presentation",
+  "provides": ["user_interface"],
+  "requires": [{"trait": "api_gateway"}],
+  "compatible_with": ["api_service"]
+}

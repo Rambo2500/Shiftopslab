@@ -1,0 +1,15 @@
+{
+  "id": "clickhouse_db",
+  "name": "ClickHouse Database",
+  "description": "Columnar data storage provider for high-performance analytics.",
+  "artifact_type": "database_service",
+  "class": "storage",
+  "provides": ["storage_provider", "analytics_storage"],
+  "requires": [],
+  "traits": {
+    "latency": "medium",
+    "throughput": "high",
+    "consistency": "eventual",
+    "cost": "medium"
+  }
+}

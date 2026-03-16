@@ -1,0 +1,44 @@
+{
+  "identifier": "penny_pincher.checker_rules.v1",
+  "schema_type": "contract",
+  "contract_name": "checker_rules",
+  "authoritative": true,
+
+  "validation_rules": [
+    {
+      "id": "VAL001",
+      "rule": "All monetary amounts must be >= 0",
+      "severity": "error"
+    },
+    {
+      "id": "VAL002",
+      "rule": "All required date fields must be present and valid",
+      "severity": "error"
+    },
+    {
+      "id": "VAL003",
+      "rule": "planning_window_days must be between 7 and 120",
+      "severity": "error"
+    },
+    {
+      "id": "VAL004",
+      "rule": "income_sources must include next_payment_date for all items",
+      "severity": "error"
+    },
+    {
+      "id": "VAL005",
+      "rule": "fixed_obligations must include due_date for all items",
+      "severity": "error"
+    },
+    {
+      "id": "VAL006",
+      "rule": "currency must be a 3-letter code (e.g., USD)",
+      "severity": "warning"
+    }
+  ],
+
+  "failure_behavior": {
+    "on_error": "halt_and_return_errors",
+    "on_warning": "return_warnings_and_continue"
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "id": "sensor_ingestion",
+  "name": "Sensor Ingestion",
+  "description": "Ingests telemetry from robotics sensors.",
+  "artifact_type": "web_api_generator",
+  "class": "interface",
+  "provides": ["sensor_provider"],
+  "requires": [],
+  "compatible_with": ["control_generator", "transport_generator"]
+}

@@ -1,0 +1,336 @@
+{
+  "pattern_id": "fc65bd67fbebf1ccef47bd603f82eea8",
+  "goal": "EMS_Production_V1",
+  "score": 22.52,
+  "graph": {
+    "goal": "EMS_Production_V1",
+    "nodes": [
+      {
+        "id": "auth_service",
+        "name": "auth_service",
+        "type": "fastapi_service",
+        "description": "Inferred auth_service service to satisfy system intent.",
+        "depends_on": [],
+        "capability_class": "inferred_capability",
+        "compatible_with": [],
+        "traits": [
+          "auth_service"
+        ]
+      },
+      {
+        "id": "api_gateway",
+        "name": "api_gateway",
+        "type": "fastapi_service",
+        "description": "Inferred api_gateway service to satisfy system intent.",
+        "depends_on": [],
+        "capability_class": "inferred_capability",
+        "compatible_with": [],
+        "traits": [
+          "api_gateway"
+        ]
+      },
+      {
+        "id": "notification_worker",
+        "name": "notification_worker",
+        "type": "worker_service",
+        "description": "Inferred notification_worker service to satisfy system intent.",
+        "depends_on": [],
+        "capability_class": "inferred_capability",
+        "compatible_with": [],
+        "traits": [
+          "notification_worker"
+        ]
+      },
+      {
+        "id": "sensor_ingestion",
+        "name": "sensor_ingestion",
+        "type": "web_api_generator",
+        "description": "Ingests telemetry from robotics sensors.",
+        "depends_on": [],
+        "capability_class": "interface",
+        "compatible_with": [],
+        "traits": [
+          "sensor_provider"
+        ]
+      },
+      {
+        "id": "cache_layer",
+        "name": "cache_layer",
+        "type": "cache_service",
+        "description": "Caching layer to reduce load on analytics",
+        "depends_on": [],
+        "capability_class": "",
+        "compatible_with": [],
+        "traits": [
+          "cache_service"
+        ]
+      },
+      {
+        "id": "api_service",
+        "name": "api_service",
+        "type": "web_api_generator",
+        "description": "A FastAPI-based central communication hub.",
+        "depends_on": [
+          "cache_layer"
+        ],
+        "capability_class": "interface",
+        "compatible_with": [],
+        "traits": [
+          "api_gateway",
+          "central_hub"
+        ]
+      },
+      {
+        "id": "postgres_db",
+        "name": "postgres_db",
+        "type": "database_service",
+        "description": "Relational data storage provider.",
+        "depends_on": [],
+        "capability_class": "storage",
+        "compatible_with": [],
+        "traits": [
+          "storage_provider",
+          "relational_db"
+        ]
+      },
+      {
+        "id": "analytics_engine",
+        "name": "analytics_engine",
+        "type": "compute_generator",
+        "description": "Service for computing KPIs, trends, and business intelligence.",
+        "depends_on": [
+          "api_service",
+          "postgres_db"
+        ],
+        "capability_class": "compute",
+        "compatible_with": [],
+        "traits": [
+          "compute_cluster",
+          "analytics_provider"
+        ]
+      },
+      {
+        "id": "message_queue",
+        "name": "message_queue",
+        "type": "fastapi_service",
+        "description": "Inferred message_queue service to satisfy system intent.",
+        "depends_on": [],
+        "capability_class": "inferred_capability",
+        "compatible_with": [],
+        "traits": [
+          "message_queue"
+        ]
+      },
+      {
+        "id": "telemetry_ingest_node",
+        "name": "telemetry_ingest_node",
+        "type": "worker_service",
+        "description": "Stream-based telemetry ingestion node capable of processing 100k+ sensor signals per second.",
+        "depends_on": [
+          "message_queue"
+        ],
+        "capability_class": "compute_generator",
+        "compatible_with": [],
+        "traits": [
+          "telemetry",
+          "ingestion",
+          "stream_processing"
+        ]
+      },
+      {
+        "id": "report_generation",
+        "name": "report_generation",
+        "type": "presentation_generator",
+        "description": "Service for generating executive summaries and PDF/HTML reports.",
+        "depends_on": [
+          "analytics_engine"
+        ],
+        "capability_class": "presentation",
+        "compatible_with": [],
+        "traits": [
+          "reporting_provider"
+        ]
+      },
+      {
+        "id": "data_storage",
+        "name": "data_storage",
+        "type": "fastapi_service",
+        "description": "Inferred data_storage service to satisfy system intent.",
+        "depends_on": [],
+        "capability_class": "inferred_capability",
+        "compatible_with": [],
+        "traits": [
+          "data_storage"
+        ]
+      },
+      {
+        "id": "gis_routing_engine",
+        "name": "gis_routing_engine",
+        "type": "fastapi_service",
+        "description": "High-performance geospatial routing engine for real-time unit optimization and ETA calculation.",
+        "depends_on": [
+          "data_storage",
+          "api_gateway"
+        ],
+        "capability_class": "geospatial_node",
+        "compatible_with": [],
+        "traits": [
+          "routing",
+          "gis",
+          "geospatial"
+        ]
+      },
+      {
+        "id": "ems_dispatch_node",
+        "name": "ems_dispatch_node",
+        "type": "fastapi_service",
+        "description": "Central orchestration layer for EMS dispatch, coordinating between field units and hospital systems.",
+        "depends_on": [
+          "gis_routing_engine",
+          "api_service"
+        ],
+        "capability_class": "control_generator",
+        "compatible_with": [],
+        "traits": [
+          "dispatch",
+          "orchestration",
+          "command_and_control"
+        ]
+      },
+      {
+        "id": "realtime_alert_node",
+        "name": "realtime_alert_node",
+        "type": "worker_service",
+        "description": "Low-latency alert generation engine that monitors system state and triggers push notifications.",
+        "depends_on": [
+          "message_queue",
+          "api_service"
+        ],
+        "capability_class": "reasoning_generator",
+        "compatible_with": [],
+        "traits": [
+          "alerts",
+          "notifications"
+        ]
+      },
+      {
+        "id": "dashboard_ui",
+        "name": "dashboard_ui",
+        "type": "ui_generator",
+        "description": "A real-time visual interface for operations monitoring.",
+        "depends_on": [
+          "api_service"
+        ],
+        "capability_class": "presentation",
+        "compatible_with": [],
+        "traits": [
+          "user_interface"
+        ]
+      },
+      {
+        "id": "data_ingestion",
+        "name": "data_ingestion",
+        "type": "compute_generator",
+        "description": "Background worker for parsing and populating operational data.",
+        "depends_on": [
+          "api_service"
+        ],
+        "capability_class": "interface",
+        "compatible_with": [],
+        "traits": [
+          "ingestion_pipeline"
+        ]
+      },
+      {
+        "id": "storage_service",
+        "name": "storage_service",
+        "type": "fastapi_service",
+        "description": "Inferred storage_service service to satisfy system intent.",
+        "depends_on": [],
+        "capability_class": "inferred_capability",
+        "compatible_with": [],
+        "traits": [
+          "storage_service"
+        ]
+      },
+      {
+        "id": "stream_processor",
+        "name": "stream_processor",
+        "type": "compute_generator",
+        "description": "Real-time data stream processing capability.",
+        "depends_on": [],
+        "capability_class": "compute",
+        "compatible_with": [],
+        "traits": [
+          "stream_provider"
+        ]
+      },
+      {
+        "id": "mobile_app",
+        "name": "mobile_app",
+        "type": "fastapi_service",
+        "description": "Inferred mobile_app service to satisfy system intent.",
+        "depends_on": [],
+        "capability_class": "inferred_capability",
+        "compatible_with": [],
+        "traits": [
+          "mobile_app"
+        ]
+      }
+    ],
+    "edges": [
+      {
+        "from": "cache_layer",
+        "to": "api_service"
+      },
+      {
+        "from": "api_service",
+        "to": "analytics_engine"
+      },
+      {
+        "from": "postgres_db",
+        "to": "analytics_engine"
+      },
+      {
+        "from": "message_queue",
+        "to": "telemetry_ingest_node"
+      },
+      {
+        "from": "analytics_engine",
+        "to": "report_generation"
+      },
+      {
+        "from": "data_storage",
+        "to": "gis_routing_engine"
+      },
+      {
+        "from": "api_gateway",
+        "to": "gis_routing_engine"
+      },
+      {
+        "from": "gis_routing_engine",
+        "to": "ems_dispatch_node"
+      },
+      {
+        "from": "api_service",
+        "to": "ems_dispatch_node"
+      },
+      {
+        "from": "message_queue",
+        "to": "realtime_alert_node"
+      },
+      {
+        "from": "api_service",
+        "to": "realtime_alert_node"
+      },
+      {
+        "from": "api_service",
+        "to": "dashboard_ui"
+      },
+      {
+        "from": "api_service",
+        "to": "data_ingestion"
+      }
+    ]
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "topic": "Bulk file renaming",
+  "sources": [
+    {
+      "type": "search",
+      "reference": "Search engine AI summary"
+    }
+  ],
+  "observations": [
+    "Dry-run previews reduce accidental data loss.",
+    "Regular expressions are commonly used for pattern matching.",
+    "Cross-platform behavior differs between shells."
+  ],
+  "constraints": [
+    "File system permissions may block renaming.",
+    "Case sensitivity varies by OS."
+  ]
+}

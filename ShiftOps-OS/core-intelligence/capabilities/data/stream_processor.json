@@ -1,0 +1,10 @@
+{
+  "id": "stream_processor",
+  "name": "Stream Processor",
+  "description": "Real-time data stream processing capability.",
+  "artifact_type": "compute_generator",
+  "class": "compute",
+  "provides": ["stream_provider"],
+  "requires": [],
+  "compatible_with": ["storage_generator", "transport_generator"]
+}

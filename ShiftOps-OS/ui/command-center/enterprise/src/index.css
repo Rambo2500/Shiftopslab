@@ -1,0 +1,87 @@
+@import "tailwindcss";
+@plugin "tailwindcss-animate";
+
+@keyframes flow {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(300%); }
+}
+
+.animate-flow {
+  animation: flow 2s linear infinite;
+}
+
+/* --- PROFESSIONAL PRINT ENGINE --- */
+@media print {
+  @page {
+    margin: 1.5cm;
+    size: A4;
+  }
+
+  body {
+    background: white !important;
+    color: #0f172a !important;
+    font-size: 11pt;
+    line-height: 1.5;
+    -webkit-print-color-adjust: exact;
+  }
+
+  /* Hide everything except the report content */
+  nav, .no-print, button, .md\:hidden, .hidden, .md\:flex, footer {
+    display: none !important;
+  }
+
+  /* Force container to full width and remove spacing */
+  main, .max-w-6xl, .max-w-4xl {
+    max-width: 100% !important;
+    width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    box-shadow: none !important;
+    border: none !important;
+  }
+
+  /* Report Sections */
+  .report-section {
+    page-break-inside: avoid;
+    margin-bottom: 2rem !important;
+    border: 1px solid #e2e8f0 !important;
+    padding: 2rem !important;
+    background: #f8fafc !important;
+    border-radius: 1rem !important;
+    box-shadow: none !important;
+  }
+
+  .page-break {
+    page-break-before: always;
+  }
+
+  /* Professional Headers */
+  h1, h2, h3 {
+    color: #1e3a8a !important; /* Deep Blue */
+    page-break-after: avoid;
+    margin-top: 0 !important;
+  }
+
+  /* Ensure text is black for readability */
+  p, div, span {
+    color: #0f172a !important;
+  }
+
+  /* Highlight colors */
+  .text-red-600 { color: #dc2626 !important; }
+  .text-blue-600 { color: #2563eb !important; }
+  .bg-slate-900 { background: #0f172a !important; color: white !important; }
+  .bg-slate-900 * { color: white !important; }
+
+  /* Branding Watermark */
+  .print-footer {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    text-align: center;
+    font-size: 8pt;
+    color: #94a3b8;
+    border-top: 1px solid #e2e8f0;
+    padding-top: 0.5rem;
+  }
+}

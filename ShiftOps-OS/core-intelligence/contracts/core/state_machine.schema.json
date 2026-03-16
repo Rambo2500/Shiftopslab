@@ -1,0 +1,67 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://intent-to-code/contracts/core/state_machine.schema.json",
+  "title": "SystemStateMachine",
+  "description": "Explicit system state machine governing lock, freeze, incident, and recovery behavior. Prevents ambiguous or magical state transitions.",
+  "type": "object",
+  "additionalProperties": false,
+
+  "properties": {
+    "current_state": {
+      "type": "string",
+      "enum": [
+        "NORMAL",
+        "READ_ONLY",
+        "FROZEN_ALL_TRANSACTIONS",
+        "INCIDENT_MODE",
+        "RECOVERY_MODE"
+      ]
+    },
+
+    "allowed_transitions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "from": {
+            "type": "string",
+            "enum": [
+              "NORMAL",
+              "READ_ONLY",
+              "FROZEN_ALL_TRANSACTIONS",
+              "INCIDENT_MODE",
+              "RECOVERY_MODE"
+            ]
+          },
+          "to": {
+            "type": "string",
+            "enum": [
+              "NORMAL",
+              "READ_ONLY",
+              "FROZEN_ALL_TRANSACTIONS",
+              "INCIDENT_MODE",
+              "RECOVERY_MODE"
+            ]
+          },
+          "requires": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "Evidence or approvals required to execute the transition."
+          },
+          "reversible": {
+            "type": "boolean",
+            "description": "Whether this transition can be reversed without a new incident."
+          },
+          "approval_required": {
+            "type": "boolean"
+          }
+        },
+        "required": ["from", "to", "reversible", "approval_required"]
+      },
+      "minItems": 1
+    }
+  },
+
+  "required": ["current_state", "allowed_transitions"]
+}

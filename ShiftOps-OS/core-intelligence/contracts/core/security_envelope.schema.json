@@ -1,0 +1,190 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://intent-to-code/contracts/core/security_envelope.schema.json",
+  "title": "SecurityEnvelope",
+  "description": "Constitutional security envelope required for high-stakes intents. Defines data classification, auth posture, network controls, audit guarantees, and fail-safe behavior. Absence is allowed but degrades confidence and blocks executable output.",
+  "type": "object",
+  "additionalProperties": false,
+
+  "properties": {
+    "impact_class": {
+      "type": "string",
+      "description": "Declared impact/stakes level used for deterministic gating.",
+      "enum": [
+        "LOW",
+        "MEDIUM",
+        "HIGH",
+        "HIGH_STAKES_FINANCIAL",
+        "HIGH_STAKES_HEALTH",
+        "HIGH_STAKES_SECURITY"
+      ]
+    },
+
+    "data_classification": {
+      "type": "string",
+      "enum": [
+        "PUBLIC",
+        "INTERNAL",
+        "CONFIDENTIAL",
+        "RESTRICTED",
+        "FINANCIAL_HIGH",
+        "PHI",
+        "PII"
+      ]
+    },
+
+    "pii_present": {
+      "type": "boolean"
+    },
+
+    "allowed_storage": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "cloud": { "type": "boolean" },
+        "regions_allowed": {
+          "type": "array",
+          "items": { "type": "string" },
+          "minItems": 1
+        },
+        "encryption_at_rest_required": { "type": "boolean" },
+        "encryption_in_transit_required": { "type": "boolean" }
+      },
+      "required": [
+        "cloud",
+        "encryption_at_rest_required",
+        "encryption_in_transit_required"
+      ]
+    },
+
+    "auth": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "mode": {
+          "type": "string",
+          "enum": ["API_KEY", "OAUTH", "MTLS", "NONE"]
+        },
+        "secret_reference_only": {
+          "type": "boolean",
+          "const": true,
+          "description": "Secrets must never appear in plaintext artifacts."
+        },
+        "key_rotation_days": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "mfa_required_for_admin": {
+          "type": "boolean"
+        },
+        "secret_scope": {
+          "type": "string",
+          "enum": ["SERVICE_ONLY", "TENANT", "ENVIRONMENT"]
+        },
+        "max_blast_radius": {
+          "type": "string",
+          "enum": ["SINGLE_TENANT", "MULTI_TENANT", "GLOBAL"]
+        }
+      },
+      "required": ["mode", "secret_reference_only"]
+    },
+
+    "network": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "inbound": {
+          "type": "string",
+          "enum": ["DENY_ALL", "ALLOWLIST_ONLY"]
+        },
+        "outbound": {
+          "type": "string",
+          "enum": ["DENY_ALL", "ALLOWLIST_ONLY"]
+        },
+        "allowlist": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      },
+      "required": ["inbound", "outbound"]
+    },
+
+    "audit": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "append_only": { "type": "boolean", "const": true },
+        "hash_chain": { "type": "boolean", "const": true },
+        "log_fields_required": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "timestamp_utc",
+              "actor",
+              "action",
+              "resource_id",
+              "result",
+              "policy_version",
+              "decision_id",
+              "intent_hash",
+              "artifact_hash",
+              "prev_hash",
+              "hash"
+            ]
+          },
+          "minItems": 5
+        }
+      },
+      "required": ["append_only", "hash_chain", "log_fields_required"]
+    },
+
+    "failsafe": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "on_error": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "ENTER_INCIDENT_MODE",
+              "FREEZE_TRANSACTIONS",
+              "NOTIFY",
+              "ROLLBACK"
+            ]
+          },
+          "minItems": 1
+        },
+        "notify": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "channels": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": ["EMAIL", "SMS", "PAGER", "WEBHOOK"]
+              }
+            },
+            "targets": {
+              "type": "array",
+              "items": { "type": "string" }
+            }
+          }
+        }
+      },
+      "required": ["on_error"]
+    }
+  },
+
+  "required": [
+    "impact_class",
+    "data_classification",
+    "auth",
+    "network",
+    "audit",
+    "failsafe"
+  ]
+}
+

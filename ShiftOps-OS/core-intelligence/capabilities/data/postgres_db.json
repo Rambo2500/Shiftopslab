@@ -1,0 +1,15 @@
+{
+  "id": "postgres_db",
+  "name": "PostgreSQL Database",
+  "description": "Relational data storage provider.",
+  "artifact_type": "database_service",
+  "class": "storage",
+  "provides": ["storage_provider", "relational_db"],
+  "requires": [],
+  "traits": {
+    "latency": "low",
+    "throughput": "medium",
+    "consistency": "strong",
+    "cost": "low"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "validated": false,
+  "NON_EXECUTABLE_PLAN": true,
+  "goal": "Create_project",
+  "inputs": [
+    "data_source"
+  ],
+  "outputs": {
+    "code": {
+      "enabled": true,
+      "type": "dashboard"
+    }
+  },
+  "security_envelope": {
+    "network": {
+      "outbound": "ALLOW_TRUSTED"
+    }
+  }
+}

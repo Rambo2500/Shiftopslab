@@ -1,0 +1,22 @@
+{
+  "id": "analytics_engine",
+  "name": "Operational Analytics Service",
+  "description": "Service for computing KPIs, trends, and business intelligence.",
+  "artifact_type": "compute_generator",
+  "class": "compute",
+  "provides": ["compute_cluster", "analytics_provider"],
+  "requires": [
+    {"trait": "api_gateway"},
+    {"trait": "storage_provider"}
+  ],
+  "traits": {
+    "throughput": "high",
+    "latency": "medium"
+  },
+  "outputs": {
+    "kpis": ["id", "name", "value", "unit", "trend"],
+    "alerts": ["id", "severity", "message", "timestamp"],
+    "performance_metrics": ["cpu_usage", "memory_usage", "request_count"]
+  },
+  "compatible_with": ["api_service", "storage_generator"]
+}

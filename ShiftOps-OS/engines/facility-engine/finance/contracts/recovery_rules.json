@@ -1,0 +1,63 @@
+{
+  "identifier": "penny_pincher.recovery_rules.v1",
+  "schema_type": "contract",
+  "contract_name": "recovery_rules",
+  "authoritative": true,
+
+  "definition": {
+    "recovery_state": "A state in which mandatory obligations are met without creating new shortfalls within the planning window."
+  },
+
+  "recovery_horizon_logic": {
+    "calculation_basis": "timeline_simulation",
+    "recovery_horizon_days": {
+      "definition": "Number of days from start_date until all mandatory obligations are covered with no shortfall events.",
+      "minimum": 0,
+      "maximum": "planning_window_days"
+    }
+  },
+
+  "rules": [
+    {
+      "id": "REC001",
+      "rule": "A day is considered recovered only if ending_balance >= 0 AND no mandatory obligation is unpaid.",
+      "severity": "hard"
+    },
+    {
+      "id": "REC002",
+      "rule": "If any mandatory obligation is unpaid at its due_date, recovery is not achieved for the window.",
+      "severity": "hard"
+    },
+    {
+      "id": "REC003",
+      "rule": "Variable essentials may be underfunded without blocking recovery, but must be flagged.",
+      "severity": "soft"
+    },
+    {
+      "id": "REC004",
+      "rule": "One-time events do not block recovery unless they create a mandatory shortfall.",
+      "severity": "soft"
+    }
+  ],
+
+  "failure_conditions": {
+    "unrecoverable_within_window": {
+      "trigger": "recovery_horizon_days == planning_window_days AND shortfall_days > 0",
+      "classification": "no_recovery_in_window"
+    }
+  },
+
+  "output_requirements": {
+    "must_emit": [
+      "recovery_horizon_days",
+      "shortfall_days",
+      "max_shortfall_amount"
+    ],
+    "must_flag": [
+      "mandatory_uncovered_items",
+      "variable_underfunded_items"
+    ]
+  },
+
+  "notes": "This contract defines recovery mechanics only. It does not recommend actions or optimizations."
+}

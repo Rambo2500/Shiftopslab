@@ -1,0 +1,61 @@
+{
+  "validated": false,
+  "NON_EXECUTABLE_PLAN": true,
+
+  "goal": "Plan a small automation project",
+
+  "outputs": {
+    "guidance": true
+  },
+
+  "security_envelope": {
+    "impact_class": "LOW",
+    "data_classification": "PUBLIC",
+    "pii_present": false,
+
+    "allowed_storage": {
+      "cloud": false,
+      "encryption_at_rest_required": false,
+      "encryption_in_transit_required": false
+    },
+
+    "auth": {
+      "mode": "NONE",
+      "secret_reference_only": true
+    },
+
+    "network": {
+      "inbound": "DENY_ALL",
+      "outbound": "ALLOW"
+    },
+
+    "audit": {
+      "append_only": true,
+      "hash_chain": true,
+      "log_fields_required": [
+        "timestamp_utc",
+        "actor",
+        "action",
+        "result",
+        "intent_hash"
+      ]
+    },
+
+    "failsafe": {
+      "on_error": [
+        "NOTIFY"
+      ]
+    }
+  },
+
+  "guidance": {
+    "goal": "Plan a small automation project",
+    "steps": [
+      { "order": 1, "description": "Define the scope and success criteria of the automation." },
+      { "order": 2, "description": "Identify inputs, outputs, and constraints." },
+      { "order": 3, "description": "Select tools or languages appropriate for the task." },
+      { "order": 4, "description": "Draft a simple implementation plan." }
+    ]
+  }
+}
+

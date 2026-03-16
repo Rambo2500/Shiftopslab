@@ -1,0 +1,17 @@
+[33mcommit 149a2a19e15f074fab7943762f067e179ac93705[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m)[m
+Author: JAMESTHOMSON <JAMESTHOMSON@SHIFTOPSPRO.COM>
+Date:   Sat Feb 21 17:01:14 2026 -0500
+
+    Checkpoint: employee + site CRUD stable, FK verified, clean boot
+
+[33mcommit e7d51dfd90ca053bc57073b8da30bde9bdcc3cb4[m
+Author: JAMESTHOMSON <JAMESTHOMSON@SHIFTOPSPRO.COM>
+Date:   Fri Feb 20 22:58:43 2026 -0500
+
+    Checkpoint: workforce engine stabilized employee layer, modular routes/schemas, models single-file
+
+[33mcommit b433fb33b7dc4a229633adb6ef70831e7984b8b2[m
+Author: JAMESTHOMSON <JAMESTHOMSON@SHIFTOPSPRO.COM>
+Date:   Fri Feb 20 22:38:56 2026 -0500
+
+    Checkpoint: employee layer working, modular schemas, models still single-file

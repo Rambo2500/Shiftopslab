@@ -1,0 +1,8 @@
+sales_day,target_ship_day,lead_days
+Monday,Friday,3
+Tuesday,Saturday,3
+Wednesday,NA,0
+Thursday,Tuesday,2
+Friday,Wednesday,2
+Saturday,Thursday,2
+Sunday,NA,0

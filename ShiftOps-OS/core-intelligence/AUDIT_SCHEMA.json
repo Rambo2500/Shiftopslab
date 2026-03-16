@@ -1,0 +1,72 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Intent-to-Code Audit Record",
+  "type": "object",
+  "additionalProperties": false,
+
+  "required": [
+    "timestamp_utc",
+    "event"
+  ],
+
+  "properties": {
+    "timestamp_utc": {
+      "type": "string",
+      "format": "date-time",
+      "description": "UTC timestamp when the audit record was written"
+    },
+
+    "event": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "stage",
+        "status"
+      ],
+
+      "properties": {
+        "stage": {
+          "type": "string",
+          "enum": [
+            "validation",
+            "execution"
+          ],
+          "description": "Execution stage being audited"
+        },
+
+        "status": {
+          "type": "string",
+          "enum": [
+            "failed",
+            "completed"
+          ],
+          "description": "Outcome of the audited stage"
+        },
+
+        "errors": {
+          "type": "array",
+          "description": "Validation errors, present only when validation fails",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["path", "code", "message"],
+            "properties": {
+              "path": { "type": "string" },
+              "code": { "type": "string" },
+              "message": { "type": "string" }
+            }
+          }
+        },
+
+        "outputs": {
+          "type": "array",
+          "description": "Execution outputs returned by the router",
+          "items": {
+            "type": "object",
+            "additionalProperties": true
+          }
+        }
+      }
+    }
+  }
+}

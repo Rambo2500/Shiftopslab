@@ -1,0 +1,13 @@
+location,name,drop_dead_time,priority_weight
+FSB,South Bend IN,1800,10
+FAC,North Aurora IL,0900,20
+FSP,South Point OH,1800,15
+FCR,Ceder Rapids IA,1100,15
+FRI,Riverside MO,1000,15
+FJA,Janesville WI,1100,15
+GB4027603,SunValley MI,0600,25
+PCB,Fort Worth TX,0600,25
+FCL,Clinton TN,1000,15
+GB3968970,Christina Foods Cook County IL,0600,25
+UAW,Topeka Bakery KS,0600,20
+UEK,Grand Rapids Bakery MI,1000,15

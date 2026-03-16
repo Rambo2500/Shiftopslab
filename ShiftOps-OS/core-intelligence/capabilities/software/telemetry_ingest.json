@@ -1,0 +1,10 @@
+{
+  "id": "telemetry_ingest_node",
+  "name": "High-Scale Telemetry Ingest",
+  "artifact_type": "worker_service",
+  "class": "compute_generator",
+  "description": "Stream-based telemetry ingestion node capable of processing 100k+ sensor signals per second.",
+  "provides": ["telemetry", "ingestion", "stream_processing"],
+  "requires": ["message_queue"],
+  "compatible_with": ["analytics_engine", "storage_service"]
+}

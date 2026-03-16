@@ -1,0 +1,320 @@
+{
+  "pattern_id": "187ee82e1cbbacc941c68884fc11ac4d",
+  "goal": "Regional ISP Monitoring",
+  "score": 19.29,
+  "graph": {
+    "goal": "Regional ISP Monitoring",
+    "nodes": [
+      {
+        "id": "risk_engine",
+        "name": "risk_engine",
+        "type": "reasoning_generator",
+        "description": "Evaluates financial transactions for risk and compliance.",
+        "depends_on": [],
+        "capability_class": "reasoning",
+        "compatible_with": [
+          "transport_generator",
+          "storage_generator"
+        ],
+        "traits": [
+          "reasoning_generator"
+        ]
+      },
+      {
+        "id": "data_storage",
+        "name": "data_storage",
+        "type": "database_service",
+        "description": "Persistent data storage",
+        "depends_on": [],
+        "capability_class": "",
+        "compatible_with": [],
+        "traits": [
+          "database_service"
+        ]
+      },
+      {
+        "id": "cache_layer",
+        "name": "cache_layer",
+        "type": "cache_service",
+        "description": "Caching layer to reduce load on analytics",
+        "depends_on": [],
+        "capability_class": "",
+        "compatible_with": [],
+        "traits": [
+          "cache_service"
+        ]
+      },
+      {
+        "id": "api_gateway",
+        "name": "api_gateway",
+        "type": "gateway_service",
+        "description": "External API gateway",
+        "depends_on": [],
+        "capability_class": "",
+        "compatible_with": [],
+        "traits": [
+          "gateway_service"
+        ]
+      },
+      {
+        "id": "api_service",
+        "name": "api_service",
+        "type": "web_api_generator",
+        "description": "A FastAPI-based central communication hub.",
+        "depends_on": [
+          "data_storage",
+          "cache_layer",
+          "api_gateway"
+        ],
+        "capability_class": "interface",
+        "compatible_with": [
+          "dashboard_ui",
+          "data_ingestion",
+          "analytics_engine"
+        ],
+        "traits": [
+          "web_api_generator"
+        ]
+      },
+      {
+        "id": "message_queue",
+        "name": "message_queue",
+        "type": "queue_service",
+        "description": "Message queue for asynchronous processing",
+        "depends_on": [],
+        "capability_class": "",
+        "compatible_with": [],
+        "traits": [
+          "queue_service"
+        ]
+      },
+      {
+        "id": "data_ingestion",
+        "name": "data_ingestion",
+        "type": "compute_generator",
+        "description": "Background worker for parsing and populating operational data.",
+        "depends_on": [
+          "api_service",
+          "message_queue"
+        ],
+        "capability_class": "interface",
+        "compatible_with": [
+          "api_service",
+          "storage_generator"
+        ],
+        "traits": [
+          "compute_generator"
+        ]
+      },
+      {
+        "id": "stream_processor",
+        "name": "stream_processor",
+        "type": "compute_generator",
+        "description": "Real-time data stream processing capability.",
+        "depends_on": [],
+        "capability_class": "compute",
+        "compatible_with": [
+          "storage_generator",
+          "transport_generator"
+        ],
+        "traits": [
+          "compute_generator"
+        ]
+      },
+      {
+        "id": "sensor_ingestion",
+        "name": "sensor_ingestion",
+        "type": "web_api_generator",
+        "description": "Ingests telemetry from robotics sensors.",
+        "depends_on": [],
+        "capability_class": "interface",
+        "compatible_with": [
+          "control_generator",
+          "transport_generator"
+        ],
+        "traits": [
+          "web_api_generator"
+        ]
+      },
+      {
+        "id": "postgres_db",
+        "name": "postgres_db",
+        "type": "database_service",
+        "description": "Relational data storage provider.",
+        "depends_on": [],
+        "capability_class": "storage",
+        "compatible_with": [],
+        "traits": [
+          "database_service"
+        ]
+      },
+      {
+        "id": "analytics_engine",
+        "name": "analytics_engine",
+        "type": "compute_generator",
+        "description": "Service for computing KPIs, trends, and business intelligence.",
+        "depends_on": [
+          "api_service",
+          "postgres_db",
+          "data_storage"
+        ],
+        "capability_class": "compute",
+        "compatible_with": [
+          "api_service",
+          "storage_generator"
+        ],
+        "traits": [
+          "compute_generator"
+        ]
+      },
+      {
+        "id": "ai_reasoning",
+        "name": "ai_reasoning",
+        "type": "reasoning_generator",
+        "description": "Advanced AI layer for anomaly detection and operational guidance.",
+        "depends_on": [
+          "analytics_engine"
+        ],
+        "capability_class": "reasoning",
+        "compatible_with": [
+          "analytics_engine",
+          "api_service"
+        ],
+        "traits": [
+          "reasoning_generator"
+        ]
+      },
+      {
+        "id": "transaction_router",
+        "name": "transaction_router",
+        "type": "transport_generator",
+        "description": "Routes and balances financial transactions.",
+        "depends_on": [
+          "risk_engine"
+        ],
+        "capability_class": "transport",
+        "compatible_with": [
+          "risk_engine"
+        ],
+        "traits": [
+          "transport_generator"
+        ]
+      },
+      {
+        "id": "dashboard_ui",
+        "name": "dashboard_ui",
+        "type": "ui_generator",
+        "description": "A real-time visual interface for operations monitoring.",
+        "depends_on": [
+          "api_service"
+        ],
+        "capability_class": "presentation",
+        "compatible_with": [
+          "api_service"
+        ],
+        "traits": [
+          "ui_generator"
+        ]
+      },
+      {
+        "id": "report_generation",
+        "name": "report_generation",
+        "type": "presentation_generator",
+        "description": "Service for generating executive summaries and PDF/HTML reports.",
+        "depends_on": [
+          "analytics_engine"
+        ],
+        "capability_class": "presentation",
+        "compatible_with": [
+          "analytics_engine",
+          "storage_generator"
+        ],
+        "traits": [
+          "presentation_generator"
+        ]
+      },
+      {
+        "id": "control_loop",
+        "name": "control_loop",
+        "type": "control_generator",
+        "description": "Maintains system state based on sensor input.",
+        "depends_on": [
+          "sensor_ingestion"
+        ],
+        "capability_class": "control",
+        "compatible_with": [
+          "sensor_ingestion"
+        ],
+        "traits": [
+          "control_generator"
+        ]
+      },
+      {
+        "id": "quantum_optimizer",
+        "name": "quantum_optimizer",
+        "type": "compute_generator",
+        "description": "Uses non-existent quantum hardware to solve logistics problems.",
+        "depends_on": [],
+        "capability_class": "compute",
+        "compatible_with": [],
+        "traits": [
+          "compute_generator"
+        ]
+      }
+    ],
+    "edges": [
+      {
+        "from": "data_storage",
+        "to": "api_service"
+      },
+      {
+        "from": "cache_layer",
+        "to": "api_service"
+      },
+      {
+        "from": "api_gateway",
+        "to": "api_service"
+      },
+      {
+        "from": "api_service",
+        "to": "data_ingestion"
+      },
+      {
+        "from": "message_queue",
+        "to": "data_ingestion"
+      },
+      {
+        "from": "api_service",
+        "to": "analytics_engine"
+      },
+      {
+        "from": "postgres_db",
+        "to": "analytics_engine"
+      },
+      {
+        "from": "data_storage",
+        "to": "analytics_engine"
+      },
+      {
+        "from": "analytics_engine",
+        "to": "ai_reasoning"
+      },
+      {
+        "from": "risk_engine",
+        "to": "transaction_router"
+      },
+      {
+        "from": "api_service",
+        "to": "dashboard_ui"
+      },
+      {
+        "from": "analytics_engine",
+        "to": "report_generation"
+      },
+      {
+        "from": "sensor_ingestion",
+        "to": "control_loop"
+      }
+    ]
+  }
+}

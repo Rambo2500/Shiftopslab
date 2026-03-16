@@ -1,0 +1,14 @@
+{
+  "validated": true,
+  "NON_EXECUTABLE_PLAN": true,
+  "goal": "Build a self-driving warehouse robot coordination system",
+  "inputs": [],
+  "outputs": {
+    "system": {
+      "enabled": true
+    }
+  },
+  "security_envelope": {
+    "trusted_domains": ["*"]
+  }
+}

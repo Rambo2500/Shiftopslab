@@ -1,0 +1,11 @@
+{
+  "id": "quantum_optimizer",
+  "name": "Quantum-Enhanced Optimizer",
+  "description": "Uses non-existent quantum hardware to solve logistics problems.",
+  "artifact_type": "compute_generator",
+  "class": "compute",
+  "provides": ["optimization_engine"],
+  "requires": [
+    {"trait": "quantum_processor"}
+  ]
+}

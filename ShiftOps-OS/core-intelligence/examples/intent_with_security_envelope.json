@@ -1,0 +1,55 @@
+{
+  "intent_name": "MOVE_FINANCIAL_RECORDS",
+  "intent_version": "0.1",
+  "security_envelope": {
+    "impact_class": "HIGH_STAKES_FINANCIAL",
+    "data_classification": "FINANCIAL_HIGH",
+    "pii_present": true,
+    "allowed_storage": {
+      "cloud": true,
+      "regions_allowed": ["US"],
+      "encryption_at_rest_required": true,
+      "encryption_in_transit_required": true
+    },
+    "auth": {
+      "mode": "API_KEY",
+      "secret_reference_only": true,
+      "key_rotation_days": 30,
+      "mfa_required_for_admin": true,
+      "secret_scope": "SERVICE_ONLY",
+      "max_blast_radius": "SINGLE_TENANT"
+    },
+    "network": {
+      "inbound": "DENY_ALL",
+      "outbound": "ALLOWLIST_ONLY",
+      "allowlist": ["audit-sink", "storage-provider"]
+    },
+    "audit": {
+      "append_only": true,
+      "hash_chain": true,
+      "log_fields_required": [
+        "timestamp_utc",
+        "actor",
+        "action",
+        "resource_id",
+        "result",
+        "policy_version",
+        "decision_id",
+        "intent_hash",
+        "artifact_hash",
+        "prev_hash",
+        "hash"
+      ]
+    },
+    "failsafe": {
+      "on_error": ["ENTER_INCIDENT_MODE", "FREEZE_TRANSACTIONS", "NOTIFY"],
+      "notify": {
+        "channels": ["EMAIL"],
+        "targets": ["SECURITY_CONTACT"]
+      }
+    }
+  },
+  "payload": {
+    "goal": "Move financial records to approved encrypted storage"
+  }
+}

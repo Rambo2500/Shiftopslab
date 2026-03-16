@@ -1,0 +1,15 @@
+{
+  "id": "api_service",
+  "name": "Central API Service",
+  "description": "A FastAPI-based central communication hub.",
+  "artifact_type": "web_api_generator",
+  "class": "interface",
+  "provides": ["api_gateway", "central_hub"],
+  "requires": [],
+  "traits": {
+    "latency": "low",
+    "throughput": "medium",
+    "cost": "low"
+  },
+  "compatible_with": ["dashboard_ui", "data_ingestion", "analytics_engine"]
+}

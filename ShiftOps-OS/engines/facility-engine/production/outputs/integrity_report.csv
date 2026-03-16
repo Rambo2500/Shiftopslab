@@ -1,0 +1,7 @@
+Date,SKU,Issue,Value,Severity
+2025-11-24,76728,Production Shortfall,12684.6,Warning
+2025-11-24,76937,Production Shortfall,29597.399999999998,Warning
+2026-03-01,76004,Under-booked,65000.0,Warning
+2026-03-01,76728,Under-booked,12000.0,Warning
+2026-03-01,76816,Under-booked,11000.0,Warning
+2026-03-01,76937,Under-booked,15000.0,Warning

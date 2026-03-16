@@ -1,0 +1,90 @@
+{
+  "pattern_id": "71c2b58a2e7c7352f4de9f77d66c47e6",
+  "goal": "New System",
+  "score": 4.75,
+  "graph": {
+    "goal": "New System",
+    "nodes": [
+      {
+        "name": "data_storage",
+        "type": "database_service",
+        "description": "Persistent data storage",
+        "depends_on": [],
+        "capability_class": "",
+        "compatible_with": [],
+        "traits": [
+          "database_service"
+        ]
+      },
+      {
+        "name": "cache_layer",
+        "type": "cache_service",
+        "description": "Caching layer to reduce load on analytics",
+        "depends_on": [],
+        "capability_class": "",
+        "compatible_with": [],
+        "traits": [
+          "cache_service"
+        ]
+      },
+      {
+        "name": "api_service",
+        "type": "web_api_generator",
+        "description": "A FastAPI-based central communication hub.",
+        "depends_on": [
+          "data_storage",
+          "cache_layer"
+        ],
+        "capability_class": "interface",
+        "compatible_with": [
+          "dashboard_ui",
+          "data_ingestion",
+          "analytics_engine"
+        ],
+        "traits": [
+          "web_api_generator"
+        ]
+      },
+      {
+        "name": "dashboard_ui",
+        "type": "ui_generator",
+        "description": "A real-time visual interface for operations monitoring.",
+        "depends_on": [
+          "api_service"
+        ],
+        "capability_class": "presentation",
+        "compatible_with": [
+          "api_service"
+        ],
+        "traits": [
+          "ui_generator"
+        ]
+      },
+      {
+        "name": "message_queue",
+        "type": "queue_service",
+        "description": "Message queue for asynchronous processing",
+        "depends_on": [],
+        "capability_class": "",
+        "compatible_with": [],
+        "traits": [
+          "queue_service"
+        ]
+      }
+    ],
+    "edges": [
+      {
+        "from": "data_storage",
+        "to": "api_service"
+      },
+      {
+        "from": "cache_layer",
+        "to": "api_service"
+      },
+      {
+        "from": "api_service",
+        "to": "dashboard_ui"
+      }
+    ]
+  }
+}

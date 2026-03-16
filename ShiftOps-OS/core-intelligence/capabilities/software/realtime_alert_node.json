@@ -1,0 +1,10 @@
+{
+  "id": "realtime_alert_node",
+  "name": "Real-Time Alert Dispatch",
+  "artifact_type": "worker_service",
+  "class": "reasoning_generator",
+  "description": "Low-latency alert generation engine that monitors system state and triggers push notifications.",
+  "provides": ["alerts", "notifications"],
+  "requires": ["message_queue", "api_service"],
+  "compatible_with": ["ems_dispatch_node", "dashboard_ui"]
+}

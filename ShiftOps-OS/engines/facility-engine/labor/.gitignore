@@ -1,0 +1,11 @@
+venv/
+.venv/
+__pycache__/
+*.pyc
+*.db
+shiftopspro.db
+data/
+.vscode/
+.vscode/venv/
+shiftops-ui/
+*.log

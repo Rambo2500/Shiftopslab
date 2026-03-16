@@ -1,0 +1,29 @@
+{
+  "identifier": "penny_pincher.manifest.v1",
+  "project_identifier": "penny_pincher",
+  "version": "0.1.0",
+  "entry": "README.json",
+
+  "directories": {
+    "contracts": "contracts/",
+    "scenarios": "scenarios/"
+  },
+
+  "contracts": {
+    "input_schema": "contracts/input_schema.json",
+    "constraint_schema": "contracts/constraint_schema.json",
+    "checker_rules": "contracts/checker_rules.json",
+    "output_schema": "contracts/output_schema.json"
+  },
+
+  "scenario_files": [
+    "scenarios/vegas_red_eye_example.json",
+    "scenarios/baseline_example.json"
+  ],
+
+  "execution": {
+    "engine_language": "tbd",
+    "determinism_required": true,
+    "side_effects_allowed": false
+  }
+}

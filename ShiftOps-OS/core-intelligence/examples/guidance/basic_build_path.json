@@ -1,0 +1,21 @@
+{
+  "goal": "Create a simple Python CLI tool",
+  "steps": [
+    {
+      "order": 1,
+      "description": "Define the tool's primary responsibility and inputs."
+    },
+    {
+      "order": 2,
+      "description": "Choose a CLI framework (argparse, click, etc.)."
+    },
+    {
+      "order": 3,
+      "description": "Implement core logic in a separate module."
+    },
+    {
+      "order": 4,
+      "description": "Wire the CLI entrypoint to the core logic."
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "identifier": "penny_pincher.scenario.baseline.v1",
+  "currency": "USD",
+  "timezone": "America/Chicago",
+  "start_date": "2026-01-10",
+  "planning_window_days": 30,
+
+  "income_sources": [
+    { "name": "Paycheck", "amount": 1200, "frequency": "weekly", "next_payment_date": "2026-01-16" }
+  ],
+
+  "fixed_obligations": [
+    { "name": "Rent", "amount": 1400, "due_date": "2026-02-01", "category": "housing", "mandatory": true },
+    { "name": "Car Payment", "amount": 600, "due_date": "2026-01-25", "category": "debt", "mandatory": true }
+  ],
+
+  "variable_essentials": [
+    { "name": "Groceries", "estimated_amount": 160, "frequency": "weekly", "category": "food" },
+    { "name": "Gas", "estimated_amount": 60, "frequency": "weekly", "category": "fuel" }
+  ],
+
+  "one_time_events": [],
+
+  "notes": "Baseline month without a disruption event."
+}

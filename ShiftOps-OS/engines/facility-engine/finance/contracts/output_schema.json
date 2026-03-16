@@ -1,0 +1,65 @@
+{
+  "identifier": "penny_pincher.output_schema.v1",
+  "schema_type": "contract",
+  "contract_name": "output",
+  "authoritative": true,
+
+  "output_object": {
+    "run_metadata": {
+      "start_date": "date",
+      "planning_window_days": "integer",
+      "currency": "string"
+    },
+
+    "timeline": {
+      "type": "array",
+      "items": {
+        "date": "date",
+        "starting_balance": "number",
+        "income_in": "number",
+        "obligations_out": "number",
+        "essentials_out": "number",
+        "one_time_out": "number",
+        "ending_balance": "number",
+        "shortfall": "boolean",
+        "shortfall_amount": "number"
+      }
+    },
+
+    "summary": {
+      "total_income": "number",
+      "total_outflow": "number",
+      "net_change": "number",
+      "shortfall_days": "integer",
+      "max_shortfall_amount": "number",
+      "recovery_horizon_days": "integer"
+    },
+
+    "pressure_map": {
+      "type": "array",
+      "items": {
+        "item_name": "string",
+        "due_date": "date",
+        "amount": "number",
+        "priority": "string",
+        "status": "enum:covered|at_risk|uncovered"
+      }
+    },
+
+    "notices": {
+      "type": "array",
+      "items": {
+        "severity": "enum:info|warning|error",
+        "message": "string"
+      }
+    }
+  },
+
+  "output_rules": [
+    "no_advice_language",
+    "no_recommendations",
+    "all_values_traceable_to_inputs",
+    "shortfalls_must_be_explicit"
+  ]
+}
+

@@ -1,0 +1,21 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Calm Button Intent",
+  "type": "object",
+  "required": ["system", "requested_action"],
+  "properties": {
+    "system": {
+      "type": "string",
+      "const": "calm_button"
+    },
+    "requested_action": {
+      "type": "string",
+      "enum": ["start", "advance", "pause", "exit"]
+    },
+    "context": {
+      "type": "object",
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

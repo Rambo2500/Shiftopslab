@@ -1,0 +1,10 @@
+{
+  "id": "risk_engine",
+  "name": "Risk Engine",
+  "description": "Evaluates financial transactions for risk and compliance.",
+  "artifact_type": "reasoning_generator",
+  "class": "reasoning",
+  "provides": ["risk_provider"],
+  "requires": [],
+  "compatible_with": ["transport_generator", "storage_generator"]
+}
