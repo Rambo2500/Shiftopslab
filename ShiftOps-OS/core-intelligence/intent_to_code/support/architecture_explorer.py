@@ -18,7 +18,7 @@ class ArchitectureExplorer:
         self.memory = ArchitectureMemory(memory_dir)
         self.strategist = ArchitectureStrategist(self.memory)
 
-    def generate_variants(self, graph: SystemGraph) -> List[SystemGraph]:
+    def generate_variants(self, graph: SystemGraph, domain: str = "default") -> List[SystemGraph]:
         """
         Produces a list of alternative architectures based on the input graph.
         New pipeline: base_graph + suggested patterns -> suggested mutations -> evaluate -> best
@@ -34,13 +34,13 @@ class ArchitectureExplorer:
         candidates.extend(self.seed_from_patterns(patterns))
 
         # 3. Ask strategist for the best mutations to try
-        mutation_names = self.strategist.suggest_mutations(graph, graph.goal)
+        mutation_names = self.strategist.suggest_mutations(graph, graph.goal, domain=domain)
 
         # 4. Mutate ALL of them using suggested strategies
         all_variants = []
         for c in candidates:
             all_variants.append(c) # Include the unmutated version
-            all_variants.extend(self.apply_mutations(c, mutation_names))
+            all_variants.extend(self.apply_mutations(c, mutation_names, domain=domain))
 
         return all_variants
 
@@ -56,12 +56,13 @@ class ArchitectureExplorer:
                 pass
         return seeds
 
-    def apply_mutations(self, graph: SystemGraph, mutation_names: List[str]) -> List[SystemGraph]:
+    def apply_mutations(self, graph: SystemGraph, mutation_names: List[str], domain: str = "default") -> List[SystemGraph]:
         """Dynamically applies suggested mutations."""
         mutations = []
         for name in mutation_names:
             if hasattr(self, name):
                 mutator = getattr(self, name)
+                # Note: individual mutators might need to be domain-aware in the future
                 mutated_graph = mutator(graph)
                 if mutated_graph:
                     mutations.append(mutated_graph)

@@ -38,39 +38,18 @@ class CapabilityResolver:
             except Exception:
                 pass
 
-    DOMAIN_CONSTRAINTS = {
-        "disaster_response": ["gis", "telemetry", "ingestion", "analytics", "reporting", "ai_reasoning", "alerting", "database", "api", "dashboard", "mobile", "stream", "stream_processor"],
-        "logistics": ["docks", "trailers", "inventory", "shipping", "warehouse", "logistics", "ingestion", "telemetry", "analytics", "ai_reasoning", "api", "dashboard", "database", "storage", "stream", "alert", "auth"],
-        "finance": ["transactions", "risk", "ledger", "auth", "api", "dashboard", "database", "analytics"]
-    }
-
-    def resolve(self, requested_ids: List[str], goal: str = "unnamed_system") -> SystemGraph:
+    def resolve(self, requested_ids: List[str], goal: str = "unnamed_system", domain_weights: Dict[str, int] = None) -> SystemGraph:
         """
         Expands requested capabilities and returns a SystemGraph object.
         Uses constraint solving to satisfy 'requires' traits.
         Now supports Virtual Capability Synthesis for inferred IDs.
         """
-        # --- NEW: Domain Filtering (Constraint Gate) ---
-        domain = "default"
-        low_goal = goal.lower()
-        if "disaster" in low_goal or "emergency" in low_goal: domain = "disaster_response"
-        elif "logistics" in low_goal or "warehouse" in low_goal: domain = "logistics"
-        elif "finance" in low_goal or "transaction" in low_goal: domain = "finance"
-
-        if domain in self.DOMAIN_CONSTRAINTS:
-            allowed = self.DOMAIN_CONSTRAINTS[domain]
-            # Filter initial IDs to prevent "quantum_hallucinations"
-            filtered_ids = []
-            for rid in requested_ids:
-                rid_low = rid.lower()
-                # If the rid contains ANY of the allowed tags, or is a generic service type
-                if any(tag in rid_low for tag in allowed) or any(t in rid_low for t in ["service", "node", "worker", "queue"]):
-                    filtered_ids.append(rid)
-                else:
-                    print(f"  [Constraint Gate] Blocked out-of-domain capability: {rid}")
-            requested_ids = filtered_ids
-
-        resolved_nodes, edges = self._solve_constraints(requested_ids, goal)
+        # --- NEW: Dynamic Ontology Filtering (Constraint Gate) ---
+        # Instead of hard-coded DOMAIN_CONSTRAINTS, we now rely on the 
+        # higher-level PlanningKernel to provide context-aware filtering 
+        # or we use the DomainScout results passed via goal context.
+        
+        resolved_nodes, edges = self._solve_constraints(requested_ids, goal, domain_weights)
         
         graph = SystemGraph(goal=goal)
         for cap_id in resolved_nodes:
@@ -111,7 +90,7 @@ class CapabilityResolver:
             
         return graph
 
-    def _solve_constraints(self, initial_ids: List[str], goal: str = "unnamed_system") -> Tuple[Set[str], List[Tuple[str, str]]]:
+    def _solve_constraints(self, initial_ids: List[str], goal: str = "unnamed_system", domain_weights: Dict[str, int] = None) -> Tuple[Set[str], List[Tuple[str, str]]]:
         """
         Iteratively satisfies constraints until the system is complete.
         Returns (set of capability IDs, list of dependency edges (from_id, to_id)).
@@ -144,7 +123,7 @@ class CapabilityResolver:
                     to_resolve.append(req)
                 elif isinstance(req, dict) and "trait" in req:
                     trait = req["trait"]
-                    provider_id = self._find_provider_for_trait(trait, goal)
+                    provider_id = self._find_provider_for_trait(trait, goal, domain_weights)
                     if provider_id:
                         edges.append((cap_id, provider_id))
                         to_resolve.append(provider_id)
@@ -153,7 +132,7 @@ class CapabilityResolver:
                         
         return all_ids, edges
 
-    def _find_provider_for_trait(self, trait: str, goal: str) -> Optional[str]:
+    def _find_provider_for_trait(self, trait: str, goal: str, domain_weights: Dict[str, int] = None) -> Optional[str]:
         """Finds the best matching capability that provides a given trait."""
         provider_ids = self.trait_providers.get(trait, [])
         if not provider_ids:
@@ -163,7 +142,7 @@ class CapabilityResolver:
         providers = [self.capabilities[pid] for pid in provider_ids]
         
         # Rank them using the TraitScorer
-        ranked = self.scorer.rank_providers(providers, goal)
+        ranked = self.scorer.rank_providers(providers, goal, domain_weights)
         
         # Return the ID of the best one
         return ranked[0][0] if ranked else None

@@ -27,7 +27,7 @@ class ArchitectureLearningEngine:
             "high_score_threshold": 8.0
         }
 
-    def learn_from_result(self, goal: str, graph: SystemGraph, evaluation: Dict[str, Any]):
+    def learn_from_result(self, goal: str, graph: SystemGraph, evaluation: Dict[str, Any], domain: str = "default"):
         """
         Analyzes a completed architecture run and updates learned rules
         if the architecture performed well.
@@ -35,16 +35,6 @@ class ArchitectureLearningEngine:
         score = evaluation.get("total_score", 0)
         if score < self.rules["high_score_threshold"]:
             return # Only learn from high-quality designs
-
-        # Identify the domain (heuristic for now)
-        domain = "default"
-        low_goal = goal.lower()
-        if "analytics" in low_goal or "warehouse" in low_goal:
-            domain = "analytics"
-        elif "finance" in low_goal or "transaction" in low_goal:
-            domain = "finance"
-        elif "robotics" in low_goal or "robot" in low_goal or "drone" in low_goal:
-            domain = "robotics"
 
         # 1. Update component biases for this domain
         if domain not in self.rules["component_biases"]:

@@ -1,0 +1,53 @@
+{
+  "ontology_id": "bakery_ops_v1",
+  "version": "1.0",
+  "entities": {
+    "dock_door": {
+      "type": "FACILITY_RESOURCE",
+      "count": 12,
+      "state_fields": ["id", "status", "assigned_load_id"],
+      "description": "Loading bay for incoming ingredients or outgoing product."
+    },
+    "production_line": {
+      "type": "MACHINE",
+      "state_fields": ["id", "speed_units_per_min", "active_sku", "status"],
+      "description": "Core baking and packaging line."
+    },
+    "ingredient_bin": {
+      "type": "STORAGE",
+      "state_fields": ["id", "sku", "weight_kg", "temp_c"],
+      "description": "Raw material storage bin."
+    }
+  },
+  "constraints": [
+    {
+      "id": "labor_safety_limit",
+      "expression": "workers_per_line <= 8",
+      "severity": "SAFETY",
+      "error_message": "Exceeded safe worker density on production floor."
+    },
+    {
+      "id": "temp_compliance",
+      "expression": "bin_temp <= 22.0",
+      "severity": "QUALITY",
+      "error_message": "Ingredient temperature exceeds quality threshold."
+    }
+  ],
+  "actuators": [
+    {
+      "entity_type": "dock_door",
+      "transition_type": "UNLOCK_BAY",
+      "connector_id": "facility_io_hub"
+    },
+    {
+      "entity_type": "production_line",
+      "transition_type": "ADJUST_SPEED",
+      "connector_id": "plc_control_service"
+    }
+  ],
+  "metadata": {
+    "industry": "Manufacturing",
+    "domain": "Bakery",
+    "compliance": ["FDA", "HACCP"]
+  }
+}

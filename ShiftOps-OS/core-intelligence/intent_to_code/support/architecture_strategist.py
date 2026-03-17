@@ -17,7 +17,7 @@ class ArchitectureStrategist:
         """Retrieves and ranks historical patterns relevant to the current goal."""
         return self.memory.relevant_patterns(goal)
 
-    def suggest_mutations(self, graph: SystemGraph, goal: str) -> List[str]:
+    def suggest_mutations(self, graph: SystemGraph, goal: str, domain: str = "default") -> List[str]:
         """
         Analyzes past winning patterns AND learned rules for similar goals
         to recommend mutations.
@@ -26,13 +26,6 @@ class ArchitectureStrategist:
         patterns = self.suggest_patterns(goal)
         suggested = set()
         
-        # Determine current domain for learning layer
-        domain = "default"
-        low_goal = goal.lower()
-        if "analytics" in low_goal or "warehouse" in low_goal: domain = "analytics"
-        elif "finance" in low_goal: domain = "finance"
-        elif "robotics" in low_goal or "robot" in low_goal or "drone" in low_goal: domain = "robotics"
-
         # 1. Baseline mutations we ALWAYS try
         suggested.add("_inject_cache")
         suggested.add("_split_analytics")

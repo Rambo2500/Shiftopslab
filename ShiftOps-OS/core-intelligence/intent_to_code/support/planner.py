@@ -13,9 +13,12 @@ from intent_to_code.support.architecture_memory import ArchitectureMemory
 from intent_to_code.support.architecture_search import ArchitectureSearchEngine
 from intent_to_code.support.system_graph import SystemGraph
 
+from platform_core.ontology.loader import OntologyLoader
+
 class PlanningKernel:
     def __init__(self, model_adapter: Optional[GeminiAdapter] = None):
         self.model_adapter = model_adapter or GeminiAdapter()
+        self.ontology_loader = OntologyLoader()
         self.resolver = CapabilityResolver()
         self.reasoner = ArchitectureReasoner()
         self.evaluator = ArchitectureEvaluator()
@@ -26,10 +29,19 @@ class PlanningKernel:
     def plan_system(self, user_request: str, complexity: str = "MEDIUM", domain_data: Dict[str, Any] = None) -> Dict[str, Any]:
         """
         Translates a vague user request into a structured BuildSpec/Intent.
-        Now complexity-aware to prevent over-engineering.
+        Now complexity-aware and Ontology-grounded.
         """
         print(f"Planning system for: \"{user_request}\" (Complexity: {complexity})")
         
+        # 0. Load Ontology Context if provided
+        ontology = None
+        domain_weights = None
+        if domain_data and "archetype" in domain_data:
+            archetype = domain_data["archetype"].lower().replace(" ", "_")
+            ontology = self.ontology_loader.get_pack(f"{archetype}_v1")
+            # Pull weights from ontology if available, else use scout heuristics
+            domain_weights = domain_data.get("weights")
+            
         # --- NEW: Intent Expansion Stage ---
         # Transform simple prompt into professional requirements based on complexity
         expanded_request = self._expand_intent(user_request, complexity, domain_data)
@@ -45,13 +57,15 @@ class PlanningKernel:
         components = []
         if requested_capabilities:
             # 3. Dynamic Capability Resolution (Stage 2)
-            base_graph = self.resolver.resolve(requested_capabilities, goal=user_request)
+            # Pass domain weights to the resolver for trait ranking
+            base_graph = self.resolver.resolve(requested_capabilities, goal=user_request, domain_weights=domain_weights)
             
             # Stage 4: Architecture Reasoning (Refinement)
             refined_graph = self.reasoner.refine(base_graph)
             
             # Stage 5.5: Architecture Search
-            best_graph, best_metrics = self.search_engine.search(refined_graph, complexity=complexity)
+            domain_name = domain_data.get("archetype", "default") if domain_data else "default"
+            best_graph, best_metrics = self.search_engine.search(refined_graph, complexity=complexity, domain=domain_name)
 
             print(f"\n[Architecture Selection] Winner selected from search")
             print(f"  Fitness Score: {best_metrics['total_score']}")

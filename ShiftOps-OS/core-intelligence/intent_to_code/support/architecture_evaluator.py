@@ -8,10 +8,10 @@ class ArchitectureEvaluator:
     Provides the objective function for architecture exploration.
     """
 
-    def evaluate(self, graph: SystemGraph, complexity: str = "MEDIUM") -> Dict[str, Any]:
+    def evaluate(self, graph: SystemGraph, complexity: str = "MEDIUM", ontology: Any = None) -> Dict[str, Any]:
         """
         Computes a comprehensive architectural fitness score for a graph.
-        Now complexity-aware to reward minimalism where appropriate.
+        Now complexity-aware and Ontology-grounded.
         """
         import random
         metrics = {
@@ -21,6 +21,21 @@ class ArchitectureEvaluator:
             "resilience": self._calculate_resilience(graph),
             "node_count": len(graph.nodes)
         }
+
+        # --- ONTOLOGY COMPLIANCE LAYER ---
+        compliance_score = 0.0
+        if ontology:
+            # Check if required entities from ontology are represented in the graph
+            for entity_name, entity_data in ontology.entities.items():
+                if any(entity_name in n.name.lower() or entity_name in n.type.lower() for n in graph.nodes.values()):
+                    compliance_score += 5.0 # Reward including core entities
+            
+            # Penalize missing safety constraints if the domain is sensitive
+            if ontology.metadata.get("industry") in ["Healthcare", "Disaster Response"]:
+                if not any("safety" in n.description.lower() or "monitor" in n.type.lower() for n in graph.nodes.values()):
+                    compliance_score -= 10.0
+
+        metrics["compliance_score"] = compliance_score
 
         # Domain-agnostic metrics based on capability classes
         classes = {node.capability_class for node in graph.nodes.values() if hasattr(node, "capability_class")}
@@ -39,17 +54,16 @@ class ArchitectureEvaluator:
         metrics["latency_score"] = round(metrics.get("control_latency", metrics["depth"] * 1.0), 2)
 
         # Decision Intelligence
-        metrics["commercial_summary"] = self._generate_commercial_summary(metrics)
-        metrics["decision_rationale"] = self._generate_decision_rationale(graph, metrics, complexity)
+        metrics["commercial_summary"] = self._generate_commercial_summary(metrics, ontology)
+        metrics["decision_rationale"] = self._generate_decision_rationale(graph, metrics, complexity, ontology)
 
         # Calculate weighted total score
-        # High parallelism and resilience are good (+).
-        # High depth (latency) and coupling (complexity) are penalized (-).
         total_score = (
             (metrics.get("parallelism", 0) * 2.0) +
-            (metrics.get("resilience", 0) * 1.5) -
+            (metrics.get("resilience", 0) * 1.5) +
+            metrics.get("compliance_score", 0) -
             (metrics.get("depth", 0) * 1.0) -
-            (metrics.get("coupling", 0) * 5.0) # High penalty for high edge density
+            (metrics.get("coupling", 0) * 5.0) 
         )
         
         # --- COMPLEXITY ADAPTATION LAYER ---
@@ -78,21 +92,34 @@ class ArchitectureEvaluator:
         metrics["total_score"] = round(total_score + entropy, 2)
         return metrics
 
-    def _generate_commercial_summary(self, metrics: Dict) -> str:
+    def _generate_commercial_summary(self, metrics: Dict, ontology: Any = None) -> str:
         """Translates technical scores into a professional executive summary."""
         resilience = metrics.get("resilience_score", 0)
         cost = metrics.get("cost_score", 0)
+        compliance = metrics.get("compliance_score", 0)
         
         status = "High Stability" if resilience > 2 else "Lean Implementation"
         risk = "Low Operational Risk" if cost < 15 else "Complex Infrastructure"
         
+        if ontology:
+            industry = ontology.metadata.get("industry", "Standard")
+            comp_status = "Compliant" if compliance >= 0 else "High Risk"
+            return f"{industry} ({comp_status}) | {status} | {risk}"
+            
         return f"{status} | {risk}"
 
-    def _generate_decision_rationale(self, graph: SystemGraph, metrics: Dict, complexity: str = "MEDIUM") -> List[str]:
+    def _generate_decision_rationale(self, graph: SystemGraph, metrics: Dict, complexity: str = "MEDIUM", ontology: Any = None) -> List[str]:
         """Provides professional reasoning for the architectural choices."""
         rationale = []
         node_types = {n.type for n in graph.nodes.values()}
         
+        if ontology:
+            compliance = metrics.get("compliance_score", 0)
+            if compliance > 0:
+                rationale.append(f"Architecture aligned with {ontology.ontology_id} industry entities.")
+            elif compliance < 0:
+                rationale.append(f"CRITICAL: Architecture lacks core safety/monitoring entities required by {ontology.metadata.get('industry')} standards.")
+
         if complexity == "LOW" and metrics["node_count"] <= 5:
             rationale.append("Minimalist direct-path architecture chosen for cost-optimized initial deployment.")
         

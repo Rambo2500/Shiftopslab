@@ -13,15 +13,15 @@ class ArchitectureSearchEngine:
         self.max_depth = max_depth
         self.beam_width = beam_width
 
-    def search_yield(self, base_graph: SystemGraph, vision: str = "", complexity: str = "MEDIUM"):
+    def search_yield(self, base_graph: SystemGraph, vision: str = "", complexity: str = "MEDIUM", domain: str = "default"):
         """
         Generator version of search that yields events for streaming.
-        Now complexity-aware to guide the search towards minimalist or enterprise designs.
+        Now complexity-aware and domain-archetype-aware.
         """
         best_graph = base_graph
         best_metrics = self.evaluator.evaluate(base_graph, complexity=complexity)
         
-        yield {"type": "search_started", "goal": base_graph.goal, "vision": vision, "complexity": complexity}
+        yield {"type": "search_started", "goal": base_graph.goal, "vision": vision, "complexity": complexity, "domain": domain}
         
         frontier = [(best_metrics["total_score"], base_graph, best_metrics)]
         total_evaluated = 0
@@ -29,7 +29,7 @@ class ArchitectureSearchEngine:
         for depth in range(self.max_depth):
             next_frontier = []
             for _, g, _ in frontier:
-                variants = self.explorer.generate_variants(g)
+                variants = self.explorer.generate_variants(g, domain=domain)
                 for v in variants:
                     if v.has_cycles(): continue
                     metrics = self.evaluator.evaluate(v, complexity=complexity)
@@ -44,7 +44,8 @@ class ArchitectureSearchEngine:
                         "score": score,
                         "metrics": metrics,
                         "depth": depth,
-                        "total_evaluated": total_evaluated
+                        "total_evaluated": total_evaluated,
+                        "domain": domain
                     }
                     
                     if score > best_metrics["total_score"]:
@@ -67,7 +68,7 @@ class ArchitectureSearchEngine:
             "total_evaluated": total_evaluated
         }
 
-    def search(self, base_graph: SystemGraph, complexity: str = "MEDIUM") -> Tuple[SystemGraph, Dict[str, Any]]:
+    def search(self, base_graph: SystemGraph, complexity: str = "MEDIUM", domain: str = "default") -> Tuple[SystemGraph, Dict[str, Any]]:
         """
         Classic search wrapper for backward compatibility.
         Collects the best results from the search_yield generator.
@@ -75,7 +76,7 @@ class ArchitectureSearchEngine:
         best_graph = base_graph
         best_metrics = self.evaluator.evaluate(base_graph, complexity=complexity)
         
-        for event in self.search_yield(base_graph, complexity=complexity):
+        for event in self.search_yield(base_graph, complexity=complexity, domain=domain):
             if event["type"] == "variant_found":
                 # The generator yields the full graph dict, we convert back to SystemGraph
                 best_graph = SystemGraph.from_dict(event["graph"])
