@@ -1,0 +1,43 @@
+{
+  "ontology_id": "inventory_recon_v1",
+  "version": "1.0.0",
+  "entities": {
+    "Inventory_Flow": {
+      "type": "Logic_Map",
+      "state_fields": [
+        "begin_inv",
+        "net_rec",
+        "net_ship",
+        "theoretical_end_inv",
+        "actual_end_inv",
+        "variance"
+      ],
+      "description": "The deterministic flow of physical inventory through a facility node."
+    }
+  },
+  "constraints": [
+    {
+      "id": "c_flow_integrity",
+      "expression": "theoretical_end_inv == begin_inv + net_rec - net_ship",
+      "error_message": "Inventory flow imbalance: Theoretical yield does not match inputs/outputs.",
+      "severity": "SYSTEM"
+    },
+    {
+      "id": "c_variance_check",
+      "expression": "variance == actual_end_inv - theoretical_end_inv",
+      "error_message": "Variance mismatch: Reported Over/Short does not match calculated delta.",
+      "severity": "REGULATORY"
+    },
+    {
+      "id": "c_high_loss_threshold",
+      "expression": "abs(variance) < 500",
+      "error_message": "Critical inventory loss detected. Potential theft, mislabeling, or scan failure.",
+      "severity": "SAFETY"
+    }
+  ],
+  "actuators": [],
+  "metadata": {
+    "name": "Inventory Reconciliation Intelligence",
+    "description": "Standardizes the reconciliation of messy AS400/WMS inventory reports into a deterministic flow model."
+  }
+}

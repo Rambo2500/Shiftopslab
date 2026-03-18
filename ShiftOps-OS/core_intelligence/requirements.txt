@@ -1,0 +1,13 @@
+openai>=1.0.0
+jinja2
+pydantic
+google-generativeai
+google-cloud-aiplatform
+google-cloud-firestore
+google-cloud-storage
+fastapi
+uvicorn
+jsonschema
+python-dotenv
+pandas
+python-multipart

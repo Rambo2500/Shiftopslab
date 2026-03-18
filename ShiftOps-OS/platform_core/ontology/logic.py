@@ -29,7 +29,7 @@ class StateResolver:
     """The Librarian: Maps any symbol to any number, blind to the industry."""
     
     @staticmethod
-    def resolve_snapshot(pack: IndustryPack, raw_telemetry: Dict[str, Any]) -> Dict[str, float]:
+    def resolve_variables(pack: IndustryPack, raw_telemetry: Dict[str, Any]) -> Dict[str, float]:
         """
         Symbolic mapping. 
         If the ontology expects 'temp' and raw_telemetry provides 'temp', it maps.

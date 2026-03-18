@@ -85,6 +85,10 @@
                             <label class="text-[9px] text-stone-400 uppercase font-bold">Tray/Stack</label>
                             <input type="number" id="input-trays" value="170" class="w-full bg-stone-50 border border-stone-200 rounded px-2 py-1 font-bold text-xs" oninput="renderUI()">
                         </div>
+                        <div class="pt-2 grid grid-cols-2 gap-2">
+                            <button onclick="exportData()" class="bg-stone-100 hover:bg-stone-200 text-stone-700 text-[10px] font-black py-2 rounded uppercase transition-colors">Export JSON</button>
+                            <button onclick="pushToCloud()" class="bg-amber-500 hover:bg-amber-600 text-stone-900 text-[10px] font-black py-2 rounded uppercase transition-colors shadow-sm">Push to Cloud</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -293,6 +297,59 @@
         setInterval(() => document.getElementById('live-clock').innerText = new Date().toLocaleTimeString(), 1000);
         setInterval(fetchLiveData, 5000);
         window.onload = fetchLiveData;
+
+        // Export and Cloud Functions
+        function exportData() {
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(appState, null, 2));
+            const downloadAnchorNode = document.createElement('a');
+            downloadAnchorNode.setAttribute("href",     dataStr);
+            downloadAnchorNode.setAttribute("download", `shiftops_export_${new Date().toISOString().slice(0,10)}.json`);
+            document.body.appendChild(downloadAnchorNode);
+            downloadAnchorNode.click();
+            downloadAnchorNode.remove();
+        }
+
+        async function pushToCloud() {
+            const btn = event.target;
+            const originalText = btn.innerText;
+            btn.innerText = "PUSHING...";
+            btn.disabled = true;
+
+            try {
+                // Placeholder for Firebase/API push
+                console.log("Pushing to cloud:", appState);
+                
+                // If user has a Firebase config, they can initialize it here
+                // For now, we simulate a successful push to an endpoint
+                const response = await fetch('/api/cloud-sync', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        timestamp: new Date().toISOString(),
+                        site: "Elkhart",
+                        payload: appState
+                    })
+                });
+
+                if (response.ok) {
+                    btn.innerText = "SUCCESS";
+                    btn.classList.replace('bg-amber-500', 'bg-green-500');
+                } else {
+                    throw new Error("Sync failed");
+                }
+            } catch (e) {
+                console.error(e);
+                btn.innerText = "FAILED";
+                btn.classList.replace('bg-amber-500', 'bg-red-500');
+            } finally {
+                setTimeout(() => {
+                    btn.innerText = originalText;
+                    btn.disabled = false;
+                    btn.classList.remove('bg-green-500', 'bg-red-500');
+                    btn.classList.add('bg-amber-500');
+                }, 3000);
+            }
+        }
     </script>
 </body>
 </html>

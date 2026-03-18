@@ -8,4 +8,14 @@ export default defineConfig({
     react(),
     tailwindcss(),
   ],
+  server: {
+    port: 5174, // Use a different port to avoid conflict with Studio
+    proxy: {
+      '/api': {
+        target: 'https://shiftops-core-np7si5cqka-uc.a.run.app',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api/, '')
+      }
+    }
+  }
 })

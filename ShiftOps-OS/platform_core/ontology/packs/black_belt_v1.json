@@ -1,0 +1,36 @@
+{
+  "ontology_id": "black_belt_v1",
+  "version": "1.0.0",
+  "entities": {
+    "Process_Stability": {
+      "type": "Statistical_Control",
+      "state_fields": ["ad_statistic", "p_value", "mean_drift", "standard_deviation", "cpk_index"],
+      "description": "The mathematical 'Pulse' of the process using Lean Six Sigma logic."
+    },
+    "Pareto_Analysis": {
+      "type": "Prioritization",
+      "state_fields": ["top_contributor_ratio", "defect_concentration", "waste_variance"],
+      "description": "Focuses on the 20/80 principle for immediate ROI."
+    }
+  },
+  "constraints": [
+    {
+      "id": "c_anderson_darling",
+      "expression": "p_value >= 0.05",
+      "error_message": "Non-Normal Distribution: Process is out of statistical control. Standard solutions will fail.",
+      "severity": "REGULATORY"
+    },
+    {
+      "id": "c_cpk_limit",
+      "expression": "cpk_index >= 1.33",
+      "error_message": "Low Process Capability: Process width exceeds spec limits. High scrap/giveaway risk.",
+      "severity": "REGULATORY"
+    }
+  ],
+  "actuators": [],
+  "metadata": {
+    "name": "Lean Six Sigma Mastery (Black Belt)",
+    "description": "Translates Minitab-level statistical physics into simple operational commands.",
+    "tools_simplified": ["Anderson-Darling Normality Test", "Cpk/Ppk Capability", "80/20 Pareto Root Cause"]
+  }
+}

@@ -1,0 +1,47 @@
+{
+  "ontology_id": "workforce_ops_v1",
+  "version": "1.0.0",
+  "entities": {
+    "Labor_Pool": {
+      "type": "Labor",
+      "state_fields": ["active_headcount", "scheduled_headcount", "call_outs", "avg_fatigue_index", "certification_density"],
+      "description": "The human capital layer of the facility."
+    },
+    "Shift_Schedule": {
+      "type": "Schedule",
+      "state_fields": ["start_time", "end_time", "coverage_ratio", "overtime_hours"],
+      "description": "Temporal allocation of labor to production nodes."
+    }
+  },
+  "constraints": [
+    {
+      "id": "c_minimum_certification",
+      "expression": "certification_density >= 0.85",
+      "error_message": "Critical Skill Gap: Insufficient certified operators for active line complexity.",
+      "severity": "SAFETY"
+    },
+    {
+      "id": "c_fatigue_threshold",
+      "expression": "avg_fatigue_index <= 7.5",
+      "error_message": "Human Factor Risk: Average fatigue exceeds safety ceiling. High probability of process error.",
+      "severity": "SAFETY"
+    },
+    {
+      "id": "c_coverage_gap",
+      "expression": "active_headcount >= scheduled_headcount",
+      "error_message": "Labor Shortage: Active headcount below requirement for OTIF fulfillment.",
+      "severity": "REGULATORY"
+    }
+  ],
+  "actuators": [
+    {
+      "entity_type": "Labor",
+      "transition_type": "SHIFT_SWAP",
+      "connector_id": "hr_api_v1"
+    }
+  ],
+  "metadata": {
+    "name": "Human Capital & Workforce Management",
+    "description": "Dynamic labor allocation and safety-grounded scheduling logic."
+  }
+}

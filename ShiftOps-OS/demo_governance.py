@@ -25,7 +25,7 @@ def run_demo():
     print(f"[Phase 2] Ingesting Telemetry: Altitude={telemetry['raw_altitude']}km")
 
     # 4. State Resolution (Spreadsheet Recalc)
-    resolved_values = StateResolver.resolve_snapshot(pack, telemetry)
+    resolved_values = StateResolver.resolve_variables(pack, telemetry)
     
     # 5. Constraint Evaluation (The Judge)
     violations = []

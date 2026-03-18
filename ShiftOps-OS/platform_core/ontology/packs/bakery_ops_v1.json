@@ -1,53 +1,72 @@
 {
   "ontology_id": "bakery_ops_v1",
-  "version": "1.0",
+  "version": "1.0.0",
   "entities": {
-    "dock_door": {
-      "type": "FACILITY_RESOURCE",
-      "count": 12,
-      "state_fields": ["id", "status", "assigned_load_id"],
-      "description": "Loading bay for incoming ingredients or outgoing product."
+    "Equipment": {
+      "type": "Equipment",
+      "state_fields": ["capacity_lbs", "cycle_time_min", "throughput_uph", "weight_variance", "temp_f", "humidity_percent", "residence_time_min", "zones", "belt_speed", "ambient_temp_f", "film_tension"],
+      "description": "Physical production assets including mixers, ovens, and packaging lines."
     },
-    "production_line": {
-      "type": "MACHINE",
-      "state_fields": ["id", "speed_units_per_min", "active_sku", "status"],
-      "description": "Core baking and packaging line."
+    "Labor": {
+      "type": "Labor",
+      "state_fields": ["skill_level", "fatigue_index", "response_time_min", "specialty", "clearance_time_min"],
+      "description": "Human workforce resources categorized by role and capability."
     },
-    "ingredient_bin": {
-      "type": "STORAGE",
-      "state_fields": ["id", "sku", "weight_kg", "temp_c"],
-      "description": "Raw material storage bin."
+    "Material": {
+      "type": "Material",
+      "state_fields": ["hydration_percent", "yeast_activity", "temp_f", "cpk_weight", "moisture_percent", "defect_rate"],
+      "description": "Raw materials and finished goods in the production lifecycle."
+    },
+    "Product_Hierarchy": {
+      "type": "Logic_Map",
+      "state_fields": ["parent_dough_id", "child_sku_list", "yield_ratio", "allergens"],
+      "description": "Maps a single master dough batch (e.g., Sourdough_Master_01) to multiple downstream retail SKUs."
+    },
+    "Finance_Ledger": {
+      "type": "Reconciliation",
+      "state_fields": ["planned_margin", "scrap_cost", "giveaway_cost", "labor_variance_cost"],
+      "description": "Real-time cost mapping linking floor physics directly to the P&L."
+    },
+    "WMS_Outbound": {
+      "type": "Logistics",
+      "state_fields": ["door_status", "trailer_temp", "load_readiness_percent", "carrier_id"],
+      "description": "The final mile: tracking pallets from the wrapper to the trailer."
     }
   },
   "constraints": [
     {
-      "id": "labor_safety_limit",
-      "expression": "workers_per_line <= 8",
-      "severity": "SAFETY",
-      "error_message": "Exceeded safe worker density on production floor."
+      "id": "c_hydration_limit",
+      "expression": "hydration_percent >= 58",
+      "error_message": "Hydration outside nominal spec. Risk of divider jam or flat bake.",
+      "severity": "SAFETY"
     },
     {
-      "id": "temp_compliance",
-      "expression": "bin_temp <= 22.0",
-      "severity": "QUALITY",
-      "error_message": "Ingredient temperature exceeds quality threshold."
+      "id": "c_cpk_quality",
+      "expression": "cpk_weight >= 1.33",
+      "error_message": "Process capability (Cpk) for weight is unstable. Giveaway costs will spike.",
+      "severity": "REGULATORY"
+    },
+    {
+      "id": "c_oven_temp",
+      "expression": "temp_f >= 365",
+      "error_message": "Oven thermal drift detected. Risk of underbake or flash heat damage.",
+      "severity": "SAFETY"
     }
   ],
   "actuators": [
     {
-      "entity_type": "dock_door",
-      "transition_type": "UNLOCK_BAY",
-      "connector_id": "facility_io_hub"
-    },
-    {
-      "entity_type": "production_line",
-      "transition_type": "ADJUST_SPEED",
-      "connector_id": "plc_control_service"
+      "entity_type": "Equipment",
+      "transition_type": "THERMAL_ADJUST",
+      "connector_id": "plc_oven_modbus"
     }
   ],
   "metadata": {
-    "industry": "Manufacturing",
-    "domain": "Bakery",
-    "compliance": ["FDA", "HACCP"]
+    "name": "Industrial Bakery Operations",
+    "description": "Deterministic operational physics and constraints for high-throughput commercial bakery facilities.",
+    "kpis": [
+      {"name": "OTIF", "range": [95, 100], "unit": "%"},
+      {"name": "OEE", "range": [75, 95], "unit": "%"},
+      {"name": "Scrap Rate", "range": [0, 5], "unit": "%"}
+    ]
   }
 }

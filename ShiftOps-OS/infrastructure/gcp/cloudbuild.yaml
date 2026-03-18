@@ -1,0 +1,31 @@
+# GCP Native Deployment Config
+steps:
+  # Build the container image
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-t', 'us-central1-docker.pkg.dev/$PROJECT_ID/shiftops-repo/shiftops-core:v2', '-f', 'ShiftOps-OS/core_intelligence/Dockerfile', '.']
+  
+  # Push the container image to Container Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'us-central1-docker.pkg.dev/$PROJECT_ID/shiftops-repo/shiftops-core:v2']
+  
+  # Deploy to Cloud Run
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: gcloud
+    args:
+    - 'run'
+    - 'deploy'
+    - 'shiftops-core'
+    - '--image'
+    - 'us-central1-docker.pkg.dev/$PROJECT_ID/shiftops-repo/shiftops-core:v2'
+    - '--region'
+    - 'us-central1'
+    - '--allow-unauthenticated'
+    - '--set-env-vars'
+    - 'GCP_PROJECT_ID=$PROJECT_ID'
+    - '--memory'
+    - '2Gi'
+    - '--cpu'
+    - '1'
+
+images:
+  - 'us-central1-docker.pkg.dev/$PROJECT_ID/shiftops-repo/shiftops-core:v2'
