@@ -8,7 +8,7 @@ import {
 } from 'lucide-react';
 import FacilityCommand from './components/FacilityCommand';
 
-const API_BASE = "https://shiftops-core-np7si5cqka-uc.a.run.app";
+const API_BASE = window.location.hostname === 'localhost' ? 'http://localhost:8000' : "https://shiftops-core-np7si5cqka-uc.a.run.app";
 
 const DOMAINS = {
   BAKERY: { id: 'bakery', name: 'Industrial Bakery', industry_pack: "bakery_ops_v1" },

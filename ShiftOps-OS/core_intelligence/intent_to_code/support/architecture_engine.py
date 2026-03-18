@@ -1,6 +1,7 @@
-﻿from typing import Dict, Any, List, Optional, Tuple, Set
+from typing import Dict, Any, List, Optional, Tuple, Set
 import json
 import random
+from datetime import datetime
 from pathlib import Path
 from intent_to_code.support.planner import PlanningKernel
 from intent_to_code.support.capability_resolver import CapabilityResolver
@@ -143,6 +144,9 @@ class ArchitectureEngine:
         # 0.2 Load Ontology Context
         archetype = domain_data.get("archetype", "Generic").lower().replace(" ", "_")
         ontology = self.planner.ontology_loader.get_pack(f"{archetype}_v1")
+        
+        if not ontology:
+            domain_data["ontology_status"] = f"FLAG: {archetype} Science layer unavailable"
         
         # 0.5 Complexity Classification
         complexity = self.complexity_classifier.classify(user_request)

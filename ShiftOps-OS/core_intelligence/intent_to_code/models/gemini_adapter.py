@@ -1,4 +1,4 @@
-﻿import os
+import os
 import json
 from google import genai
 from typing import Optional, Dict, Any, List
@@ -20,13 +20,13 @@ class GeminiAdapter(ModelAdapter):
                 project=project_id,
                 location=location
             )
-            self.model_id = 'gemini-2.0-flash'
+            self.model_id = 'gemini-2.5-flash'
         else:
             # Legacy/External Key fallback
             self.api_key = api_key or os.getenv("GOOGLE_API_KEY")
             if self.api_key:
                 self.client = genai.Client(api_key=self.api_key)
-                self.model_id = 'gemini-2.0-flash-lite'
+                self.model_id = 'gemini-2.5-flash'
             else:
                 self.client = None
 
@@ -139,8 +139,8 @@ class GeminiAdapter(ModelAdapter):
         try:
             clean_text = response_text.replace("```json", "").replace("```", "").strip()
             return json.loads(clean_text)
-        except Exception:
-            return {"error": "Failed to parse intent from AI response."}
+        except Exception as e:
+            return {"error": f"Failed to parse intent: {str(e)}. Raw AI Output: {response_text}"}
 
     def harvest_context(self, query: str) -> str:
         """

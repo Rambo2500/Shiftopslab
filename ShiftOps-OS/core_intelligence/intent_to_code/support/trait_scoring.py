@@ -7,6 +7,14 @@ class TraitScorer:
     (latency, throughput, cost) align with the system's high-level goal.
     """
     
+    TRAIT_VALUES = {
+        "exceptional": 4,
+        "high": 3,
+        "medium": 2,
+        "low": 1,
+        "poor": 0
+    }
+    
     def score_provider(self, provider_data: Dict[str, Any], goal: str, domain_weights: Dict[str, int] = None) -> float:
         """
         Calculates a fitness score for a provider based on its traits 

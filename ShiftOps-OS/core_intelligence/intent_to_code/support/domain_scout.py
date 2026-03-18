@@ -1,4 +1,4 @@
-﻿import json
+import json
 from typing import Dict, Any, List, Optional
 from intent_to_code.models.gemini_adapter import GeminiAdapter
 

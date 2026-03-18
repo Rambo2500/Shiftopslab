@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { 
   Activity, Clock, Truck, Box, AlertTriangle, 
   CheckCircle2, ChevronRight, Settings2, Map as MapIcon,
-  Search, ShieldCheck, Zap, Info
+  Search, ShieldCheck, Zap, Info, Sparkles
 } from 'lucide-react';
 
 const DOCK_LAYOUT = [

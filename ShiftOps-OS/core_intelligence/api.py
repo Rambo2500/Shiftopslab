@@ -466,6 +466,10 @@ async def analyze_facility(req: AnalysisRequest):
             Ontology Violations: {violations}
             Safety Protocols (HARD MANDATES): {safety_constraints}
             
+            STRICT RULES:
+            1. NO FAKE METRICS: DO NOT generate savings ($) or time estimates unless explicit quantitative data is provided in the input prompt.
+            2. NO SYSTEM FLUFF: Remove narrative terms like "Truth Layer", "Resilience Score", or "Confidence". Output only strict operator decisions, constraints, and actions.
+            
             TASK:
             Run a negotiation between these 3 agents to invent a 3-step 'High-Fidelity' recovery plan. 
             The plan must satisfy all 3 agents. If the Efficiency Agent suggests a risky move, the Safety Agent must block or modify it.
@@ -475,6 +479,8 @@ async def analyze_facility(req: AnalysisRequest):
             
             Return ONLY valid JSON:
             {{
+              "primary_objective": "[Explicitly state the single overarching goal. All actions must align to this. e.g. Hit the 7 AM Walmart Load]",
+              "primary_conflict": "[Explicitly state the operational tradeoff, e.g., pan shortage vs over-proofing slows throughput.]",
               "framework_used": "{selected_framework}",
               "agents_consensus": true,
               "safety_status": "VALIDATED",
@@ -501,7 +507,7 @@ async def analyze_facility(req: AnalysisRequest):
                   "decision_audit_log": "..."
                 }}
               ],
-              "human_narrative": "A 2-sentence summary of the 'Invention'."
+              "human_narrative": "A strict 2-sentence operator-level floor action summary. NO fake metrics. NO fluff."
             }}
             """
 
@@ -514,8 +520,18 @@ async def analyze_facility(req: AnalysisRequest):
                 synthesis_res = gemini.generate_text(prompt)
                 clean_synth = synthesis_res.replace("```json", "").replace("```", "").strip()
                 synth_data = json.loads(clean_synth)
-                audit_narrative = synth_data.get("human_narrative", "Synthesis complete.")
-                recovery_plan = synth_data.get("plan_steps", [])
+                
+                # --- ARBITER LAYER (DECISION AUTHORITY) ---
+                from intent_to_code.support.arbiter import DecisionArbiter
+                arbiter = DecisionArbiter()
+                decision_payload = arbiter.enforce_operator_mode(
+                    raw_architecture_plan=clean_synth, 
+                    domain_context={"violations": violations, "safety": safety_constraints}
+                )
+                
+                # Override the consultant fluff with the strictly enforced decision directive
+                audit_narrative = decision_payload.get("decision_directive", synth_data.get("human_narrative", "Synthesis complete."))
+                recovery_plan = decision_payload.get("operational_steps", synth_data.get("plan_steps", []))
 
                 # --- DETERMINISTIC SAFETY GATE (The Hard Stop) ---
                 safety_status = synth_data.get("safety_status", "VALIDATED")
@@ -543,6 +559,8 @@ async def analyze_facility(req: AnalysisRequest):
 
                 invention_metrics = {
                     "framework": synth_data.get("framework_used"),
+                    "primary_objective": synth_data.get("primary_objective", "Not specified"),
+                    "primary_conflict": synth_data.get("primary_conflict", "Not specified"),
                     "agentic_consensus": synth_data.get("agents_consensus", False),
                     "safety": safety_status,
                     "iso_compliance": "ISO/IEC 42001 Alignment Active",
